@@ -1119,30 +1119,30 @@ const T1_PRIMITIVE_FUNCTION t1_primitive_table[]={
 ///////////////////////////////////////
 // object
 
-tOBJECT nil;
-tOBJECT unbound;
+extern tOBJECT nil;
+extern tOBJECT unbound;
 
 // string
 
-tPCELL string_plus;
-tPCELL string_minus;
-tPCELL string_system;
-tPCELL string_islisp;
-tPCELL string_continue_condition;
-tPCELL string_simple_error;
-tPCELL string_system_error;
-tPCELL string_stack_overflow;
-tPCELL string_storage_exhausted;
+extern tPCELL string_plus;
+extern tPCELL string_minus;
+extern tPCELL string_system;
+extern tPCELL string_islisp;
+extern tPCELL string_continue_condition;
+extern tPCELL string_simple_error;
+extern tPCELL string_system_error;
+extern tPCELL string_stack_overflow;
+extern tPCELL string_storage_exhausted;
 
 // standard class
-tPCELL sclass_standard_object;
+extern tPCELL sclass_standard_object;
 
 // list
-tPCELL list_object_instance;
-tPCELL list_islisp_system;
+extern tPCELL list_object_instance;
+extern tPCELL list_islisp_system;
 
 // gfunction
-tPCELL gfunction_initialize_object;
+extern tPCELL gfunction_initialize_object;
 
 // symbol
 
@@ -1455,7 +1455,7 @@ enum {
 	NUMBER_OF_GLOBAL_SYMBOL,
 };
 
-tPCELL global_symbol[NUMBER_OF_GLOBAL_SYMBOL];
+extern tPCELL global_symbol[NUMBER_OF_GLOBAL_SYMBOL];
 
 #define SYMBOL_PLUS			(global_symbol[sPLUS])
 #define SYMBOL_MINUS		(global_symbol[sMINUS])
@@ -1818,10 +1818,10 @@ const GLOBAL_SYMBOL_TABLE global_symbol_table[]={
 /////////////////////////////
 // CONDITION
 
-tPCELL	condition_system_error;
-tPCELL	condition_storage_exhausted;
-tPCELL	condition_stack_overflow;
-tPCELL	tisl_object_storage_exhausted;
+extern tPCELL	condition_system_error;
+extern tPCELL	condition_storage_exhausted;
+extern tPCELL	condition_stack_overflow;
+extern tPCELL	tisl_object_storage_exhausted;
 
 /////////////////////////////
 

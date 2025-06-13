@@ -27,6 +27,42 @@ static VM_RET initialize_built_in_class_(tPVM vm, const tINT package_id, tCSTRIN
 static VM_RET initialize_built_in_function_(tPVM vm, const tINT package_id, tCSTRING bind_name, tPOBJECT obj);
 
 /////////////////////////////
+// object
+
+tOBJECT nil;
+tOBJECT unbound;
+
+// string
+
+tPCELL string_plus;
+tPCELL string_minus;
+tPCELL string_system;
+tPCELL string_islisp;
+tPCELL string_continue_condition;
+tPCELL string_simple_error;
+tPCELL string_system_error;
+tPCELL string_stack_overflow;
+tPCELL string_storage_exhausted;
+
+// standard class
+tPCELL sclass_standard_object;
+
+// list
+tPCELL list_object_instance;
+tPCELL list_islisp_system;
+
+// gfunction
+tPCELL gfunction_initialize_object;
+
+// symbol
+tPCELL global_symbol[NUMBER_OF_GLOBAL_SYMBOL];
+
+// CONDITION
+
+tPCELL	condition_system_error;
+tPCELL	condition_storage_exhausted;
+tPCELL	condition_stack_overflow;
+tPCELL	tisl_object_storage_exhausted;
 
 typedef struct BUILT_IN_BIND_TABLE_	BUILT_IN_BIND_TABLE;
 struct BUILT_IN_BIND_TABLE_ {
