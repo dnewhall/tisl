@@ -3,7 +3,7 @@
 // TISL Ver 4.x
 //
 
-#include <malloc.h>
+#include <stdlib.h>
 
 #define TISL_VM_STRUCT
 #define TISL_GC_MARK_TABLE

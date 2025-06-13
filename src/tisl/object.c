@@ -6,7 +6,7 @@
 #define TISL_OBJECT_C
 
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 #define TISL_VM_STRUCT
 #include "../../include/tni.h"

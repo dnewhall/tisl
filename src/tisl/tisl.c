@@ -3,7 +3,7 @@
 // TISL Ver 4.x
 //
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 #include <signal.h>
 #define TISL_VM_STRUCT

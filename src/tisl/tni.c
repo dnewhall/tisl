@@ -3,7 +3,7 @@
 // TISL Ver 4.x
 //
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <memory.h>

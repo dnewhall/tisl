@@ -5,7 +5,7 @@
 
 #define TISL_VM_STRUCT
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <memory.h>
 #include <time.h>
 #include "../../include/tni.h"

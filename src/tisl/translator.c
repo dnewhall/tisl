@@ -3,7 +3,7 @@
 // TISL Ver. 4.x
 //
 
-#include <malloc.h>
+#include <stdlib.h>
 #include "../../include/tni.h"
 #include "object.h"
 #include "vm.h"
