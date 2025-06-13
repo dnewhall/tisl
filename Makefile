@@ -14,7 +14,7 @@ OBJ	= src/tisl/built_in_object.o\
 	  src/tisl/interpreter.o
 
 tisl : tisl_obj tisl_c_obj tisl_main
-	$(CC) $(CFLAGS) -lm -o tisl_4_08 $(OBJ) src/console_app/main.o
+	$(CC) $(CFLAGS) -lm -o tisl_4_08 $(OBJ) src/console_app/main.o -lm
 
 tisl_obj :
 	cd src/tisl; make tisl_obj
