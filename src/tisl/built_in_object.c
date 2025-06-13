@@ -41,7 +41,7 @@ struct BUILT_IN_BIND_TABLE_ {
 
 /////////////////////////////
 
-// ¡»π˛§ﬂ•Ø•È•π
+// ÁµÑËæº„Åø„ÇØ„É©„Çπ
 const BUILT_IN_BIND_TABLE table_of_built_in_class[]={
 	/* 0*/{ "<object>", CLASS_OBJECT, PACKAGE_ISLISP },
 	/* 1*/{ "<basic-array>", CLASS_BASIC_ARRAY, PACKAGE_ISLISP },
@@ -99,7 +99,7 @@ const BUILT_IN_BIND_TABLE table_of_built_in_class[]={
 #define NUMBER_OF_BUILT_IN_CLASS	51
 
 /////////////////////////////
-// ∆√ºÏ±Èªªª“
+// ÁâπÊÆäÊºîÁÆóÂ≠ê
 const BUILT_IN_BIND_TABLE table_of_special_operator[]={
 	{ "function", bFUNCTION, PACKAGE_ISLISP },
 	{ "lambda", bLAMBDA, PACKAGE_ISLISP },
@@ -146,7 +146,7 @@ const BUILT_IN_BIND_TABLE table_of_special_operator[]={
 	{ "in-package", bIN_PACKAGE, PACKAGE_SYSTEM },
 };
 
-// ƒÍµ¡±Èªªª“
+// ÂÆöÁæ©ÊºîÁÆóÂ≠ê
 const BUILT_IN_BIND_TABLE table_of_defining_operator[]={
 	{ "defconstant", bDEFCONSTANT, PACKAGE_ISLISP },
 	{ "defglobal", bDEFGLOBAL, PACKAGE_ISLISP },
@@ -482,12 +482,12 @@ static VM_RET initialize_built_in_class(tPVM vm)
 {
 	tOBJECT obj;
 	tINT i;
-	// ¡»π˛§ﬂ•Ø•È•π
+	// ÁµÑËæº„Åø„ÇØ„É©„Çπ
 	for (i=0; i<NUMBER_OF_BUILT_IN_CLASS; i++) {
 		OBJECT_SET_BUILT_IN_CLASS(&obj, table_of_built_in_class[i].id);
 		if (initialize_built_in_class_(vm, table_of_built_in_class[i].package_id, table_of_built_in_class[i].name, &obj)) return VM_ERROR;
 	}
-	// …∏Ω‡•Ø•È•π <standard-object>
+	// Ê®ôÊ∫ñ„ÇØ„É©„Çπ <standard-object>
 	{
 		tPCELL name, bind;
 		if (tisl_get_string(vm_get_tisl(vm), vm, "<standard-object>", &name)) return VM_ERROR;
@@ -720,7 +720,7 @@ tINT symbol_get_special_operator_id(tPCELL symbol)
 			return global_symbol_table[i].special_oepator_id;
 		}
 	}
-	return 0;// …È§Œ√Õ§À§π§Î°©/*!!!*/
+	return 0;// Ë≤†„ÅÆÂÄ§„Å´„Åô„ÇãÔºü/*!!!*/
 }
 
 VM_RET symbol_is_built_in_function(tPVM vm, tPCELL symbol)

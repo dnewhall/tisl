@@ -341,12 +341,12 @@ enum {
 };
 
 ///////////////////////////////////////
-// ╢ь©Те╛мяхфмя
-// evaluator.c╓гдЙ╣а
+// И√╒Ф∙╟И│╘Г■╗Ф╠▌Г■╗
+// evaluator.cЦ│╖Е╝ Г╬╘
 VM_RET function_application_form(tPVM vm, tPOBJECT function, tPCELL name, const tINT anum);
 
 ///////////////////////////////////////
-// primitive_operation.c╓гдЙ╣а
+// primitive_operation.cЦ│╖Е╝ Г╬╘
 
 VM_RET po_functionp(tPVM vm, const tINT anum);
 VM_RET po_apply(tPVM vm, const tINT anum);
@@ -1209,7 +1209,7 @@ enum {
 	//
 	sLOAD,
 	sIN_PACKAGE,
-	// ах╓ъ╧Ч╓ъ╢ь©Т
+	// Г╣└Ц│©Х╬╪Ц│©И√╒Ф∙╟
 	// function
 	sFUNCTIONP,
 	sAPPLY,

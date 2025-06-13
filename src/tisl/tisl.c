@@ -101,7 +101,7 @@ TISL* tisl_get_interface(tPTISL tisl)
 	return tisl->tisl;
 }
 
-// TIN_INIT_ARGS¤«¤éTISL_INIT_ARGS¤òºîÀ®¤¹¤ë
+// TIN_INIT_ARGSã‹ã‚‰TISL_INIT_ARGSã‚’ä½œæˆã™ã‚‹
 void set_tisl_init_args(tTISL_INIT_ARGS* tisl_args, TNI_INIT_ARGS* tni_args)
 {
 	tisl_args->argc=tni_args->argc;
@@ -120,7 +120,7 @@ tBOOL create_tisl(tPTISL* tisl, tTISL_INIT_ARGS* args, tVM_INIT_ARGS* vm_args)
 {
 	tPTISL tisl_;
 	tPVM vm;
-	// Âç°èÊÑ¿ô¤Î¥¯¥ê¥¢
+	// å¤§åŸŸå¤‰æ•°ã®ã‚¯ãƒªã‚¢
 	clear_global_objects();
 	//
 	tisl_=malloc(sizeof(tTISL));
@@ -165,22 +165,22 @@ tBOOL create_tisl(tPTISL* tisl, tTISL_INIT_ARGS* args, tVM_INIT_ARGS* vm_args)
 	if (!tisl_->file_stream_table) goto ERROR2;
 	tisl_->file_stream_table_lock[0]=0;
 	tisl_->file_stream_table_lock[1]=0;
-	// Main VM ¤ÎÀ¸À®
+	// Main VM ã®ç”Ÿæˆ
 	if (!create_vm(tisl_, &vm, vm_args)) goto ERROR3;
 	tisl_->main_vm=vm;
 	vm_set_gc_mark(vm, tFALSE);
-	//¡¡Âç°èÊÑ¿ô¤Î½é´ü²½
+	//ã€€å¤§åŸŸå¤‰æ•°ã®åˆæœŸåŒ–
 	if (initialize_global_objects(tisl_)) goto ERROR4;
 	// top-package
 	if (package_create_(tisl_->main_vm, 0, 0, 0, 0, &tisl_->top_package)) goto ERROR4;
-	// É¸½à¥¹¥È¥ê¡¼¥à¤ÎÀ¸À®
-	// É¸½àÆşÎÏ
+	// æ¨™æº–ã‚¹ãƒˆãƒªãƒ¼ãƒ ã®ç”Ÿæˆ
+	// æ¨™æº–å…¥åŠ›
 	if (initialize_standard_stream(tisl_, tisl_->main_vm, "standard-input", stdin, STREAM_INPUT, &tisl_->standard_input)) goto ERROR4;
-	// É¸½à½ĞÎÏ
+	// æ¨™æº–å‡ºåŠ›
 	if (initialize_standard_stream(tisl_, tisl_->main_vm, "standard-output", stdout, STREAM_OUTPUT, &tisl_->standard_output)) goto ERROR4;
-	// ¥¨¥é¡¼½ĞÎÏ
+	// ã‚¨ãƒ©ãƒ¼å‡ºåŠ›
 	if (initialize_standard_stream(tisl_, tisl_->main_vm, "error-output", stderr, STREAM_OUTPUT, &tisl_->error_output)) goto ERROR4;
-	// ÁÈ¹ş¤ß¥ª¥Ö¥¸¥§¥¯¥È¤ÎÀ¸À®
+	// çµ„è¾¼ã¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
 	if (initialize_built_in_object(tisl_)) goto ERROR4;
 	//
 	if (initialize_main_arg(tisl_, args->argc, args->argv, args->envp)) goto ERROR4;
@@ -203,7 +203,7 @@ ERROR:
 }
 
 tBOOL free_tisl(tPTISL tisl)
-{/*!!!*///¸å¤Ç½ñ¤­Ä¾¤¹
+{/*!!!*///å¾Œã§æ›¸ãç›´ã™
 	if (tisl) {
 		free_vm(tisl->main_vm);
 		free(tisl->symbol_table);
@@ -223,7 +223,7 @@ void tisl_attach_vm(tPTISL tisl, tPVM vm)
 void tisl_detach_vm(tPTISL tisl, tPVM vm)
 {
 	tPVM p, last;
-	// main¤Ï¤Ï¤º¤»¤Ê¤¤
+	// mainã¯ã¯ãšã›ãªã„
 	if (vm==tisl->main_vm) return;
 	//
 	for (p=tisl->vms, last=0; p&&(p!=vm); last=p, p=vm_get_next(vm));
@@ -245,7 +245,7 @@ static VM_RET initialize_standard_stream(tPTISL tisl, tPVM vm, tCSTRING name, FI
 		if (tisl_get_string(tisl, vm, name, &string)||
 			file_stream_create_(vm, io_flag, string, file, &cell)) return VM_ERROR;
 		cell_to_object(cell, stream);
-		// É½¤ËÅĞÏ¿
+		// è¡¨ã«ç™»éŒ²
 		key=tisl_get_file_stream_table_key(tisl, file);
 		file_stream_set_next(cell, tisl->file_stream_table[key]);
 		tisl->file_stream_table[key]=cell;
@@ -327,11 +327,11 @@ tPCELL tisl_get_top_package(tPTISL tisl)
 
 VM_RET tisl_lock(tPVM* lock, tPVM vm)
 {
-	// LOOP¤Î²ó¿ô¤Çdead-lock¤Î¸¡ºº¤¹¤ë¡©
+	// LOOPã®å›æ•°ã§dead-lockã®æ¤œæŸ»ã™ã‚‹ï¼Ÿ
 LOOP:
-	if (lock[0]&&(lock[0]!=vm)) { /*waitÆş¤ì¤¿¤¤*//*!!!*/ goto LOOP; }
+	if (lock[0]&&(lock[0]!=vm)) { /*waitå…¥ã‚ŒãŸã„*//*!!!*/ goto LOOP; }
 	lock[0]=vm;
-	if (lock[1]&&(lock[1]!=vm)) { /*waitÆş¤ì¤¿¤¤*//*!!!*/ 
+	if (lock[1]&&(lock[1]!=vm)) { /*waitå…¥ã‚ŒãŸã„*//*!!!*/ 
 		goto LOOP;
 	}
 	lock[1]=vm;
@@ -383,14 +383,14 @@ static void tisl_unlock_file_stream_table(tPTISL tisl, tPVM vm)
 
 /////////////////////////////////////////////////
 
-// Ê¸»úÎó
+// æ–‡å­—åˆ—
 VM_RET tisl_get_string(tPTISL tisl, tPVM vm, tCSTRING string, tPCELL* cell)
 {
-	// ´û¤ËÅĞÏ¿¤µ¤ì¤Æ¤¤¤ë¤â¤Î¤«¤é¸¡º÷
+	// æ—¢ã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‚‚ã®ã‹ã‚‰æ¤œç´¢
 	if (tisl_search_string(tisl, vm, string, cell)) {
 		return VM_OK;
 	} else {
-		// ¿·µ¬¤ËºîÀ®
+		// æ–°è¦ã«ä½œæˆ
 		return tisl_create_string(tisl, vm, string, cell);
 	}
 }
@@ -408,7 +408,7 @@ VM_RET tisl_remove_string(tPTISL tisl, tPVM vm, tPCELL string)
 
 static tINT tisl_get_string_table_key(tPTISL tisl, tCSTRING string)
 {
-	// ¤Æ¤­¤È¡¼ ¤¢¤È¤Ç
+	// ã¦ãã¨ãƒ¼ ã‚ã¨ã§
 	/*!!!*/
 	tINT key=0, i, len=strlen(string);
 	for (i=0; i<len; i++) {
@@ -423,7 +423,7 @@ static tBOOL tisl_search_string(tPTISL tisl, tPVM vm, tCSTRING string, tPCELL* c
 {
 	tINT key;
 	tPCELL p;
-	// É½¤«¤é¸¡º÷
+	// è¡¨ã‹ã‚‰æ¤œç´¢
 	if (tisl_lock_string_table(tisl, vm)) return tFALSE;
 	key=tisl_get_string_table_key(tisl, string);
 	for (p=tisl->string_table[key]; p; p=string_get_next(p)) {
@@ -458,26 +458,26 @@ static VM_RET tisl_remove_string_(tPTISL tisl, tPVM vm, tPCELL string)
 static VM_RET tisl_create_string(tPTISL tisl, tPVM vm, tCSTRING string, tPCELL* cell)
 {
 	tINT key=tisl_get_string_table_key(tisl, string);
-	// ¤È¤ê¤¢¤¨¤º¡¢Í×µá¤Î¤¢¤Ã¤¿VM¾å¤ÇÊ¸»úÎó¤òºîÀ®¤¹¤ë
+	// ã¨ã‚Šã‚ãˆãšã€è¦æ±‚ã®ã‚ã£ãŸVMä¸Šã§æ–‡å­—åˆ—ã‚’ä½œæˆã™ã‚‹
 	if (string_create(vm, string, cell)) return VM_ERROR;
-	// É½¤ËÅĞÏ¿
+	// è¡¨ã«ç™»éŒ²
 	if (tisl_lock_string_table(tisl, vm)) return VM_ERROR;
 	string_set_next(*cell, tisl->string_table[key]);
 	tisl->string_table[key]=*cell;
 	tisl_unlock_string_table(tisl, vm);
-	// VM¤ËTISL¤«¤é¤Î»²¾È¤ÎÄÌÃÎ
+	// VMã«TISLã‹ã‚‰ã®å‚ç…§ã®é€šçŸ¥
 	return VM_OK;
 }
 
 /////////////////////////////////////////////////
-// µ­¹æ
+// è¨˜å·
 VM_RET tisl_get_symbol(tPTISL tisl, tPVM vm, tPCELL list, const tBOOL complete, tPCELL* cell)
 {
-	// ´û¤ËÅĞÏ¿¤µ¤ì¤Æ¤¤¤ë¤â¤Î¤«¤é¸¡º÷
+	// æ—¢ã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‚‚ã®ã‹ã‚‰æ¤œç´¢
 	if (tisl_search_symbol(tisl, vm, list, complete, cell)) {
 		return VM_OK;
 	} else {
-		// ¿·µ¬¤ËºîÀ®
+		// æ–°è¦ã«ä½œæˆ
 		return tisl_create_symbol(tisl, vm, list, complete, cell);
 	}
 }
@@ -509,7 +509,7 @@ VM_RET tisl_gensym(tPTISL tisl, tPVM vm, tPCELL* cell)
 
 static tINT tisl_get_symbol_table_key(tPTISL tisl, tCSTRING string)
 {
-	// ¤Æ¤­¤È¡¼
+	// ã¦ãã¨ãƒ¼
 	/*!!!*/
 	tINT key=0, i, len=strlen(string);
 	for (i=0; i<len; i++) {
@@ -526,7 +526,7 @@ static tBOOL tisl_search_symbol(tPTISL tisl, tPVM vm, tPCELL list, tBOOL complet
 	tOBJECT obj;
 	tPCELL p;
 	if (tisl_lock_symbol_table(tisl, vm)) return tFALSE;
-	// key¤Î¼èÆÀ
+	// keyã®å–å¾—
 	cons_get_car(list, &obj);
 	if (!OBJECT_IS_STRING(&obj)) { tisl_unlock_symbol_table(tisl, vm); return tFALSE; }
 	key=tisl_get_symbol_table_key(tisl, string_get_string(OBJECT_GET_CELL(&obj)));
@@ -571,10 +571,10 @@ static tBOOL symbol_equal_list(tPCELL symbol, tPCELL list, tBOOL complete)
 	// 
 	if ((symbol_is_complete(symbol)&&!complete)||
 		(!symbol_is_complete(symbol)&&complete)) return tFALSE;
-	// Ä¹¤µ¤ÎÈæ³Ó
+	// é•·ã•ã®æ¯”è¼ƒ
 	len=cons_get_length(list);
 	if (len!=symbol_get_length(symbol)) return tFALSE;
-	// ³ÆÍ×ÁÇ¤ÎÈæ³Ó
+	// å„è¦ç´ ã®æ¯”è¼ƒ
 	for (i=0, p=list; p; i++, p=cons_get_cdr_cons(p)) {
 		cons_get_car(p, &obj);
 		if (!OBJECT_IS_STRING(&obj)) return tFALSE;
@@ -602,9 +602,9 @@ static VM_RET tisl_create_symbol(tPTISL tisl, tPVM vm, tPCELL list, tBOOL comple
 	cons_get_car(list, &obj);
 	if (!OBJECT_IS_STRING(&obj)) return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	key=tisl_get_symbol_table_key(tisl, string_get_string(OBJECT_GET_CELL(&obj)));
-	// Í×µá¤Î¤¢¤Ã¤¿VM¾å¤Çµ­¹æ¤òºîÀ®
+	// è¦æ±‚ã®ã‚ã£ãŸVMä¸Šã§è¨˜å·ã‚’ä½œæˆ
 	if (symbol_create(vm, list, complete, cell)) return VM_ERROR;
-	// É½¤ËÅĞÏ¿
+	// è¡¨ã«ç™»éŒ²
 	if (tisl_lock_symbol_table(tisl, vm)) return VM_ERROR;
 	symbol_set_next(*cell, tisl->symbol_table[key]);
 	symbol_set_key(*cell, key);
@@ -663,14 +663,14 @@ static VM_RET tisl_remove_symbol_(tPTISL tisl, tPVM vm, tPCELL symbol)
 }
 
 ///////////////////////////////////////
-// bind-list¤Î¼èÆÀ
+// bind-listã®å–å¾—
 
 
 VM_RET tisl_get_bind_list(tPTISL tisl, tPVM vm, tPCELL package, tPCELL name, tPCELL* blist)
 {
 	VM_RET ret;
 	if (tisl_lock(tisl->bind_lock, vm)) return VM_ERROR;
-	// package¤«¤éname¤Ç»²¾È¤Ç¤­¤ëÂ«Çû¤Î¥ê¥¹¥È¤ÎºîÀ®
+	// packageã‹ã‚‰nameã§å‚ç…§ã§ãã‚‹æŸç¸›ã®ãƒªã‚¹ãƒˆã®ä½œæˆ
 	*blist=package_get_bind_list(package, name);
 	if (!*blist&&
 		package_add_bind_list(vm, package, name, blist)) {
@@ -682,7 +682,7 @@ VM_RET tisl_get_bind_list(tPTISL tisl, tPVM vm, tPCELL package, tPCELL name, tPC
 	return ret;
 }
 
-// Â«Çû¤Î¼èÆÀ
+// æŸç¸›ã®å–å¾—
 VM_RET tisl_get_bind(tPTISL tisl, tPVM vm, tPCELL package, tPCELL name, tPCELL* bind)
 {
 	VM_RET ret;
@@ -720,7 +720,7 @@ VM_RET tisl_get_class(tPTISL tisl, tPVM vm, tPCELL name, tPOBJECT obj)
 }
 
 ///////////////////////////////////////
-// ¥Õ¥¡¥¤¥ë¥¹¥È¥ê¡¼¥à
+// ãƒ•ã‚¡ã‚¤ãƒ«ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 
 VM_RET tisl_get_file_stream(tPTISL tisl, tPVM vm, tPCELL name, const tINT flags, tPCELL* cell)
 {
@@ -728,7 +728,7 @@ VM_RET tisl_get_file_stream(tPTISL tisl, tPVM vm, tPCELL name, const tINT flags,
 	FILE* file;
 	if (tisl_lock_file_stream_table(tisl, vm)) return VM_ERROR;
 
-	// ¥Õ¥¡¥¤¥ë¤Îopen
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã®open
 	if ((flags&STREAM_INPUT)&&(flags&STREAM_OUTPUT)) {
 		file=fopen(string_get_string(name), "w+");
 	} else if (flags&STREAM_OUTPUT) {
@@ -739,14 +739,14 @@ VM_RET tisl_get_file_stream(tPTISL tisl, tPVM vm, tPCELL name, const tINT flags,
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	}
 	if (!file) return signal_condition(vm, TISL_ERROR_CANNOT_OPEN_FILE);
-	// ´û¤ËÅĞÏ¿¤µ¤ì¤Æ¤¤¤ë¤â¤Î¤«¤é¸¡º÷
+	// æ—¢ã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‚‚ã®ã‹ã‚‰æ¤œç´¢
 	if (tisl_search_file_stream(tisl, vm, name, flags, file, cell)) {
 		ret=VM_ERROR;
 	} else {
 		if (*cell) {
 			ret=VM_OK;
 		} else {
-			// ¿·µ¬¤ËºîÀ®
+			// æ–°è¦ã«ä½œæˆ
 			ret=tisl_create_file_stream(tisl, vm, name, flags, file, cell);
 		}
 	}
@@ -756,7 +756,7 @@ VM_RET tisl_get_file_stream(tPTISL tisl, tPVM vm, tPCELL name, const tINT flags,
 
 static tINT tisl_get_file_stream_table_key(tPTISL tisl, FILE* file)
 {
-	// ¤Æ¤­¤È¡¼
+	// ã¦ãã¨ãƒ¼
 	/*!!!*/
 	tINT key=(*(tUINT*)file)/13%tisl->file_stream_table_size;
 	return (key<0) ? -key : key;
@@ -766,7 +766,7 @@ static VM_RET tisl_search_file_stream(tPTISL tisl, tPVM vm, tPCELL name, const t
 {
 	tINT key;
 	tPCELL p;
-	// key¤Î¼èÆÀ
+	// keyã®å–å¾—
 	key=tisl_get_file_stream_table_key(tisl, file);
 	//
 	for (p=tisl->file_stream_table[key]; p; p=file_stream_get_next(p)) {
@@ -775,9 +775,9 @@ static VM_RET tisl_search_file_stream(tPTISL tisl, tPVM vm, tPCELL name, const t
 				(!file_stream_is_output(p)&&(flags&STREAM_OUTPUT))||
 				(file_stream_is_input(p)&&!(flags&STREAM_INPUT))||
 				(!file_stream_is_input(p)&&(flags&STREAM_INPUT))) {
-				// ´û¤Ë³«¤¤¤Æ¤¤¤ë¥Õ¥¡¥¤¥ë¥¹¥È¥ê¡¼¥à¤ÈÆş½ĞÎÏ¥Õ¥é¥°¤Î°Û¤Ê¤ë
-				// ¥Õ¥¡¥¤¥ë¤ò³«¤³¤¦¤È¤·¤Æ¤¤¤ë¡©¤·¤«¤âFILE¥İ¥¤¥ó¥¿¤¬Æ±¤¸!?
-				// µö¤µ¤ì¤ë¡©/*!!!*/// ¤¢¤ê¤¦¤ë¡©
+				// æ—¢ã«é–‹ã„ã¦ã„ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚¹ãƒˆãƒªãƒ¼ãƒ ã¨å…¥å‡ºåŠ›ãƒ•ãƒ©ã‚°ã®ç•°ãªã‚‹
+				// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã“ã†ã¨ã—ã¦ã„ã‚‹ï¼Ÿã—ã‹ã‚‚FILEãƒã‚¤ãƒ³ã‚¿ãŒåŒã˜!?
+				// è¨±ã•ã‚Œã‚‹ï¼Ÿ/*!!!*/// ã‚ã‚Šã†ã‚‹ï¼Ÿ
 				//fclose(file);
 				return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 			} else {
@@ -793,16 +793,16 @@ static VM_RET tisl_search_file_stream(tPTISL tisl, tPVM vm, tPCELL name, const t
 static VM_RET tisl_create_file_stream(tPTISL tisl, tPVM vm, tPCELL name, const tINT flags, FILE* file, tPCELL* cell)
 {
 	tINT key;
-	// Í×µá¤Î¤¢¤Ã¤¿VM¾å¤ÇºîÀ®
+	// è¦æ±‚ã®ã‚ã£ãŸVMä¸Šã§ä½œæˆ
 	if (file_stream_create_(vm, flags, name, file, cell)) return VM_ERROR;
 	key=tisl_get_file_stream_table_key(tisl, file);
-	// É½¤ËÅĞÏ¿
+	// è¡¨ã«ç™»éŒ²
 	file_stream_set_next(*cell, tisl->file_stream_table[key]);
 	tisl->file_stream_table[key]=*cell;
 	return VM_OK;
 }
 
-// É¸½à¥¹¥È¥ê¡¼¥à
+// æ¨™æº–ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 void tisl_get_standard_input(tPTISL tisl, tPOBJECT stream)
 {
 	*stream=tisl->standard_input;
@@ -820,7 +820,7 @@ void tisl_get_error_output(tPTISL tisl, tPOBJECT stream)
 
 /////////////////////////////
 // GC
-// gc.c¤Ë°ÜÆ°¤¹¤ë¡©
+// gc.cã«ç§»å‹•ã™ã‚‹ï¼Ÿ
 
 static VM_RET tisl_gc_lock(tPTISL tisl, tPVM vm);
 static void tisl_gc_wait(tPTISL tisl);
@@ -832,12 +832,12 @@ VM_RET tisl_signal_gc_start(tPTISL tisl, tPVM vm)
 {
 	vm_set_state_gc_wait(vm);
 	if (tisl_gc_lock(tisl, vm)) {
-		// Â¾¤ÎVM¤¬GC¤òµ¯Æ°¤·¤Æ¤¤¤ë¤é¤·¤¤
-		// GC¤¬½ªÎ»¤¹¤ë¤Ş¤ÇÂÔ¤Ä
+		// ä»–ã®VMãŒGCã‚’èµ·å‹•ã—ã¦ã„ã‚‹ã‚‰ã—ã„
+		// GCãŒçµ‚äº†ã™ã‚‹ã¾ã§å¾…ã¤
 		tisl_gc_wait(tisl);
 		return VM_OK;
 	} else {
-		// ¼«Ê¬¤¬GC¤Îµ¯Æ°VM¤È¤Ê¤ë
+		// è‡ªåˆ†ãŒGCã®èµ·å‹•VMã¨ãªã‚‹
 		tPCELL* p;
 		tUINT i;
 		int old;
@@ -854,10 +854,10 @@ VM_RET tisl_signal_gc_start(tPTISL tisl, tPVM vm)
 		for (pvm=tisl->dead_vms; pvm; pvm=vm_get_next(pvm)) {
 			if (!vm_sweep(pvm)) goto ERROR;
 		}
-		// ¥Ş¡¼¥¯¤ÎÈ¿Å¾
+		// ãƒãƒ¼ã‚¯ã®åè»¢
 		tisl_reverse_gc_mark(tisl);
 		vm_set_state_gc_run(vm);
-		// µ¯Æ°VM¤ÏTISL¤Î»ı¤Ä¥Ç¡¼¥¿¤Ø¤Î¥Ş¡¼¥­¥ó¥°¤ò¹Ô¤¦
+		// èµ·å‹•VMã¯TISLã®æŒã¤ãƒ‡ãƒ¼ã‚¿ã¸ã®ãƒãƒ¼ã‚­ãƒ³ã‚°ã‚’è¡Œã†
 		if (cell_mark(vm, tisl->top_package)||
 			object_mark(vm, &tisl->standard_input)||
 			object_mark(vm, &tisl->standard_output)||
@@ -867,7 +867,7 @@ VM_RET tisl_signal_gc_start(tPTISL tisl, tPVM vm)
 		for (i=0; i<tisl->file_stream_table_size; i++) {
 			if (cell_mark(vm, *p++)) goto ERROR;
 		}
-		// ÁÈ¹ş¤ß¥ª¥Ö¥¸¥§¥¯¥È
+		// çµ„è¾¼ã¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 		if (cell_mark(vm, list_islisp_system)) goto ERROR;
 		//
 		if (cell_mark(vm, tisl->main_argument)) goto ERROR;
@@ -890,14 +890,14 @@ VM_RET tisl_signal_gc_start(tPTISL tisl, tPVM vm)
 		for (i=0; i<NUMBER_OF_GLOBAL_SYMBOL; i++) {
 			if (cell_mark(vm, global_symbol[i])) goto ERROR;
 		}
-		//VM¤Î¥Ş¡¼¥­¥ó¥°
+		//VMã®ãƒãƒ¼ã‚­ãƒ³ã‚°
 		sp2 = (tisl->main_vm==vm) ? sp : (tisl->main_vm->SP-tisl->main_vm->stack);
 		if (!vm_mark(tisl->main_vm, sp2)) goto ERROR;
 		for (pvm=tisl->vms; pvm; pvm=vm_get_next(pvm)) {
 			sp2 = (pvm==vm) ? sp : (pvm->SP-pvm->stack);
 			if (!vm_mark(pvm, sp2)) goto ERROR;
 		}
-		// ÇÑ´şVM¤Î¥Ò¡¼¥×¤ò²ó¼ı¤¹¤ë¤è¤¦¤ËÊÑ¹¹¤¹¤Ù¤­/*!!!*/
+		// å»ƒæ£„VMã®ãƒ’ãƒ¼ãƒ—ã‚’å›åã™ã‚‹ã‚ˆã†ã«å¤‰æ›´ã™ã¹ã/*!!!*/
 		for (pvm=tisl->dead_vms; pvm; pvm=vm_get_next(pvm)) {
 			if (!vm_mark(pvm, pvm->SP-pvm->stack)) goto ERROR;
 		}
@@ -945,7 +945,7 @@ static void tisl_gc_wait(tPTISL tisl)
 {
 	tPVM vm;
 LOOP:
-	// busy wait¤Ë¤Ê¤Ã¤Æ¤¤¤ë!!!/*!!!*/
+	// busy waitã«ãªã£ã¦ã„ã‚‹!!!/*!!!*/
 	if (vm_get_state(tisl->main_vm)!=VM_STATE_OK) goto LOOP;
 	for (vm=tisl->vms; vm; vm=vm_get_next(vm)) {
 		if (vm_get_state(vm)!=VM_STATE_OK) goto LOOP;
@@ -964,12 +964,12 @@ LOOP:
 
 void tisl_gc_wait_2(tPTISL tisl, tPVM vm)
 {
-LOOP:// busy wait¤Ë¤Ê¤Ã¤Æ¤¤¤ë²¿¤«¤Ê¤¤¡©
+LOOP:// busy waitã«ãªã£ã¦ã„ã‚‹ä½•ã‹ãªã„ï¼Ÿ
 	if ((tisl->gc_lock[0]!=vm)&&
 		(tisl->tisl_state==TISL_STATE_GC_WAIT)) goto LOOP;
 }
 
-// ctrl-C¤Ë¤è¤ëÃæÃÇ
+// ctrl-Cã«ã‚ˆã‚‹ä¸­æ–­
 static int user_interrupt_flag;
 
 void tisl_signal_user_interrupt(int sig)
@@ -993,12 +993,12 @@ extern tBOOL garbage_collection(tPVM vm, tUINT size);
 VM_RET vm_check_tisl_state(tPVM vm)
 {
 	tPTISL tisl=vm_get_tisl(vm);
-	// Â¾¤ÎVM¤Ë¤è¤êµ¯Æ°¤µ¤ì¤¿GC
+	// ä»–ã®VMã«ã‚ˆã‚Šèµ·å‹•ã•ã‚ŒãŸGC
 	if (tisl_get_state(tisl)==TISL_STATE_GC_WAIT) {
-		// Ã¯¤«¤¬GC¤òµ¯Æ°¤·¤Æ¤¤¤ë¤é¤·¤¤¡¥
+		// èª°ã‹ãŒGCã‚’èµ·å‹•ã—ã¦ã„ã‚‹ã‚‰ã—ã„ï¼
 		tisl_gc_wait(tisl);
 	}
-	// ¥æ¡¼¥¶¤Ë¤è¤ëÃæÃÇ¡©
+	// ãƒ¦ãƒ¼ã‚¶ã«ã‚ˆã‚‹ä¸­æ–­ï¼Ÿ
 	if (tisl_get_user_interrupt_flag()) {
 		vm_set_last_condition_user_interrupt(vm);
 		return VM_ERROR;

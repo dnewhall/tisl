@@ -37,17 +37,17 @@ VM_RET vm_evaluate_top_form(tPVM vm, tPOBJECT form, tPOBJECT ret)
 	VM_RET r;
 	if (vm_push(vm, form)) return VM_ERROR;
 	switch (OBJECT_GET_TYPE(form)) {
-	case OBJECT_CONS://Ê£¹ç·Á¼°
+	case OBJECT_CONS://è¤‡åˆå½¢å¼
 		r=vm_evaluate_compound_form(vm, form, ret, tTRUE);
 		break;
-	case OBJECT_SYMBOL:// ¼±ÊÌ»Ò
+	case OBJECT_SYMBOL:// è­˜åˆ¥å­
 		r=vm_evaluate_identifier(vm, form, ret);
 		break;
 	case OBJECT_QUASIQUOTE:// 
 		r=vm_evaluate_quasiquote(vm, form, ret);
 		break;
-	default://¥ê¥Æ¥é¥ë¡©
-		// ¥ê¥Æ¥é¥ë¤½¤Î¤â¤Î¤òÊÖ¤¹
+	default://ãƒªãƒ†ãƒ©ãƒ«ï¼Ÿ
+		// ãƒªãƒ†ãƒ©ãƒ«ãã®ã‚‚ã®ã‚’è¿”ã™
 		*ret=*form;
 		r=VM_OK;
 	}
@@ -58,32 +58,32 @@ VM_RET vm_evaluate_top_form(tPVM vm, tPOBJECT form, tPOBJECT ret)
 VM_RET vm_evaluate_form(tPVM vm, tPOBJECT form, tPOBJECT ret)
 {
 	switch (OBJECT_GET_TYPE(form)) {
-	case OBJECT_CONS:// Ê£¹ç·Á¼°
+	case OBJECT_CONS:// è¤‡åˆå½¢å¼
 		return vm_evaluate_compound_form(vm, form, ret, tFALSE);
-	case OBJECT_SYMBOL:// ¼±ÊÌ»Ò
+	case OBJECT_SYMBOL:// è­˜åˆ¥å­
 		return vm_evaluate_identifier(vm, form, ret);
 	case OBJECT_QUASIQUOTE:
 		return vm_evaluate_quasiquote(vm, form, ret);
 	default:
-		// ¥ê¥Æ¥é¥ë¤½¤Î¤â¤Î¤òÊÖ¤¹
+		// ãƒªãƒ†ãƒ©ãƒ«ãã®ã‚‚ã®ã‚’è¿”ã™
 		*ret=*form;
 		return VM_OK;
 	}
 }
 
 static VM_RET vm_evaluate_identifier(tPVM vm, tPOBJECT identifier, tPOBJECT ret)
-{// ÊÑ¿ôÌ¾Á°¶õ´Ö¤ÇÂĞ±ş¤¹¤ëÃÍ¤òÊÖ¤¹. 
+{// å¤‰æ•°åå‰ç©ºé–“ã§å¯¾å¿œã™ã‚‹å€¤ã‚’è¿”ã™. 
 	tPCELL blist, bind;
 	tPCELL symbol=OBJECT_GET_CELL(identifier);
 	if (!CELL_IS_SYMBOL(symbol)) return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
-	// Â«Çû¥ê¥¹¥È¤Î¼èÆÀ
+	// æŸç¸›ãƒªã‚¹ãƒˆã®å–å¾—
 	if (tisl_get_bind_list(vm_get_tisl(vm), vm, vm_get_current_package(vm), symbol, &blist)) return VM_ERROR;
-	// ÊÑ¿ôÌ¾Á°¶õ´Ö¤ÇÀßÄê¤µ¤ì¤Æ¤¤¤ëÂ«Çû¤Î¼èÆÀ
+	// å¤‰æ•°åå‰ç©ºé–“ã§è¨­å®šã•ã‚Œã¦ã„ã‚‹æŸç¸›ã®å–å¾—
 	bind=bind_list_get_bind(blist, NAMESPACE_VARIABLE, vm_get_current_package(vm));
-	if (bind) {// Â«Çû¤¬Â¸ºß¤·¤¿
+	if (bind) {// æŸç¸›ãŒå­˜åœ¨ã—ãŸ
 		bind_get_object(bind, NAMESPACE_VARIABLE, ret);
 		return VM_OK;
-	} else {// Â«Çû¤¬Â¸ºß¤·¤Ê¤«¤Ã¤¿
+	} else {// æŸç¸›ãŒå­˜åœ¨ã—ãªã‹ã£ãŸ
 		return signal_undefined_entity(vm, TISL_ERROR_UNBOUND_VARIABLE, symbol, NAMESPACE_VARIABLE);
 	}
 }
@@ -95,7 +95,7 @@ static VM_RET vm_evaluate_compound_form(tPVM vm, tPOBJECT form, tPOBJECT ret, co
 	VM_RET r;
 	tINT top_id;
 
-LOOP:// ¥Ş¥¯¥í¤Î¾ì¹ç¤Ï¥Ş¥¯¥í¤Ç¤Ê¤¯¤Ê¤ë¤Ş¤Ç¥Ş¥¯¥íÅ¸³«¤ò¹Ô¤¦¡¥
+LOOP:// ãƒã‚¯ãƒ­ã®å ´åˆã¯ãƒã‚¯ãƒ­ã§ãªããªã‚‹ã¾ã§ãƒã‚¯ãƒ­å±•é–‹ã‚’è¡Œã†ï¼
 	cons=OBJECT_GET_CELL(form);
 	if (!OBJECT_IS_CONS(form)) { return vm_evaluate_top_form(vm, form, ret); }
 	if (compound_form_get_operator(vm, cons, &op)) return VM_ERROR;
@@ -113,17 +113,17 @@ LOOP:// ¥Ş¥¯¥í¤Î¾ì¹ç¤Ï¥Ş¥¯¥í¤Ç¤Ê¤¯¤Ê¤ë¤Ş¤Ç¥Ş¥¯¥íÅ¸³«¤ò¹Ô¤¦¡¥
 		top_id=operator_is_top_operator(&obj, &op);
 		if (top_id) {
 			if (vm_push(vm, form)) return VM_ERROR;
-			// ºÇ¾å°Ì·Á¼°¤ÎÆÃ¼ì¤Ê±é»»»Ò¤Î¾ì¹çÊ¬¤±
+			// æœ€ä¸Šä½å½¢å¼ã®ç‰¹æ®Šãªæ¼”ç®—å­ã®å ´åˆåˆ†ã‘
 			if (vm_evaluate_special_top_form(vm, top_id, form, ret)) { vm_pop(vm); return VM_ERROR; }
 			vm_pop(vm);
 			return VM_OK;
 		}
 	}
-	// ÊÑ´¹¤·¤Æ´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤ÎºîÀ®
+	// å¤‰æ›ã—ã¦é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
 	if (translate(vm, form, &func)) return VM_ERROR;
 	cell_to_object(func, &obj);
 	if (vm_push(vm, &obj)) return VM_ERROR;
-	r=function_call(vm, func, 0, ret);// ¥È¥Ã¥×´Ä¶­¤ÏNULL
+	r=function_call(vm, func, 0, ret);// ãƒˆãƒƒãƒ—ç’°å¢ƒã¯NULL
 	vm_pop(vm);
 	return r;
 }
@@ -167,8 +167,8 @@ static VM_RET call_local_function(tPVM vm, tPCELL lfunction, tPCELL name, const 
 static VM_RET call_generic_function(tPVM vm, tPCELL gfunction, tPCELL name, const tINT anum);
 static VM_RET call_linked_function(tPVM vm, tPCELL function, tPCELL name, const tINT anum);
 
-// ´Ø¿ôÅ¬ÍÑ·Á¼°ÈÆÍÑ
-// built_in_object.h¤ÇÀë¸À
+// é–¢æ•°é©ç”¨å½¢å¼æ±ç”¨
+// built_in_object.hã§å®£è¨€
 VM_RET function_application_form(tPVM vm, tPOBJECT function, tPCELL name, const tINT anum)
 {
 	//
@@ -182,17 +182,17 @@ VM_RET function_application_form(tPVM vm, tPOBJECT function, tPCELL name, const 
 	switch (OBJECT_GET_TYPE(function)) {
 	case OBJECT_PRIMITIVE_OPERATOR:
 		return (*primitive_operation_table[OBJECT_GET_INTEGER(function)].operation)(vm, anum);
-	case OBJECT_FUNCTION:// ¥æ¡¼¥¶ÄêµÁÂç°è´Ø¿ô
+	case OBJECT_FUNCTION:// ãƒ¦ãƒ¼ã‚¶å®šç¾©å¤§åŸŸé–¢æ•°
 		return call_function(vm, OBJECT_GET_CELL(function), name, anum);
-		// Êñ³ç´Ø¿ô¤Ï¸å¤Ç/*!!!*/
-	case OBJECT_LOCAL_FUNCTION:// ¶É½ê´Ø¿ô
+		// åŒ…æ‹¬é–¢æ•°ã¯å¾Œã§/*!!!*/
+	case OBJECT_LOCAL_FUNCTION:// å±€æ‰€é–¢æ•°
 		return call_local_function(vm, OBJECT_GET_CELL(function), name, anum);
 	case OBJECT_GENERIC_FUNCTION:
 		return call_generic_function(vm, OBJECT_GET_CELL(function), name, anum);
 	case OBJECT_LINKED_FUNCTION:
 		return call_linked_function(vm, OBJECT_GET_CELL(function), name, anum);
-	case OBJECT_SPECIAL_OPERATOR: // ÆÃ¼ì·Á¼°¡¤ÄêµÁ·Á¼°¤Ï´Ø¿ôÅ¬ÍÑ·Á¼°¤Ç¤Ï¤Ê¤¤¤Î¤Ç
-	case OBJECT_DEFINING_OPERATOR:// Îã³°¤¬È¯À¸¤¹¤ë
+	case OBJECT_SPECIAL_OPERATOR: // ç‰¹æ®Šå½¢å¼ï¼Œå®šç¾©å½¢å¼ã¯é–¢æ•°é©ç”¨å½¢å¼ã§ã¯ãªã„ã®ã§
+	case OBJECT_DEFINING_OPERATOR:// ä¾‹å¤–ãŒç™ºç”Ÿã™ã‚‹
 	default:
 		if (name) {
 			if (CELL_IS_STRING(name)) {
@@ -212,11 +212,11 @@ VM_RET function_application_form(tPVM vm, tPOBJECT function, tPCELL name, const 
 
 static VM_RET arity_check(tPVM vm, const tINT pnum, const tBOOL rest, const tINT anum)
 {
-	// °ú¿ô¤ÎÄ´À°
-	if (rest) {// rest¤¢¤ê
+	// å¼•æ•°ã®èª¿æ•´
+	if (rest) {// restã‚ã‚Š
 		if (anum<pnum-1) return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
 		if (anum==pnum-1) {
-			// Â­¤ê¤Ê¤¤°ú¿ô¤ònil¤È¤·¤ÆÄÉ²Ã
+			// è¶³ã‚Šãªã„å¼•æ•°ã‚’nilã¨ã—ã¦è¿½åŠ 
 			if (vm_push(vm, &nil)) return VM_ERROR;
 		} else {
 			tINT i, n=anum-pnum+1;
@@ -233,7 +233,7 @@ static VM_RET arity_check(tPVM vm, const tINT pnum, const tBOOL rest, const tINT
 				OBJECT_SET_CONS(vm->SP, p);
 			}
 		}
-	} else {// restÌµ¤·
+	} else {// restç„¡ã—
 		if (anum!=pnum) return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
 	}
 	return VM_OK;
@@ -318,7 +318,7 @@ static VM_RET call_linked_function(tPVM vm, tPCELL function, tPCELL name, const 
 
 ///////////////////////////////////////
 // top special operator
-// ºÇ¾å°Ì·Á¼°¤ÎÀ©¸Â¤Î¤Ä¤¤¤Æ¤¤¤ë·Á¼°
+// æœ€ä¸Šä½å½¢å¼ã®åˆ¶é™ã®ã¤ã„ã¦ã„ã‚‹å½¢å¼
 
 enum {
 	top_NOT_TOP_OPERATOR=0,
@@ -390,7 +390,7 @@ static tINT operator_is_top_operator(tPOBJECT name, tPOBJECT value)
 		if (p==global_symbol[sLOAD]) return top_LOAD;
 		if (p==global_symbol[sPROGN]) return top_PROGN;
 	}
-	// ÄêµÁ·Á¼°¤ÏÁ´Éô ºÇ¾å°Ì·Á¼°¤Ç¤Ê¤±¤ì¤Ğ¤Ê¤é¤Ê¤¤¡¥
+	// å®šç¾©å½¢å¼ã¯å…¨éƒ¨ æœ€ä¸Šä½å½¢å¼ã§ãªã‘ã‚Œã°ãªã‚‰ãªã„ï¼
 	if (OBJECT_IS_DEFINING_OPERATOR(value)) {
 		switch (OBJECT_GET_INTEGER(value)) {
 		case bDEFCLASS:		return top_DEFCLASS;
@@ -417,8 +417,8 @@ static tINT operator_is_top_operator(tPOBJECT name, tPOBJECT value)
 		if (OBJECT_GET_INTEGER(value)==bIN_PACKAGE) return top_IN_PACKAGE;
 		if (OBJECT_GET_INTEGER(value)==bLOAD) return top_LOAD;
 	}*/
-	// ¤É¤ì¤Ë¤âÅö¤Æ¤Ï¤Ş¤é¤Ê¤±¤ì¤Ğ
-	// ÄÌ¾ï¤Ë½èÍı¤Ç¤­¤ë¡¥
+	// ã©ã‚Œã«ã‚‚å½“ã¦ã¯ã¾ã‚‰ãªã‘ã‚Œã°
+	// é€šå¸¸ã«å‡¦ç†ã§ãã‚‹ï¼
 	return top_NOT_TOP_OPERATOR;
 }
 
@@ -438,14 +438,14 @@ static VM_RET top_define(tPVM vm, const tINT id, tPOBJECT top, tPOBJECT ret)
 	tPCELL bind, name_string;
 	tBOOL public_p;
 
-	// °ú¿ô¤ÎÆÉ¹ş¤ß
+	// å¼•æ•°ã®èª­è¾¼ã¿
 	p=OBJECT_GET_CELL(top);
 	len=cons_get_length(p);
 	if ((len!=3)&&(len!=4)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, top);
 	p=cons_get_cdr_cons(p);
 	cons_get_car(p, &name);
-	if (!OBJECT_IS_SYMBOL(&name)||// name¤¬µ­¹æ¤Ç¤Ê¤¤
-		!symbol_is_simple(OBJECT_GET_CELL(&name)))// name¤Ë¥Ñ¥Ã¥±¡¼¥¸½¤¾ş»Ò¤¬¤Ä¤¤¤Æ¤¤¤ë
+	if (!OBJECT_IS_SYMBOL(&name)||// nameãŒè¨˜å·ã§ãªã„
+		!symbol_is_simple(OBJECT_GET_CELL(&name)))// nameã«ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ä¿®é£¾å­ãŒã¤ã„ã¦ã„ã‚‹
 		return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, top);
 	if (len==4) {
 		p=cons_get_cdr_cons(p);
@@ -492,7 +492,7 @@ static VM_RET top_defun(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 	tOBJECT obj, name, lambda_list, forms;
 	tBOOL public_p;
 	tPCELL p, func, name_string, bind;
-	// °ú¿ô¤ÎÆÉ¤ß¼è¤ê
+	// å¼•æ•°ã®èª­ã¿å–ã‚Š
 	cons_get_cdr(OBJECT_GET_CELL(form), &obj);
 	if (!OBJECT_IS_CONS(&obj)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, form);
 	p=OBJECT_GET_CELL(&obj);
@@ -522,8 +522,8 @@ static VM_RET top_defun(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 		return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, form);
 	}
 	//
-	if (!OBJECT_IS_SYMBOL(&name)||// Ì¾Á°¤¬µ­¹æ¤Ç¤Ê¤¤
-		!symbol_is_simple(OBJECT_GET_CELL(&name)))//¥Ñ¥Ã¥±¡¼¥¸½¤¾ş»Ò¤¬¤Ä¤¤¤Æ¤¤¤ë
+	if (!OBJECT_IS_SYMBOL(&name)||// åå‰ãŒè¨˜å·ã§ãªã„
+		!symbol_is_simple(OBJECT_GET_CELL(&name)))//ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ä¿®é£¾å­ãŒã¤ã„ã¦ã„ã‚‹
 		return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, form);
 	if (symbol_is_built_in_function(vm, OBJECT_GET_CELL(&name))) return VM_ERROR;
 	symbol_get_string(OBJECT_GET_CELL(&name), 0, &name_string);
@@ -544,7 +544,7 @@ static VM_RET top_load(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 {
 	tOBJECT obj, name;
 	tPCELL p, stream;
-	// °ú¿ô¤Î¸¡ºº
+	// å¼•æ•°ã®æ¤œæŸ»
 	cons_get_cdr(OBJECT_GET_CELL(form), &obj);
 	if (!OBJECT_IS_CONS(&obj)) return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
 	p=OBJECT_GET_CELL(&obj);
@@ -553,7 +553,7 @@ static VM_RET top_load(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 	cons_get_car(p, &obj);
 	if (vm_evaluate_top_form(vm, &obj, &name)) return VM_ERROR;
 	if (!OBJECT_IS_STRING(&name)) return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_STRING, &name);
-	// ¥Õ¥¡¥¤¥ë¤ÎºîÀ®
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã®ä½œæˆ
 	if (file_stream_create(vm, STREAM_INPUT, OBJECT_GET_CELL(&name), &stream)) return VM_ERROR;
 	if (vm_load(vm, stream, &obj)) {
 		OBJECT_SET_INTEGER(&obj, file_stream_get_y(stream));
@@ -711,7 +711,7 @@ static VM_RET top_defclass(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 			if (!OBJECT_IS_NIL(&tmp)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, form);
 			cons_get_car(pp, &tmp);
 			if (!OBJECT_IS_SYMBOL(&tmp)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, form);
-			// metaclass¤Ë¤æ¤ë¤¹¤Î¤Ï¼¡¤ÎÆó¤Ä¤Î¤ß
+			// metaclassã«ã‚†ã‚‹ã™ã®ã¯æ¬¡ã®äºŒã¤ã®ã¿
 			// <standard-class>
 			// <foreign-class>
 			if ((OBJECT_GET_CELL(&tmp)!=SYMBOL_STANDARD_CLASS_CLASS)&&
@@ -735,7 +735,7 @@ static VM_RET top_defclass(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 		if (!OBJECT_IS_NIL(&tmp)&&!OBJECT_IS_CONS(&tmp)) return signal_violation(vm, TRANSLATOR_ERROR_DOT_LIST, form);
 	}
 	if (OBJECT_GET_CELL(&metaclass)==SYMBOL_STANDARD_CLASS_CLASS) {
-		// É¸½à¥¯¥é¥¹¤ÎÀ¸À®
+		// æ¨™æº–ã‚¯ãƒ©ã‚¹ã®ç”Ÿæˆ
 		f=OBJECT_IS_NIL(&abstract) ? tFALSE : tTRUE;
 		if (standard_class_create_(vm, OBJECT_GET_CELL(&name), sc_name_list, slot_spec_list, f, &sclass)) return VM_ERROR;
 	} else if (OBJECT_GET_CELL(&metaclass)==SYMBOL_FOREIGN_CLASS_CLASS) {
@@ -745,7 +745,7 @@ static VM_RET top_defclass(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 	}
 	cell_to_object(sclass, &tmp);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
-	// Â«Çû¤ÎÀßÄê
+	// æŸç¸›ã®è¨­å®š
 	symbol_get_string(OBJECT_GET_CELL(&name), 0, &string);
 	if (package_add_bind(vm, vm_get_current_package(vm), string, &bind)) { vm_pop(vm); return VM_ERROR; }
 	bind_get_class(bind, &tmp);
@@ -786,7 +786,7 @@ static VM_RET top_defgeneric(tPVM vm, const tINT id, tPOBJECT top, tPOBJECT ret)
 	tINT pnum;
 	tBOOL rest, standard;
 
-	// °ú¿ô¤ÎÆÉ¤ß¼è¤ê ¹½Ê¸¸¡ºº
+	// å¼•æ•°ã®èª­ã¿å–ã‚Š æ§‹æ–‡æ¤œæŸ»
 	cons_get_cdr(OBJECT_GET_CELL(top), &tmp);
 	if (!OBJECT_IS_CONS(&tmp)) return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
 	p=OBJECT_GET_CELL(&tmp);
@@ -811,7 +811,7 @@ static VM_RET top_defgeneric(tPVM vm, const tINT id, tPOBJECT top, tPOBJECT ret)
 	if (!p) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, top);
 	cons_get_car(p, &access);
 	if (OBJECT_IS_SYMBOL(&access)) {
-		// ¥¢¥¯¥»¥¹½¤¾ş»Ò
+		// ã‚¢ã‚¯ã‚»ã‚¹ä¿®é£¾å­
 		if ((OBJECT_GET_CELL(&access)!=KEYWORD_PRIVATE)&&
 			(OBJECT_GET_CELL(&access)!=KEYWORD_PUBLIC)) {
 			return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, top);
@@ -824,7 +824,7 @@ static VM_RET top_defgeneric(tPVM vm, const tINT id, tPOBJECT top, tPOBJECT ret)
 	// lambda-list
 	cons_get_car(p, &lambda_list);
 	if (!OBJECT_IS_CONS(&lambda_list)&&!OBJECT_IS_NIL(&lambda_list)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, top);
-	// ¹½Ê¸¤Î¸¡ºº¤Î¤ß
+	// æ§‹æ–‡ã®æ¤œæŸ»ã®ã¿
 	rest=tFALSE;
 	pnum=0;
 	for (pp=cons_get_car_cons(p); pp; pp=cons_get_cdr_cons(pp)) {
@@ -867,16 +867,16 @@ static VM_RET top_defgeneric(tPVM vm, const tINT id, tPOBJECT top, tPOBJECT ret)
 		if (!OBJECT_IS_CONS(&tmp)&&!OBJECT_IS_NIL(&tmp)) { vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_DOT_LIST, top); }
 	}
 	if (symbol_is_built_in_function(vm, OBJECT_GET_CELL(&name))) return VM_ERROR;
-	// Êñ³ç´Ø¿ô¤ÎºîÀ®
+	// åŒ…æ‹¬é–¢æ•°ã®ä½œæˆ
 	if (gfunction_create_(vm, pnum, rest, standard, OBJECT_IS_CONS(&lambda_list) ? OBJECT_GET_CELL(&lambda_list) : 0, &gfunction)) { vm_pop(vm); return VM_ERROR; }
 	cell_to_object(gfunction, &tmp);
 	if (vm_push(vm, &tmp)) { vm_pop(vm); return VM_ERROR; }
-	// ¥á¥½¥Ã¥É¤ÎÅĞÏ¿
+	// ãƒ¡ã‚½ãƒƒãƒ‰ã®ç™»éŒ²
 	for (p=cons_get_cdr_cons(method_list); p; p=cons_get_cdr_cons(p)) {
 		cons_get_car(p, &tmp);
 		if (gfunction_add_method(vm, gfunction, OBJECT_GET_CELL(&tmp))) { vm_pop(vm); vm_pop(vm); return VM_ERROR; }
 	}
-	// Â«Çû¤ÎÀßÄê
+	// æŸç¸›ã®è¨­å®š
 	symbol_get_string(OBJECT_GET_CELL(&name), 0, &string);
 	if (tisl_get_bind(vm_get_tisl(vm), vm, vm_get_current_package(vm), string, &bind)) { vm_pop(vm); vm_pop(vm); return VM_ERROR; }
 	cell_to_object(gfunction, &tmp);
@@ -916,7 +916,7 @@ static VM_RET top_defgeneric_option(tPVM vm, tPCELL p, tPCELL method_list, tBOOL
 		return VM_OK;
 	} else if (OBJECT_GET_CELL(&key)==KEYWORD_GENERIC_FUNCTION_CLASS) {
 		// (:generic-function-class <standard-generic-function>)
-		// TISL¤Ç¤Ï¤³¤Î¥¯¥é¥¹¤ò»ØÄê¤¹¤ë¤³¤È¤Ï¤Ç¤­¤Ê¤¤
+		// TISLã§ã¯ã“ã®ã‚¯ãƒ©ã‚¹ã‚’æŒ‡å®šã™ã‚‹ã“ã¨ã¯ã§ããªã„
 		return signal_condition(vm, TISL_ERROR_GENERIC_FUNCTION_CLASS);
 	} else if (OBJECT_GET_CELL(&key)==KEYWORD_METHOD) {
 		// 
@@ -964,20 +964,20 @@ static VM_RET top_defmethod(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 	} else if (!symbol_is_simple(OBJECT_GET_CELL(&name))) {
 		return signal_condition(vm, TISL_ERROR_PACKAGE_QUALIFIER);
 	}
-	// ¥á¥½¥Ã¥É¤ÎºîÀ®
+	// ãƒ¡ã‚½ãƒƒãƒ‰ã®ä½œæˆ
 	p=cons_get_cdr_cons(p);
 	if (!p) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, form);
 	if (translate_method(vm, p, &method)) return VM_ERROR;
 	cell_to_object(method, &tmp);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
-	// ÅĞÏ¿¤¹¤ëÊñ³ç´Ø¿ô¤Î¸¡º÷
+	// ç™»éŒ²ã™ã‚‹åŒ…æ‹¬é–¢æ•°ã®æ¤œç´¢
 	symbol_get_string(OBJECT_GET_CELL(&name), 0, &string);
 	bind=package_get_bind(vm_get_current_package(vm), string);
 	if (!bind) { vm_pop(vm); return signal_undefined_entity(vm, TISL_ERROR_UNDEFINED_FUNCTION, OBJECT_GET_CELL(&name), NAMESPACE_FUNCTION); }
 	bind_get_function(bind, &tmp);
 	if (OBJECT_IS_UNBOUND(&tmp)) { vm_pop(vm); return signal_undefined_entity(vm, TISL_ERROR_UNDEFINED_FUNCTION, OBJECT_GET_CELL(&name), NAMESPACE_FUNCTION); }
 	if (!OBJECT_IS_GENERIC_FUNCTION(&tmp)) { vm_pop(vm); return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_STANDARD_GENERIC_FUNCTION, &tmp); }
-	// ¥á¥½¥Ã¥É¤ÎÄÉ²Ã
+	// ãƒ¡ã‚½ãƒƒãƒ‰ã®è¿½åŠ 
 	if (gfunction_add_method(vm, OBJECT_GET_CELL(&tmp), method)) { vm_pop(vm); return VM_ERROR; }
 	gfunction_clear_emethod(OBJECT_GET_CELL(&tmp));
 	vm_pop(vm);
@@ -989,7 +989,7 @@ static VM_RET top_defpackage(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret
 {// (defpackage name [access] (use-package))
 	tOBJECT name, access, tmp;
 	tPCELL p, use_package_list, bind, package, string;
-	// ¹½Ê¸¤Î¸¡ºº
+	// æ§‹æ–‡ã®æ¤œæŸ»
 	p=cons_get_cdr_cons(OBJECT_GET_CELL(form));
 	if (!p) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, form);
 	cons_get_car(p, &name);
@@ -1045,7 +1045,7 @@ static VM_RET top_defpackage(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret
 		if (package_create_(vm, bind, p, string, vm_get_current_package(vm), &package)) { vm_pop(vm); return VM_ERROR; }
 		cell_to_object(package, &tmp);
 		bind_set_package(bind, &tmp);
-	} else {// ´û¤Ë¥Ñ¥Ã¥±¡¼¥¸¤¬ÍÑ°Õ¤µ¤ì¤Æ¤¤¤ë
+	} else {// æ—¢ã«ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ãŒç”¨æ„ã•ã‚Œã¦ã„ã‚‹
 		package=OBJECT_GET_CELL(&tmp);
 		if ((package==vm_get_top_package(vm))||
 			(package==vm_get_islisp_package(vm))||
@@ -1091,10 +1091,10 @@ static VM_RET top_deflink(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 	tOBJECT tmp, name, accessor, lambda_list, dll_name, dll_procedure;
 	tINT n;
 	tBOOL rest, voidp;
-	// ¹½Ê¸¤Î¸¡ºº¤È°ú¿ô¤Î¼èÆÀ
+	// æ§‹æ–‡ã®æ¤œæŸ»ã¨å¼•æ•°ã®å–å¾—
 	p=cons_get_cdr_cons(OBJECT_GET_CELL(form));
 	if (!p) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, form);
-	// name¤ÎÆÉ¤ß¼è¤ê
+	// nameã®èª­ã¿å–ã‚Š
 	cons_get_car(p, &name);
 	if (!OBJECT_IS_SYMBOL(&name)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, form);
 	if (!symbol_is_simple(OBJECT_GET_CELL(&name))) return signal_condition(vm, TISL_ERROR_PACKAGE_QUALIFIER);
@@ -1103,7 +1103,7 @@ static VM_RET top_deflink(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 	p=OBJECT_GET_CELL(&tmp);
 	cons_get_car(p, &accessor);
 	if (OBJECT_IS_SYMBOL(&accessor)) {
-		// ¥¢¥¯¥»¥¹½¤¾ş»Ò¤ÎÆÉ¤ß¼è¤ê
+		// ã‚¢ã‚¯ã‚»ã‚¹ä¿®é£¾å­ã®èª­ã¿å–ã‚Š
 		if ((OBJECT_GET_CELL(&accessor)!=KEYWORD_PRIVATE)&&
 			(OBJECT_GET_CELL(&accessor)!=KEYWORD_PUBLIC))
 			return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, form);
@@ -1118,7 +1118,7 @@ static VM_RET top_deflink(tPVM vm, const tINT id, tPOBJECT form, tPOBJECT ret)
 	OBJECT_SET_CONS(&tmp, profile_list);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
 	if (OBJECT_IS_CONS(&lambda_list)) {
-		// lambda-list¤Î¸¡ºº¤È°ú¿ô¤Î¿ôµÚ¤Órest¤ÎÍ­Ìµ¤ÎÆÉ¤ß¼è¤ê
+		// lambda-listã®æ¤œæŸ»ã¨å¼•æ•°ã®æ•°åŠã³restã®æœ‰ç„¡ã®èª­ã¿å–ã‚Š
 		tPCELL pp;
 		rest=tFALSE;
 		n=0;

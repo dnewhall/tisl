@@ -417,7 +417,7 @@ static void t3_read_argument_2(tPCELL* head, tPOBJECT arg1, tPOBJECT arg2);
 
 ///////////////////
 
-// ¥³¡¼¥É¥ê¥¹¥È¤«¤é´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤òºîÀ®¤¹¤ë¡¥
+// ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã‹ã‚‰é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹ï¼
 VM_RET translate_pass3(tPVM vm, tPCELL code_list, tPCELL* function)
 {
 	VM_RET ret;
@@ -464,13 +464,13 @@ static VM_RET t3_clist_to_function(tPVM vm, tPCELL clist, tPCELL* function)
 {
 	tOBJECT tmp;
 	tINT size=0;
-	// ¥³¡¼¥É¥µ¥¤¥º¤Î·×»»
+	// ã‚³ãƒ¼ãƒ‰ã‚µã‚¤ã‚ºã®è¨ˆç®—
 	if (t3_code_list_get_size(vm, clist, &size)) return VM_ERROR;
-	// ´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤ÎºîÀ®
+	// é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
 	if (function_create(vm, 0, size, code_list_get_max_sp(clist), vm_get_current_package(vm), function)) return VM_ERROR;
 	OBJECT_SET_FUNCTION(&tmp, *function);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
-	// Ì¿Îá¤Î½ñ¤­¹ş¤ß
+	// å‘½ä»¤ã®æ›¸ãè¾¼ã¿
 	if (t3_code_list_write_code(vm, clist, *function, size-CODE_SIZE_RET)) { vm_pop(vm); return VM_ERROR; }
 	vm_pop(vm);
 	return VM_OK;
@@ -483,14 +483,14 @@ static VM_RET t3_flist_to_function(tPVM vm, tPCELL flist, tPCELL* function)
 	tPCELL clist, plist;
 	clist=function_list_get_code_list(flist);
 	plist=function_list_get_parameter_list(flist);
-	// ¥³¡¼¥É¥µ¥¤¥º¤Î·×»»
+	// ã‚³ãƒ¼ãƒ‰ã‚µã‚¤ã‚ºã®è¨ˆç®—
 	if (t3_code_list_get_size(vm, clist, &size)) return VM_ERROR;
-	// ´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤ÎºîÀ®
+	// é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
 	if (function_create(vm, plist, size, code_list_get_max_sp(clist), vm_get_current_package(vm), function)) return VM_ERROR;
 	function_list_set_function(flist, *function);
 	OBJECT_SET_FUNCTION(&tmp, *function);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
-	// Ì¿Îá¤Î½ñ¤­¹ş¤ß
+	// å‘½ä»¤ã®æ›¸ãè¾¼ã¿
 	if (t3_code_list_write_code(vm, clist, *function, size-CODE_SIZE_RET)) { vm_pop(vm); return VM_ERROR; }
 	vm_pop(vm);
 	return VM_OK;
@@ -635,7 +635,7 @@ static VM_RET t3_w_push_object(tPVM vm, tPCELL clist, const tINT code, tPCELL* h
 	tOBJECT obj;
 	void* procedure;
 	tINT jmp;
-	// °ú¿ô¤ÎÆÉ¹ş¤ß
+	// å¼•æ•°ã®èª­è¾¼ã¿
 	t3_read_argument_1(head, &obj);
 
 	switch (OBJECT_GET_TYPE(&obj)) {
@@ -681,7 +681,7 @@ static VM_RET t3_w_type_2(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, 
 {
 	tOBJECT obj;
 	tINT jmp;
-	// °ú¿ô¤ÎÆÉ¹ş¤ß
+	// å¼•æ•°ã®èª­è¾¼ã¿
 	t3_read_argument_1(head, &obj);
 
 	if (t3_w_vm_copy(vm, function, pc)) return VM_ERROR;
@@ -697,7 +697,7 @@ static VM_RET t3_w_type_2_(tPVM vm, tPCELL clist, const tINT code, tPCELL* head,
 {
 	tOBJECT obj;
 	tINT jmp;
-	// °ú¿ô¤ÎÆÉ¹ş¤ß
+	// å¼•æ•°ã®èª­è¾¼ã¿
 	t3_read_argument_1(head, &obj);
 	if (function_add_use_object(vm, function, &obj)) return VM_ERROR;
 
@@ -729,7 +729,7 @@ static VM_RET t3_w_type_3(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, 
 {
 	tOBJECT op1, op2;
 	tINT jmp;
-	// °ú¿ô¤ÎÆÉ¹ş¤ß
+	// å¼•æ•°ã®èª­è¾¼ã¿
 	t3_read_argument_2(head, &op1, &op2);
 
 	if (t3_w_vm_copy(vm, function, pc)) return VM_ERROR;
@@ -902,8 +902,8 @@ static VM_RET t3_w_call_local_tail(tPVM vm, tPCELL clist, const tINT code, tPCEL
 }
 
 // iiRET
-// ¥³¡¼¥ÉÀ¸À®Éô¤ÇºÇ¸å¤Ëret¤ò¤Ä¤±¤ë¤Î¤Ç ¤Ê¤Ë¤â¤¹¤ë¤³¤È¤Ê¤¤¤Ï¤º
-// ¥³¡¼¥É½ªÎ»¤òÉ½¤¹ÌçÈÖ¡©
+// ã‚³ãƒ¼ãƒ‰ç”Ÿæˆéƒ¨ã§æœ€å¾Œã«retã‚’ã¤ã‘ã‚‹ã®ã§ ãªã«ã‚‚ã™ã‚‹ã“ã¨ãªã„ã¯ãš
+// ã‚³ãƒ¼ãƒ‰çµ‚äº†ã‚’è¡¨ã™é–€ç•ªï¼Ÿ
 static VM_RET t3_s_ret(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, tINT* size)
 {
 	code_list_increment_head(head);
@@ -994,13 +994,13 @@ static VM_RET t3_s_labels(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, 
 		tPCELL clist, plist, flist, func;
 		code_list_increment_head(head);
 		cons_get_car(*head, &obj);
-		// ¥µ¥¤¥º¤Î·×»»¤È¥³¡¼¥ÉÉôÊ¬¤Î¶õ¤Î´Ø¿ô¤ÎºîÀ®
+		// ã‚µã‚¤ã‚ºã®è¨ˆç®—ã¨ã‚³ãƒ¼ãƒ‰éƒ¨åˆ†ã®ç©ºã®é–¢æ•°ã®ä½œæˆ
 		flist=OBJECT_GET_CELL(&obj);
 		clist=function_list_get_code_list(flist);
 		plist=function_list_get_parameter_list(flist);
-		// ¥³¡¼¥É¥µ¥¤¥º¤Î·×»»
+		// ã‚³ãƒ¼ãƒ‰ã‚µã‚¤ã‚ºã®è¨ˆç®—
 		if (t3_code_list_get_size(vm, clist, &s)) return VM_ERROR;
-		// ´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤ÎºîÀ®
+		// é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
 		if (function_create(vm, plist, s, code_list_get_max_sp(clist), vm_get_current_package(vm), &func)) return VM_ERROR;
 		function_list_set_function(flist, func);
 	}
@@ -1017,7 +1017,7 @@ static VM_RET t3_w_labels(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, 
 {
 	tOBJECT nlist, obj;
 	tINT i, n, jmp;
-	// °ú¿ô¤Î¼èÆÀ¤È¶É½ê´Ø¿ô¤ÎÊÑ´¹
+	// å¼•æ•°ã®å–å¾—ã¨å±€æ‰€é–¢æ•°ã®å¤‰æ›
 	code_list_increment_head(head);
 	cons_get_car(*head, &nlist);
 	cons_get_car(OBJECT_GET_CELL(&nlist), &obj);
@@ -1146,9 +1146,9 @@ static VM_RET t3_w_dynamic_let(tPVM vm, tPCELL clist, const tINT ocde, tPCELL* h
 static VM_RET t3_s_if(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, tINT* size)
 {
 	tOBJECT then_clist, else_clist;
-	// °ú¿ô¤ÎÆÉ¹ş¤ß
+	// å¼•æ•°ã®èª­è¾¼ã¿
 	t3_read_argument_2(head, &then_clist, &else_clist);
-	// ¥µ¥¤¥º¤Î·×»»
+	// ã‚µã‚¤ã‚ºã®è¨ˆç®—
 	*size+=s_POP_REG+
 		   s_PUSH_REG+
 		   s_MOV_PTR_REG_TO_REG+
@@ -1169,9 +1169,9 @@ static VM_RET t3_w_if(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, tPCE
 {
 	tOBJECT then_clist, else_clist;
 	tINT then_jmp, end_jmp, then_dest, end_dest;
-	// °ú¿ô¤ÎÆÉ¹ş¤ß
+	// å¼•æ•°ã®èª­è¾¼ã¿
 	t3_read_argument_2(head, &then_clist, &else_clist);
-	// ¥³¡¼¥É¤ÎÀ¸À®
+	// ã‚³ãƒ¼ãƒ‰ã®ç”Ÿæˆ
 	if (opcode_pop_reg(vm, function, pc, reg_EAX)||
 		opcode_push_reg(vm, function, pc, reg_EAX)||
 		opcode_mov_ptr_eax_to_ecx(vm, function, pc)||
@@ -1233,7 +1233,7 @@ static VM_RET t3_w_case(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, tP
 	tINT i, n, start, end_dest, jz;
 	tOBJECT obj, keylist, form;
 	tPCELL p;
-	// iiCASE ¤È iiCASE_USING ¤Î¾ì¹ç¤ï¤±
+	// iiCASE ã¨ iiCASE_USING ã®å ´åˆã‚ã‘
 	if (code==iiCASE) {
 		check=op_case_check;
 		result=op_case_result;
@@ -1438,7 +1438,7 @@ static VM_RET t3_w_while(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, t
 static VM_RET t3_s_for(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, tINT* size)
 {
 	tOBJECT plist, endtest, result, iteration;
-	// °ú¿ô¤ÎÆÉ¤ß¼è¤ê
+	// å¼•æ•°ã®èª­ã¿å–ã‚Š
 	code_list_increment_head(head);
 	cons_get_car(*head, &plist);
 	code_list_increment_head(head);
@@ -1492,7 +1492,7 @@ static VM_RET t3_w_for(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, tPC
 	void *for_init, *for_test, *for_iteration, *for_result;
 	tINT loop_dest, result_dest, ret_dest, result_jcc, loop_jmp, ret_jcc, ret_jcc_2, n;
 
-	// °ú¿ô¤ÎÆÉ¤ß¼è¤ê
+	// å¼•æ•°ã®èª­ã¿å–ã‚Š
 	code_list_increment_head(head);
 	cons_get_car(*head, &plist);
 	code_list_increment_head(head);
@@ -1588,13 +1588,13 @@ static VM_RET t3_w_block(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, t
 	tOBJECT block, tag;
 	tPCELL f;
 	tINT jmp;
-	// °ú¿ô¤ÎÆÉ¹ş¤ß
+	// å¼•æ•°ã®èª­è¾¼ã¿
 	t3_read_argument_2(head, &block, &tag);
-	// ´Ø¿ô¤ÎºîÀ®
+	// é–¢æ•°ã®ä½œæˆ
 	if (t3_clist_to_function(vm, OBJECT_GET_CELL(&block), &f)) return VM_ERROR;
 	cell_to_object(f, &block);
 	if (function_add_use_object(vm, function, &block)) return VM_ERROR;
-	// ¥³¡¼¥É¤ÎÀ¸À®
+	// ã‚³ãƒ¼ãƒ‰ã®ç”Ÿæˆ
 	if (t3_w_vm_copy(vm, function, pc)||
 		opcode_push_immediate(vm, function, pc, (void*)OBJECT_GET_CELL(&tag))||
 		opcode_push_immediate(vm, function, pc, (void*)OBJECT_GET_CELL(&block))||
@@ -1881,7 +1881,7 @@ static VM_RET t3_w_type_f(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, 
 	tINT jmp;
 
 	t3_read_argument_1(head, &body);
-	// ´Ø¿ô¤ÎºîÀ®
+	// é–¢æ•°ã®ä½œæˆ
 	if (t3_clist_to_function(vm, OBJECT_GET_CELL(&body), &f)) return VM_ERROR;
 	cell_to_object(f, &obj);
 	if (function_add_use_object(vm, function, &obj)) return VM_ERROR;

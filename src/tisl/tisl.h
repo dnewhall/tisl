@@ -20,9 +20,9 @@ struct tTISL_INIT_ARGS_ {
 };
 
 /////////////////////////////
-// TIN_INIT_ARGS¤«¤éTISL_INIT_ARGS¤òºîÀ®¤¹¤ë
+// TIN_INIT_ARGSã‹ã‚‰TISL_INIT_ARGSã‚’ä½œæˆã™ã‚‹
 void set_tisl_init_args(tTISL_INIT_ARGS* tisl_args, TNI_INIT_ARGS* tni_args);
-// TISL¤ÎÀ¸À® ¤È main VM¤ÎÀ¸À®
+// TISLã®ç”Ÿæˆ ã¨ main VMã®ç”Ÿæˆ
 tBOOL create_tisl(tPTISL* tisl, tTISL_INIT_ARGS* args, tVM_INIT_ARGS* vm_args);
 tBOOL free_tisl(tPTISL tisl);
 
@@ -35,23 +35,23 @@ void tisl_set_vm_init_args(tPTISL tisl, tVM_INIT_ARGS* vm_args);
 tPVM tisl_get_main_vm(tPTISL tisl);
 // top package
 tPCELL tisl_get_top_package(tPTISL tisl);
-// Ê¸»úÎó
+// æ–‡å­—åˆ—
 VM_RET tisl_get_string(tPTISL tisl, tPVM vm, tCSTRING string, tPCELL* cell);
 VM_RET tisl_remove_string(tPTISL tisl, tPVM vm, tPCELL string);
-// µ­¹æ
+// è¨˜å·
 VM_RET tisl_get_symbol(tPTISL tisl, tPVM vm, tPCELL list, const tBOOL complete, tPCELL* cell);
 VM_RET tisl_get_simple_symbol(tPTISL tisl, tPVM vm, tPCELL string, const tBOOL complete, tPCELL* cell);
 VM_RET tisl_remove_symbol(tPTISL tisl, tPVM vm, tPCELL symbol);
 VM_RET tisl_gensym(tPTISL tisl, tPVM vm, tPCELL* cell);
-// ¥Õ¥¡¥¤¥ë¥¹¥È¥ê¡¼¥à
+// ãƒ•ã‚¡ã‚¤ãƒ«ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 VM_RET tisl_get_file_stream(tPTISL tisl, tPVM vm, tPCELL name, const tINT flags, tPCELL* cell);
-// Â«Çû
+// æŸç¸›
 VM_RET tisl_get_bind(tPTISL tisl, tPVM vm, tPCELL package, tPCELL name, tPCELL* bind);
-// É¸½à¥¹¥È¥ê¡¼¥à
+// æ¨™æº–ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 void tisl_get_standard_input(tPTISL tisl, tPOBJECT stream);
 void tisl_get_standard_output(tPTISL tisl, tPOBJECT stream);
 void tisl_get_error_output(tPTISL tisl, tPOBJECT stream);
-// Â«Çû
+// æŸç¸›
 #define NAMESPACE_VARIABLE		0
 #define NAMESPACE_FUNCTION		1
 #define NAMESPACE_DYNAMIC		2
@@ -81,11 +81,11 @@ tPCELL tisl_get_environment(tPTISL tisl);
 void tisl_set_interface(tPTISL tisl, TISL* i);
 TISL* tisl_get_interface(tPTISL tisl);
 
-// ctrl-C¤Ë¤è¤ëÃæÃÇ
+// ctrl-Cã«ã‚ˆã‚‹ä¸­æ–­
 void tisl_signal_user_interrupt(int sig);
 int tisl_get_user_interrupt_flag(void);
 void tisl_reset_user_interrupt_flag(void);
-// ¥æ¡¼¥¶¤Ë¤è¤ëÃæÃÇ¤Î¸¡ºº¤È
+// ãƒ¦ãƒ¼ã‚¶ã«ã‚ˆã‚‹ä¸­æ–­ã®æ¤œæŸ»ã¨
 VM_RET vm_check_tisl_state(tPVM vm);
 
 #define TISL_STATE_INITIALIZATION	0

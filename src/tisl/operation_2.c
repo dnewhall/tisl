@@ -451,7 +451,7 @@ VM_RET OPERATION_CALL op_reverse(tPVM vm)
 			tmp=*vm->SP;
 			if (cons_create_(vm, &pp, &obj, &tmp)) return VM_ERROR;
 			OBJECT_SET_CONS(vm->SP, pp);
-			// ¼¡
+			// æ¬¡
 			cons_get_cdr(p, &obj);
 			if (!OBJECT_IS_NIL(&obj)) {
 				if (!OBJECT_IS_CONS(&obj)) {
@@ -506,7 +506,7 @@ VM_RET OPERATION_CALL op_append(tINT anum, tPVM vm)
 			}
 		}
 		vm_pop(vm);
-		// ºÇ¸å¤ÎÍ×ÁÇ
+		// æœ€å¾Œã®è¦ç´ 
 		if (OBJECT_IS_CONS(vm->SP)) {
 			cons_set_cdr(cons_get_car_cons(p), vm->SP);
 		} else if (!OBJECT_IS_NIL(vm->SP)) {
@@ -655,7 +655,7 @@ VM_RET OPERATION_CALL op_maplist(tINT anum, tPVM vm)
 				cons_get_cdr(OBJECT_GET_CELL(vm->SP), vm->stack+sp-i);
 			} else {
 				obj=*(vm->stack+sp-i);
-				// map¤Î½ªÎ»Ìá¤êÃÍ¤ÎºîÀ®
+				// mapã®çµ‚äº†æˆ»ã‚Šå€¤ã®ä½œæˆ
 				if (c==0) {
 					if (!OBJECT_IS_NIL(&obj)) return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_LIST, &obj);
 					vm->SP=vm->stack+sp-n;
@@ -850,7 +850,7 @@ VM_RET OPERATION_CALL op_assoc(tPVM vm)
 				else if (OBJECT_IS_NIL(&obj)) {
 					*--(vm->SP)=nil;
 					p=0;
-				} else {// ¥É¥Ã¥È¥ê¥¹¥È
+				} else {// ãƒ‰ãƒƒãƒˆãƒªã‚¹ãƒˆ
 					tOBJECT tmp=*vm->SP;
 					return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_LIST, &tmp);
 				}
@@ -927,7 +927,7 @@ VM_RET OPERATION_CALL op_aref(tINT anum, tPVM vm)
 			*vm->SP=obj;
 			return VM_OK;
 		} else if (OBJECT_IS_VECTOR(&obj)) {
-			// ¥Ù¥¯¥¿
+			// ãƒ™ã‚¯ã‚¿
 			if (anum!=2) return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
 			if (!OBJECT_IS_INTEGER(vm->SP)) {
 				tOBJECT tmp=*vm->SP;
@@ -936,7 +936,7 @@ VM_RET OPERATION_CALL op_aref(tINT anum, tPVM vm)
 			vm->SP--;
 			return vector_get_object(vm, OBJECT_GET_CELL(vm->SP), OBJECT_GET_INTEGER(vm->SP+1), vm->SP);
 		} else if (OBJECT_IS_STRING(&obj)) {
-			// Ê¸»úÎó
+			// æ–‡å­—åˆ—
 			if (anum!=2) return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
 			if (!OBJECT_IS_INTEGER(vm->SP)) {
 				tOBJECT tmp=*vm->SP;
@@ -1291,26 +1291,26 @@ VM_RET OPERATION_CALL op_string_append(tINT anum, tPVM vm)
 {
 	tINT i, length;
 	tPCELL string;
-	// °ú¿ô¤Î·¿¸¡ºº¤ÈÄ¹¤µ¤Î·×»»
+	// å¼•æ•°ã®å‹æ¤œæŸ»ã¨é•·ã•ã®è¨ˆç®—
 	length=0;
 	for (i=1; i<=anum; i++) {
 		if (!OBJECT_IS_STRING(vm->SP-anum+i)) {
 			tOBJECT tmp=*(vm->SP-anum+i);
 			return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_STRING, &tmp);
 		}
-		length+=string_get_length(OBJECT_GET_CELL(vm->SP-anum+i))-1;// NULLÊ¸»ú½ü¤¯
+		length+=string_get_length(OBJECT_GET_CELL(vm->SP-anum+i))-1;// NULLæ–‡å­—é™¤ã
 	}
-	//length++;create_string_2¤Î¤Û¤¦¤Ç +1 ¤·¤Æ¤ë¤Î¤Ç¤¤¤é¤Ê¤¤
-	// ¥Ç¡¼¥¿Ê¸»úÎóºîÀ®
+	//length++;create_string_2ã®ã»ã†ã§ +1 ã—ã¦ã‚‹ã®ã§ã„ã‚‰ãªã„
+	// ãƒ‡ãƒ¼ã‚¿æ–‡å­—åˆ—ä½œæˆ
 	if (string_create_2(vm, length, ' ', &string)) return VM_ERROR;
-	// Ê¸»ú¤Î¥³¥Ô¡¼
+	// æ–‡å­—ã®ã‚³ãƒ”ãƒ¼
 	length=0;
 	for (i=1; i<=anum; i++) {
 		tPCELL p=OBJECT_GET_CELL(vm->SP-anum+i);
 		memcpy(string_get_data(string)+length, string_get_string(p), string_get_length(p)-1);
 		length+=string_get_length(p)-1;
 	}
-	// ¸å½èÍı
+	// å¾Œå‡¦ç†
 	vm->SP-=anum-1;
 	OBJECT_SET_STRING(vm->SP, string);
 	return VM_OK;
@@ -1330,9 +1330,9 @@ VM_RET OPERATION_CALL op_length(tPVM vm)
 		len=vector_get_length(OBJECT_GET_CELL(vm->SP));
 		break;
 	case OBJECT_STRING:
-		len=string_get_length(OBJECT_GET_CELL(vm->SP))-1;// NULLÊ¸»ú¤Î¤Ö¤ó
+		len=string_get_length(OBJECT_GET_CELL(vm->SP))-1;// NULLæ–‡å­—ã®ã¶ã‚“
 		break;
-	default:// expected class¤Ï¡©<sequence>??
+	default:// expected classã¯ï¼Ÿ<sequence>??
 		{
 			tOBJECT tmp=*vm->SP;
 			return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_LIST, &tmp);
@@ -1366,7 +1366,7 @@ VM_RET OPERATION_CALL op_elt(tPVM vm)
 	case OBJECT_STRING:
 		if (string_get_character(vm, OBJECT_GET_CELL(vm->SP-1), i, &obj)) return VM_ERROR;
 		break;
-	default:// expected class¤Ï¡©<sequence>??
+	default:// expected classã¯ï¼Ÿ<sequence>??
 		{
 			tOBJECT tmp=*vm->SP;
 			return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_LIST, &tmp);
@@ -1455,7 +1455,7 @@ VM_RET OPERATION_CALL op_subseq(tPVM vm)
 			OBJECT_SET_STRING(&obj, p);
 		}
 		break;
-	default:// expected class¤Ï¡©<sequence>??
+	default:// expected classã¯ï¼Ÿ<sequence>??
 		{
 			tOBJECT tmp=*vm->SP;
 			return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_LIST, &tmp);
@@ -1719,7 +1719,7 @@ static VM_RET po_read_(tPVM vm, const tINT anum)
 {
 	tOBJECT obj;
 	switch (anum) {
-	case 0:// input-stream É¸½àÆşÎÏ¥¹¥È¥ê¡¼¥à
+	case 0:// input-stream æ¨™æº–å…¥åŠ›ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 		cell_to_object(vm_get_standard_input(vm), &obj);
 		if (vm_push(vm, &obj)) return VM_ERROR;
 	case 1:// eos-error-p t
@@ -1772,17 +1772,17 @@ VM_RET OPERATION_CALL op_read(tINT anum, tPVM vm)
 		}
 		sp=vm->SP-vm->stack;
 		if (read_form(vm, stream, &obj)) {
-			// Àµ¾ï½ªÎ»¤·¤Ê¤«¤Ã¤¿
+			// æ­£å¸¸çµ‚äº†ã—ãªã‹ã£ãŸ
 			if (vm_last_condition_is_eos_error(vm)) {
 				vm->SP=vm->stack+sp-2;
 				*vm->SP=*(vm->stack+sp);
 				vm_set_last_condition_ok(vm);
-			} else {// ÊÌ¤ÎÎã³°
+			} else {// åˆ¥ã®ä¾‹å¤–
 				vm_reset_reader_eos_error(vm);
 				return VM_ERROR;
 			}
-		} else {// Àµ¾ï¤Ëread¤¬½ªÎ»¤·¤¿
-			vm->SP=vm->stack+sp-2;// ¤¤¤é¤Ê¤¤¤Î¤«¡©
+		} else {// æ­£å¸¸ã«readãŒçµ‚äº†ã—ãŸ
+			vm->SP=vm->stack+sp-2;// ã„ã‚‰ãªã„ã®ã‹ï¼Ÿ
 			*vm->SP=obj;
 		}
 		if (old)
@@ -1829,17 +1829,17 @@ VM_RET OPERATION_CALL op_read_char(tINT anum, tPVM vm)
 		}
 		sp=vm->SP-vm->stack;
 		if (read_char(vm, stream, &c)) {
-			// Àµ¾ï½ªÎ»¤·¤Ê¤«¤Ã¤¿
+			// æ­£å¸¸çµ‚äº†ã—ãªã‹ã£ãŸ
 			if (vm_last_condition_is_eos_error(vm)) {
 				vm->SP=vm->stack+sp-2;
 				*vm->SP=*(vm->stack+sp);
 				vm_set_last_condition_ok(vm);
-			} else {// ÊÌ¤ÎÎã³°
+			} else {// åˆ¥ã®ä¾‹å¤–
 				vm_reset_reader_eos_error(vm);
 				return VM_ERROR;
 			}
-		} else {// Àµ¾ï¤Ëread¤¬½ªÎ»¤·¤¿
-			vm->SP=vm->stack+sp-2;// ¤¤¤é¤Ê¤¤¤Î¤«¡©
+		} else {// æ­£å¸¸ã«readãŒçµ‚äº†ã—ãŸ
+			vm->SP=vm->stack+sp-2;// ã„ã‚‰ãªã„ã®ã‹ï¼Ÿ
 			OBJECT_SET_CHARACTER(vm->SP, c);
 		}
 		if (old)
@@ -1886,17 +1886,17 @@ VM_RET OPERATION_CALL op_preview_char(tINT anum, tPVM vm)
 		}
 		sp=vm->SP-vm->stack;
 		if (preview_char(vm, stream, &c)) {
-			// Àµ¾ï½ªÎ»¤·¤Ê¤«¤Ã¤¿
+			// æ­£å¸¸çµ‚äº†ã—ãªã‹ã£ãŸ
 			if (vm_last_condition_is_eos_error(vm)) {
 				vm->SP=vm->stack+sp-2;
 				*vm->SP=*(vm->stack+sp);
 				vm_set_last_condition_ok(vm);
-			} else {// ÊÌ¤ÎÎã³°
+			} else {// åˆ¥ã®ä¾‹å¤–
 				vm_reset_reader_eos_error(vm);
 				return VM_ERROR;
 			}
-		} else {// Àµ¾ï¤Ëread¤¬½ªÎ»¤·¤¿
-			vm->SP=vm->stack+sp-2;// ¤¤¤é¤Ê¤¤¤Î¤«¡©
+		} else {// æ­£å¸¸ã«readãŒçµ‚äº†ã—ãŸ
+			vm->SP=vm->stack+sp-2;// ã„ã‚‰ãªã„ã®ã‹ï¼Ÿ
 			OBJECT_SET_CHARACTER(vm->SP, c);
 		}
 		if (old)
@@ -1942,17 +1942,17 @@ VM_RET OPERATION_CALL op_read_line(tINT anum, tPVM vm)
 		}
 		sp=vm->SP-vm->stack;
 		if (read_line(vm, stream, &string)) {
-			// Àµ¾ï½ªÎ»¤·¤Ê¤«¤Ã¤¿
+			// æ­£å¸¸çµ‚äº†ã—ãªã‹ã£ãŸ
 			if (vm_last_condition_is_eos_error(vm)) {
 				vm->SP=vm->stack+sp-2;
 				*vm->SP=*(vm->stack+sp);
 				vm_set_last_condition_ok(vm);
-			} else {// ÊÌ¤ÎÎã³°
+			} else {// åˆ¥ã®ä¾‹å¤–
 				vm_reset_reader_eos_error(vm);
 				return VM_ERROR;
 			}
-		} else {// Àµ¾ï¤Ëread¤¬½ªÎ»¤·¤¿
-			vm->SP=vm->stack+sp-2;// ¤¤¤é¤Ê¤¤¤Î¤«¡©
+		} else {// æ­£å¸¸ã«readãŒçµ‚äº†ã—ãŸ
+			vm->SP=vm->stack+sp-2;// ã„ã‚‰ãªã„ã®ã‹ï¼Ÿ
 			OBJECT_SET_STRING(vm->SP, string);
 		}
 		if (old)
@@ -1997,7 +1997,7 @@ VM_RET OPERATION_CALL op_stream_ready_p(tPVM vm)
 VM_RET OPERATION_CALL op_format(tINT anum, tPVM vm)
 {
 	tPCELL p, stream;
-	if (anum!=2) {// °ú¿ô¤Î¥ê¥¹¥È¤òºîÀ®
+	if (anum!=2) {// å¼•æ•°ã®ãƒªã‚¹ãƒˆã‚’ä½œæˆ
 		tINT i;
 		tOBJECT tmp, tmp2;
 		tmp=*vm->SP;
@@ -2014,7 +2014,7 @@ VM_RET OPERATION_CALL op_format(tINT anum, tPVM vm)
 		if (vm_push(vm, &nil)) return VM_ERROR;
 		p=0;
 	}
-	// ¥¹¥È¥ê¡¼¥à¤Î¸¡ºº
+	// ã‚¹ãƒˆãƒªãƒ¼ãƒ ã®æ¤œæŸ»
 	if (OBJECT_IS_STRING_STREAM(vm->SP-2)) {
 		stream=OBJECT_GET_CELL(vm->SP-2);
 		if (!string_stream_is_output(stream)) {
@@ -2258,9 +2258,9 @@ VM_RET OPERATION_CALL op_format_tab(tPVM vm)
 
 VM_RET OPERATION_CALL op_read_byte(tINT anum, tPVM vm)
 {
-	// file¤ò³«¤¯¤È¤­¤Ëtext-mode¤Ë¤Ê¤Ã¤Æ¤¤¤ë¤Î¤Ç²ş¹ÔÊ¸»ú¤Ê¤É¤ÇÊäÀµ¤¬¤Ï¤¤¤Ã¤Æ¤¤¤ë
-	// file¤ò³«¤¯¤È¤­¤Ëbinary-mode¤Ç¤Ò¤é¤¤¤Æ¼«Ê¬¤Ç²ş¹ÔÊ¸»úÅù¤ÎÊäÀµ¤ò¤ª¤³¤Ê¤¦¤Ù¤­
-	// ¤¢¤È¤Ç!!!/*!!!*/
+	// fileã‚’é–‹ãã¨ãã«text-modeã«ãªã£ã¦ã„ã‚‹ã®ã§æ”¹è¡Œæ–‡å­—ãªã©ã§è£œæ­£ãŒã¯ã„ã£ã¦ã„ã‚‹
+	// fileã‚’é–‹ãã¨ãã«binary-modeã§ã²ã‚‰ã„ã¦è‡ªåˆ†ã§æ”¹è¡Œæ–‡å­—ç­‰ã®è£œæ­£ã‚’ãŠã“ãªã†ã¹ã
+	// ã‚ã¨ã§!!!/*!!!*/
 	if (po_read_(vm, anum)) return VM_ERROR;
 	{
 		tPCELL stream;
@@ -2293,16 +2293,16 @@ VM_RET OPERATION_CALL op_read_byte(tINT anum, tPVM vm)
 		}
 		sp=vm->SP-vm->stack;
 		if (read_char(vm, stream, &c)) {
-			// Àµ¾ï½ªÎ»¤·¤Ê¤«¤Ã¤¿
+			// æ­£å¸¸çµ‚äº†ã—ãªã‹ã£ãŸ
 			if (vm_last_condition_is_eos_error(vm)) {
 				vm->SP=vm->stack+sp-2;
 				*vm->SP=*(vm->stack+sp);
-			} else {// ÊÌ¤ÎÎã³°
+			} else {// åˆ¥ã®ä¾‹å¤–
 				vm_reset_reader_eos_error(vm);
 				return VM_ERROR;
 			}
-		} else {// Àµ¾ï¤Ëread¤¬½ªÎ»¤·¤¿
-			vm->SP=vm->stack+sp-2;// ¤¤¤é¤Ê¤¤¤Î¤«¡©
+		} else {// æ­£å¸¸ã«readãŒçµ‚äº†ã—ãŸ
+			vm->SP=vm->stack+sp-2;// ã„ã‚‰ãªã„ã®ã‹ï¼Ÿ
 			OBJECT_SET_INTEGER(vm->SP, (tINT)c);
 		}
 		vm_reset_reader_eos_error(vm);
@@ -2415,7 +2415,7 @@ VM_RET OPERATION_CALL op_file_length(tPVM vm)
 		vm->SP--;
 		OBJECT_SET_INTEGER(vm->SP, buf.st_size);
 	}
-#else// nil¤òÊÖ¤¹
+#else// nilã‚’è¿”ã™
 	vm->SP--;
 	OBJECT_SET_NIL(vm->SP);
 #endif
@@ -2485,10 +2485,10 @@ VM_RET OPERATION_CALL op_cerror(tINT anum, tPVM vm)
 	{
 		tOBJECT tmp=*(vm->SP-1);
 		if (signal_simple_error_(vm, OBJECT_GET_CELL(vm->SP-2), list, &tmp)) {
-			// Îã³°¤Î¤Ş¤Ş
+			// ä¾‹å¤–ã®ã¾ã¾
 			return VM_ERROR;
 		} else {
-			// continue-condition¤ÇÌá¤Ã¤Æ¤­¤¿
+			// continue-conditionã§æˆ»ã£ã¦ããŸ
 			vm->SP=sp-anum+1;
 			vm_get_throw_object(vm, vm->SP);
 			vm_clear_throw_object(vm);
@@ -2512,10 +2512,10 @@ VM_RET OPERATION_CALL op_signal_condition(tINT anum, tPVM vm)
 			OBJECT_SET_STRING(vm->SP, string_continue_condition);
 		tmp=*vm->SP;
 		if (signal_condition_(vm, OBJECT_GET_CELL(vm->SP-1), &tmp)) {
-			// °Û¾ï½ªÎ»¤·¤¿
+			// ç•°å¸¸çµ‚äº†ã—ãŸ
 			return VM_ERROR;
 		} else {
-			// Àµ¾ï½ªÎ»¤·¤¿
+			// æ­£å¸¸çµ‚äº†ã—ãŸ
 			vm->SP=sp-1;
 			*vm->SP=*sp;
 			return VM_OK;
@@ -2678,7 +2678,7 @@ VM_RET OPERATION_CALL op_identity(tINT anum, tPVM vm)
 VM_RET OPERATION_CALL op_get_universal_time(tINT anum, tPVM vm)
 {
 	time_t t;
-	const tINT d90_97 = 0;// 70*365*24*6*6¤°¤é¤¤¡© 32bitÉä¹æÉÕ¤­À°¿ô¤À¤È¥ª¡¼¥Ğ¡¼¥Õ¥í¡¼
+	const tINT d90_97 = 0;// 70*365*24*6*6ãã‚‰ã„ï¼Ÿ 32bitç¬¦å·ä»˜ãæ•´æ•°ã ã¨ã‚ªãƒ¼ãƒãƒ¼ãƒ•ãƒ­ãƒ¼
 	if (anum) return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
 	vm->SP++;
 	OBJECT_SET_INTEGER(vm->SP, (tINT)time(&t)+d90_97);

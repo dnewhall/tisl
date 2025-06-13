@@ -139,7 +139,7 @@ VM_RET function_call(tPVM vm, tPCELL function, tPCELL environment, tPOBJECT valu
 //	tPOBJECT last_invoke_point;
 	VM_RET ret;
 
-	// ���楹���å���ƻ뤹�٤��Ǥϡ�/*!!!*/
+	// 制御スタックを監視すべきでは？/*!!!*/
 	vm->function_call_n++;
 	if (vm->function_call_n>VM_MAX_FUNCTION_CALL) { vm->function_call_n--; return signal_condition(vm, TISL_ERROR_STACK_OVERFLOW); }
 
@@ -177,7 +177,7 @@ VM_RET function_call(tPVM vm, tPCELL function, tPCELL environment, tPOBJECT valu
 
 VM_RET function_call_(tPVM vm, tPCELL function, tPOBJECT value)
 {
-	// �ؿ���ؿ��θƤӽФ�VM�δؿ�������ѹ������ʤ��С������
+	// 関数内関数の呼び出しVMの関数情報は変更させないバージョン
 	if (function_call__(vm, function_get_code_head(function))) {
 		OBJECT_SET_UNBOUND(value);
 		return VM_ERROR;
@@ -222,7 +222,7 @@ tBOOL function_is_heap(tPCELL function)
 	return FUNCTION_GET_HEAP(function) ? tTRUE : tFALSE;
 }
 
-// �ؿ��λ��Ѥ��륪�֥������Ȥ���Ͽ ��˴ؿ��ˤʤ�Ϥ�
+// 関数の使用するオブジェクトの登録 主に関数になるはず
 VM_RET function_add_use_object(tPVM vm, tPCELL function, tPOBJECT obj)
 {
 	tPCELL p;

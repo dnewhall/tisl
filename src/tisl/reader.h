@@ -7,19 +7,19 @@
 #define TISL_READER_H
 
 // VM_RET read_char(tPVM vm, tPCELL stream, tPCHAR c)
-// vm��ǡ�stream���ϥ��ȥ꡼�फ��1ʸ���ɹ��ߤ�Ԥ���
-// �㳰��ȯ���������ϡ�VM_ERROR���֤���
+// vm上で，stream入力ストリームから1文字読込みを行う．
+// 例外が発生した場合は，VM_ERRORを返す．
 VM_RET read_char(tPVM vm, tPCELL stream, tPCHAR c);
 
 // VM_RET preview_char(tPVM vm, tPCELL stream, tPCHAR c)
-// vm��ǡ�stream���ϥ��ȥ꡼�फ��1ʸ�����ɤߤ�Ԥ���
-// �㳰��ȯ���������ϡ�VM_ERROR���֤���
+// vm上で，stream入力ストリームから1文字先読みを行う．
+// 例外が発生した場合は，VM_ERRORを返す．
 VM_RET preview_char(tPVM vm, tPCELL stream, tPCHAR c);
 
 // VM_RET read_form(tPVM vm, tPCELL stream, tPOBJECT obj)
-// vm��� stream���ϥ��ȥ꡼�फ���ɹ��ߤ�Ԥ���
-// ISLISP���֥������Ȥ��������obj���֤���
-// �㳰����ȯ��������硤VM_ERROR���֤���
+// vm上で stream入力ストリームから読込みを行い，
+// ISLISPオブジェクトを作成し，objに返す．
+// 例外等が発生した場合，VM_ERRORを返す．
 VM_RET read_form(tPVM vm, tPCELL stream, tPOBJECT obj);
 //
 VM_RET read_line(tPVM vm, tPCELL stream, tPCELL* string);

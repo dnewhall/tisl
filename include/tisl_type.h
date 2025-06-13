@@ -9,7 +9,7 @@
 #include <limits.h>
 #include <float.h>
 
-// 32bit? ¥İ¥¤¥ó¥¿¤Î¥µ¥¤¥º¤Ë¤½¤í¤¨¤ë¤³¤È
+// 32bit? ãƒã‚¤ãƒ³ã‚¿ã®ã‚µã‚¤ã‚ºã«ãã‚ãˆã‚‹ã“ã¨
 typedef int								tINT;
 typedef unsigned int					tUINT;
 typedef float							tFLOAT;

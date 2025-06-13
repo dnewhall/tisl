@@ -34,7 +34,7 @@ ERROR:
 		vm_get_last_condition(vm, &obj);
 		if (format_object(vm, vm_get_standard_output(vm), &obj)) return;
 		if (format_fresh_line(vm, vm_get_standard_output(vm))) return;
-		// °ì¹Ô¼Î¤Æ¤ë
+		// ä¸€è¡Œæ¨ã¦ã‚‹
 		if (read_line(vm, vm_get_standard_input(vm), &cell)) return ;
 	}
 	goto LOOP;
@@ -50,7 +50,7 @@ TISL_IMPORT_OR_EXPORT void TISLCALL tisl_interpreter_file(TNI* tni, const char* 
 	if (tisl_get_string(tisl, vm, file_name, &name)) return;
 	if (file_stream_create(vm, STREAM_INPUT, name, &stream)) return;
 	cell_to_object(stream, &obj);
-	if (vm_push_temp(vm, &obj)) return;// stream¤ÎÊİÂ¸¤ËÃí°Õ!!!
+	if (vm_push_temp(vm, &obj)) return;// streamã®ä¿å­˜ã«æ³¨æ„!!!
 
 LOOP:
 	vm_clear(vm);
@@ -59,7 +59,7 @@ LOOP:
 	goto LOOP;
 ERROR:
 	file_stream_close(vm, stream);
-	// end-of-stream¤Ç½ªÎ»¤¹¤ë¡©
+	// end-of-streamã§çµ‚äº†ã™ã‚‹ï¼Ÿ
 	vm_pop_temp(vm);
 }
 

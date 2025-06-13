@@ -20,7 +20,7 @@ extern tTRANSLATOR vm_get_translator(tPVM vm);
 
 struct tTRANSLATOR_ {
 	// pass_1
-	// ¶É½êÅª¤ÊÍ­¸úÈÏ°Ï¤ò»ı¤ÄÌ¾Á°»²¾ÈÍÑ¥ê¥¹¥È
+	// å±€æ‰€çš„ãªæœ‰åŠ¹ç¯„å›²ã‚’æŒã¤åå‰å‚ç…§ç”¨ãƒªã‚¹ãƒˆ
 	tPCELL		variable;
 	tPCELL		function;
 	tPCELL		block;
@@ -58,22 +58,22 @@ VM_RET translate(tPVM vm, tPOBJECT form, tPCELL* func)
 	if (!vm_get_translator(vm)->initialization&&
 		translator_initialize(vm)) return VM_ERROR;
 	translator_set_form(vm, form);
-	// ÊÑ´¹ÂĞ¾İ¤ÎÉ¾²Á·Á¼°¤ÎÊİ¸î
+	// å¤‰æ›å¯¾è±¡ã®è©•ä¾¡å½¢å¼ã®ä¿è­·
 	if (vm_push(vm, form)) return VM_ERROR;
-	// ÊÑ´¹1 ÆÃ¼ì±é»»»Ò¤È¥Ş¥¯¥í¤òÅ¸³«¤·¡¤À©¸æ¾ğÊó¤òÈ´¤­½Ğ¤¹¡¥
-	// ¤Ş¤¿¡¤Ì¾Á°¤Î»²¾È¤òÄ´¤Ù¡¤Â¸ºß´ü´Ö¤Î¿äÏÀ¤ò¹Ô¤¦¡¥
+	// å¤‰æ›1 ç‰¹æ®Šæ¼”ç®—å­ã¨ãƒã‚¯ãƒ­ã‚’å±•é–‹ã—ï¼Œåˆ¶å¾¡æƒ…å ±ã‚’æŠœãå‡ºã™ï¼
+	// ã¾ãŸï¼Œåå‰ã®å‚ç…§ã‚’èª¿ã¹ï¼Œå­˜åœ¨æœŸé–“ã®æ¨è«–ã‚’è¡Œã†ï¼
 	if (translate_pass1(vm, form, &code_list)) { vm_pop(vm); return VM_ERROR; }
-	// À¸À®¤µ¤ì¤¿Ãæ´Ö¥³¡¼¥É¥ê¥¹¥È¤ÎÊİ¸î
+	// ç”Ÿæˆã•ã‚ŒãŸä¸­é–“ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã®ä¿è­·
 	cell_to_object(code_list, &obj);
 	if (vm_push(vm, &obj)) { vm_pop(vm); return VM_ERROR; }
-	// ÊÑ´¹2 ºÇ½ªÅª¤Ê¼Â¹Ô¥³¡¼¥É¤È1ÂĞ1¤ËÂĞ±ş¤¹¤ë¥³¡¼¥É¥ê¥¹¥È¤òºîÀ®¤¹¤ë¡¥
-	// Á°¤Î¥Ñ¥¹¤Ç¿äÏÀ¤µ¤ì¤¿Â¸ºß´ü´Ö¤Î¾ğÊó¤«¤é¼Â¹Ô»ş¤ÎÊÑ¿ô¤Î°ÌÃÖ¤ò·èÄê¤·¡¤Ì¿Îá¤ò³ÎÄê¤¹¤ë¡¥
+	// å¤‰æ›2 æœ€çµ‚çš„ãªå®Ÿè¡Œã‚³ãƒ¼ãƒ‰ã¨1å¯¾1ã«å¯¾å¿œã™ã‚‹ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹ï¼
+	// å‰ã®ãƒ‘ã‚¹ã§æ¨è«–ã•ã‚ŒãŸå­˜åœ¨æœŸé–“ã®æƒ…å ±ã‹ã‚‰å®Ÿè¡Œæ™‚ã®å¤‰æ•°ã®ä½ç½®ã‚’æ±ºå®šã—ï¼Œå‘½ä»¤ã‚’ç¢ºå®šã™ã‚‹ï¼
 	if (translate_pass2(vm, code_list)) { vm_pop(vm); vm_pop(vm); return VM_ERROR; }
-	// ÊÌpass¤¬É¬Í×¤ÊºÇÅ¬²½½èÍı¤Ï¤³¤³¤Ç¹Ô¤¦¡¥¸å¤Ç/*!!!*/
-	// ÊÑ´¹3 ¥³¡¼¥É¥ê¥¹¥È¤«¤é´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤òºîÀ®¤¹¤ë¡¥
+	// åˆ¥passãŒå¿…è¦ãªæœ€é©åŒ–å‡¦ç†ã¯ã“ã“ã§è¡Œã†ï¼å¾Œã§/*!!!*/
+	// å¤‰æ›3 ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã‹ã‚‰é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹ï¼
 	if (translate_pass3(vm, code_list, func)) { vm_pop(vm); vm_pop(vm); return VM_ERROR; }
-	vm_pop(vm);// code-list¤ÎÊİ¸î¤Î½ªÎ»
-	vm_pop(vm);// form¤ÎÊİ¸î¤Î½ªÎ»
+	vm_pop(vm);// code-listã®ä¿è­·ã®çµ‚äº†
+	vm_pop(vm);// formã®ä¿è­·ã®çµ‚äº†
 	function_set_body(*func, form);
 	return VM_OK;
 }
@@ -90,7 +90,7 @@ VM_RET translate_defun(tPVM vm, tPCELL name, tPOBJECT lambda_list, tPOBJECT form
 	if (vm_push(vm, &obj)) return VM_ERROR;
 	if (translate_pass2_defun(vm, flist, function_list_get_parameter_number(flist))) { vm_pop(vm); return VM_ERROR; }
 #ifdef _DEBUG
-/*	{// ÊÑ´¹Á°Ãæ´Ö¥³¡¼¥É¤Î³ÎÇ§
+/*	{// å¤‰æ›å‰ä¸­é–“ã‚³ãƒ¼ãƒ‰ã®ç¢ºèª
 		tOBJECT obj;
 		cell_to_object(name, &obj);
 		if (format_object(vm, vm_get_standard_output(vm), &obj)) return VM_ERROR;
@@ -153,7 +153,7 @@ tPOBJECT translator_get_form(tPVM vm)
 
 
 /////////////////////////////
-// ¥³¡¼¥É¥ê¥¹¥È¤Ø¤Î¥¢¥¯¥»¥¹
+// ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã¸ã®ã‚¢ã‚¯ã‚»ã‚¹
 
 // variable ((size . { stack | heap }) ...)
 // function ((n fname1 ... fnamen) function-list1 .. function-listn)
@@ -328,14 +328,14 @@ tINT mlist_get_qualifier(tPCELL mlist)
 }
 
 // paramter-list
-// ºîÀ®Ãæ ((size . tail) ....)
-// ³ÎÄê¸å ((size . { stack | heap }) ...)
+// ä½œæˆä¸­ ((size . tail) ....)
+// ç¢ºå®šå¾Œ ((size . { stack | heap }) ...)
 VM_RET parameter_list_create(tPVM vm, tPCELL* plist)
 {
 	return head_list_create(vm, plist);
 }
 
-// ½é´ü²½¤Î½ªÎ»
+// åˆæœŸåŒ–ã®çµ‚äº†
 void parameter_list_finish_initialization(tPCELL plist)
 {
 	parameter_list_set_stack(plist, 0);
@@ -420,7 +420,7 @@ VM_RET parameter_list_add_parameter(tPVM vm, tPCELL plist, tPOBJECT name)
 	for (p=cons_get_cdr_cons(plist); p; p=cons_get_cdr_cons(p)) {
 		cons_get_car(p, &obj);
 		if (OBJECT_GET_CELL(&obj)==OBJECT_GET_CELL(name)) {
-			// Æ±¤¸Ì¾Á°¤¬²¾°ú¿ô¥ê¥¹¥È¤ÎÃæ¤ËÆó¤Ä¤¢¤ë
+			// åŒã˜åå‰ãŒä»®å¼•æ•°ãƒªã‚¹ãƒˆã®ä¸­ã«äºŒã¤ã‚ã‚‹
 			return signal_violation(vm, TRANSLATOR_ERROR_SAME_NAME_PARAMETER, translator_get_form(vm));
 		}
 	}
@@ -433,8 +433,8 @@ VM_RET parameter_list_add_parameter(tPVM vm, tPCELL plist, tPOBJECT name)
 // parameter-profiler-list
 
 // paramter-list
-// ºîÀ®Ãæ ((size . tail) ....)
-// ³ÎÄê¸å ((size . { stack | heap }) ...)
+// ä½œæˆä¸­ ((size . tail) ....)
+// ç¢ºå®šå¾Œ ((size . { stack | heap }) ...)
 
 // ( parameter-lsit . profile-list )
 // profile-list : head-list
@@ -603,7 +603,7 @@ tBOOL tagbody_tag_list_start_tag(tPCELL tlist)
 
 
 /////////////////////////////
-// ÊÑ´¹´ï
+// å¤‰æ›å™¨
 
 VM_RET create_translator(tPVM vm, tTRANSLATOR* translator)
 {
@@ -765,7 +765,7 @@ static void t1_pop_name_list(tPVM vm, tPCELL* list)
 	}
 }
 
-// ÊÑ¿ô
+// å¤‰æ•°
 VM_RET t1_push_variable(tPVM vm, tPCELL parameter_list)
 {
 	tOBJECT obj;
@@ -787,7 +787,7 @@ tBOOL t1_search_variable(tPVM vm, tPCELL name)
 
 	for (p=trans->variable; p; p=cons_get_cdr_cons(p)) {
 		plist=cons_get_car_cons(p);
-		// ¼«Ê¬¤è¤ê¤â¶É½êÅª¤ÊÊÑ¿ô¤Î»²¾È¤Î¾ì¹ç¡¤flag¤ÏÉé¤Ë¤Ê¤ë
+		// è‡ªåˆ†ã‚ˆã‚Šã‚‚å±€æ‰€çš„ãªå¤‰æ•°ã®å‚ç…§ã®å ´åˆï¼Œflagã¯è² ã«ãªã‚‹
 		if ((flag==0)||(plist==trans->argument_point)) flag--;
 		if (parameter_list_get_number(plist)) {
 			tPCELL pp;
@@ -795,8 +795,8 @@ tBOOL t1_search_variable(tPVM vm, tPCELL name)
 				cons_get_car(pp, &obj);
 				if (OBJECT_GET_CELL(&obj)==name) {
 					if (flag<0) {
-						// ¼«Ê¬¤è¤ê¤â¶É½êÅª¤Ê´Ø¿ô¤Ë¤è¤Ã¤Æ
-						// »²¾È¤µ¤ì¤¿¤³¤È¤òµ­Ï¿
+						// è‡ªåˆ†ã‚ˆã‚Šã‚‚å±€æ‰€çš„ãªé–¢æ•°ã«ã‚ˆã£ã¦
+						// å‚ç…§ã•ã‚ŒãŸã“ã¨ã‚’è¨˜éŒ²
 						parameter_list_set_heap(plist);
 					}
 					return tTRUE;
@@ -804,11 +804,11 @@ tBOOL t1_search_variable(tPVM vm, tPCELL name)
 			}
 		}
 	}
-	// ¶É½êÅª¤Ê¥¹¥³¡¼¥×¤ÎÃæ¤Ë¤Ï¤³¤ÎÌ¾Á°¤ÎÊÑ¿ô¤¬Â¸ºß¤·¤Ê¤«¤Ã¤¿
+	// å±€æ‰€çš„ãªã‚¹ã‚³ãƒ¼ãƒ—ã®ä¸­ã«ã¯ã“ã®åå‰ã®å¤‰æ•°ãŒå­˜åœ¨ã—ãªã‹ã£ãŸ
 	return tFALSE;
 }
 
-// ´Ø¿ô
+// é–¢æ•°
 VM_RET t1_push_function(tPVM vm, tPCELL func_list)
 {
 	tOBJECT obj;
@@ -981,7 +981,7 @@ VM_RET t2_push_name(tPVM vm, tPCELL list)
 	tTRANSLATOR trans=vm_get_translator(vm);
 
 	if (list_is_variable(list)) {
-		// ÊÑ¿ô
+		// å¤‰æ•°
 		if (parameter_list_is_stack(list)) {
 			parameter_list_set_stack(list, t2_get_sp(vm)-parameter_list_get_number(list));
 		} else {
@@ -1037,11 +1037,11 @@ tBOOL t2_search_variable(tPVM vm, tPCELL name, tINT* offset, tBOOL* stack)
 			if (parameter_list_is_heap(list)) {
 				heap_offset+=parameter_list_get_number(list);
 			}
-		} else {//´Ø¿ô
-			heap_offset++;//ºîÀ®»ş¤Î¥Ò¡¼¥×´Ä¶­
+		} else {//é–¢æ•°
+			heap_offset++;//ä½œæˆæ™‚ã®ãƒ’ãƒ¼ãƒ—ç’°å¢ƒ
 		}
 	}
-	return tFALSE;//Îã³°¡©
+	return tFALSE;//ä¾‹å¤–ï¼Ÿ
 }
 
 tBOOL t2_search_function(tPVM vm, tPCELL name, tPCELL* f, tINT* i)
@@ -1052,12 +1052,12 @@ tBOOL t2_search_function(tPVM vm, tPCELL name, tPCELL* f, tINT* i)
 	for (p=trans->stack; p; p=cons_get_cdr_cons(p)) {
 		tPCELL list=cons_get_car_cons(p);
 		if (list_is_variable(list)) {
-			// ÊÑ¿ô
+			// å¤‰æ•°
 			if (parameter_list_is_heap(list)) {
 				*i+=parameter_list_get_number(list);
 			}
 		} else {
-			// ´Ø¿ô
+			// é–¢æ•°
 			tPCELL pp, ppp, pf;
 			tOBJECT obj;
 			pp=cons_get_car_cons(p);
@@ -1073,10 +1073,10 @@ tBOOL t2_search_function(tPVM vm, tPCELL name, tPCELL* f, tINT* i)
 			++*i;
 		}
 	}
-	return tFALSE;//Îã³°¡©
+	return tFALSE;//ä¾‹å¤–ï¼Ÿ
 }
 
-// ¥¹¥¿¥Ã¥¯¤Î¥È¥ì¡¼¥¹
+// ã‚¹ã‚¿ãƒƒã‚¯ã®ãƒˆãƒ¬ãƒ¼ã‚¹
 VM_RET t2_push_stack(tPVM vm, tPCELL command)
 {
 	tOBJECT obj;
@@ -1126,7 +1126,7 @@ void t2_set_max(tPVM vm, tINT max)
 	vm_get_translator(vm)->max_sp=max;
 }
 
-// Ì¿Îá¤ÎÃÖ¤­´¹¤¨
+// å‘½ä»¤ã®ç½®ãæ›ãˆ
 void t2_code_list_set_command(tPCELL* head, tINT command)
 {
 	tOBJECT obj;
@@ -1146,7 +1146,7 @@ void t2_code_list_set_operand(tPCELL* head, tPOBJECT operand)
 	*head=cons_get_cdr_cons(*head);
 }
 
-// Ì¿Îá¤Î°ú¿ô¤Î¼èÆÀ
+// å‘½ä»¤ã®å¼•æ•°ã®å–å¾—
 void t2_get_operand(tPCELL head, const tINT x, tPOBJECT operand)
 {
 	tPCELL p;

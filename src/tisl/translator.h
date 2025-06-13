@@ -12,19 +12,19 @@ VM_RET translate(tPVM vm, tPOBJECT form, tPCELL* func);
 VM_RET translate_defun(tPVM vm, tPCELL name, tPOBJECT lambda_list, tPOBJECT forms, tPCELL* func);
 VM_RET translate_method(tPVM vm, tPCELL form, tPCELL* method);
 
-// ¥Ş¥¯¥í¤ÈÆÃ¼ì·Á¼°¤ÎÅ¸³«¤ò¹Ô¤¤À©¸æ¾ğÊó¤Ë´ğ¤Å¤¤¤¿ÊÑ´¹¤ò¼ç¤Ë¹Ô¤¦¡¥
-// ¤Ş¤¿¡¤Ì¾Á°¤Î»²¾È¤Î¤µ¤ì¤«¤¿¤«¤éÃÍ¤ÎÂ¸ºß´ü´Ö¤ò¿äÏÀ¤·¡¤¼¡¤Î¥Ñ¥¹¤ÇÍøÍÑ¤¹¤ë¡¥
+// ãƒã‚¯ãƒ­ã¨ç‰¹æ®Šå½¢å¼ã®å±•é–‹ã‚’è¡Œã„åˆ¶å¾¡æƒ…å ±ã«åŸºã¥ã„ãŸå¤‰æ›ã‚’ä¸»ã«è¡Œã†ï¼
+// ã¾ãŸï¼Œåå‰ã®å‚ç…§ã®ã•ã‚Œã‹ãŸã‹ã‚‰å€¤ã®å­˜åœ¨æœŸé–“ã‚’æ¨è«–ã—ï¼Œæ¬¡ã®ãƒ‘ã‚¹ã§åˆ©ç”¨ã™ã‚‹ï¼
 VM_RET translate_pass1(tPVM vm, tPOBJECT form, tPCELL* code_list_1);
 VM_RET translate_pass1_defun(tPVM vm, tPCELL name, tPOBJECT lambda_list, tPOBJECT forms, tPCELL* code_list);
 VM_RET translate_pass1_method(tPVM vm, tPCELL forms, tPOBJECT body, tPCELL* mlist);
 
-// ¼Â¹Ô²ÄÇ½¤ÊÌ¿ÎáÎó¤È1ÂĞ1¤ËÂĞ±ş¤Ç¤­¤ëÌ¿Îá¤Î¥ê¥¹¥È¤òºîÀ®¤¹¤ë¡¥
-// ¼Â°ú¿ô¤Î¼Â¹Ô»ş¤Î°ÌÃÖ¤ò·èÄê¤·¡¤Ì¿Îá¤ò³ÎÄê¤¹¤ë¡¥
+// å®Ÿè¡Œå¯èƒ½ãªå‘½ä»¤åˆ—ã¨1å¯¾1ã«å¯¾å¿œã§ãã‚‹å‘½ä»¤ã®ãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹ï¼
+// å®Ÿå¼•æ•°ã®å®Ÿè¡Œæ™‚ã®ä½ç½®ã‚’æ±ºå®šã—ï¼Œå‘½ä»¤ã‚’ç¢ºå®šã™ã‚‹ï¼
 VM_RET translate_pass2(tPVM vm, tPCELL code_list);
 VM_RET translate_pass2_defun(tPVM vm, tPCELL flist, tINT pnum);
 VM_RET translate_pass2_method(tPVM vm, tPCELL mlist);
 
-// ¥³¡¼¥É¥ê¥¹¥È¤«¤é´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤òºîÀ®¤¹¤ë¡¥
+// ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã‹ã‚‰é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹ï¼
 VM_RET translate_pass3(tPVM vm, tPCELL code_list, tPCELL* function);
 VM_RET translate_pass3_defun(tPVM vm, tPCELL flist, tPCELL* function);
 VM_RET translate_pass3_method(tPVM vm, tPCELL mlist, tPOBJECT form, tPCELL* method);
@@ -32,14 +32,14 @@ VM_RET translate_pass3_method(tPVM vm, tPCELL mlist, tPOBJECT form, tPCELL* meth
 // GC root
 VM_RET translator_mark(tPVM vm);
 
-// ¥Ş¥¯¥íÅ¸³«
+// ãƒã‚¯ãƒ­å±•é–‹
 VM_RET t_macro_expand(tPVM vm, tPCELL macro, tPOBJECT operands, tPOBJECT ret);
 
 void translator_set_form(tPVM vm, tPOBJECT form);
 tPOBJECT translator_get_form(tPVM vm);
 
 /////////////////////////////
-// ¥³¡¼¥É¥ê¥¹¥È¤Î¥¢¥¯¥»¥¹
+// ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã®ã‚¢ã‚¯ã‚»ã‚¹
 
 tBOOL list_is_variable(tPCELL list);
 // ((size . tail) ...)
@@ -119,7 +119,7 @@ tBOOL tagbody_tag_list_start_tag(tPCELL tlist);
 VM_RET t1_create_method_env(tPVM vm, tPCELL* env);
 
 /////////////////////////////
-// ÊÑ´¹µ¡
+// å¤‰æ›æ©Ÿ
 
 VM_RET create_translator(tPVM vm, tTRANSLATOR* translator);
 void free_translator(tTRANSLATOR translator);
@@ -144,11 +144,11 @@ tPCELL t1_get_defining_function_parameter_list(tPVM vm);
 void t1_set_defining_function_parameter_list(tPVM vm, tPCELL plist);
 tPCELL t1_get_argument_point(tPVM vm);
 void t1_set_argument_point(tPVM vm, tPCELL ap);
-// ÊÑ¿ô
+// å¤‰æ•°
 VM_RET t1_push_variable(tPVM vm, tPCELL parameter_list);
 void t1_pop_variable(tPVM vm);
 tBOOL t1_search_variable(tPVM vm, tPCELL name);
-// ´Ø¿ô
+// é–¢æ•°
 VM_RET t1_push_function(tPVM vm, tPCELL func_list);
 void t1_pop_function(tPVM vm);
 tBOOL t1_search_function(tPVM vm, tPCELL name, tPCELL* flist);
@@ -167,12 +167,12 @@ tBOOL t1_search_tagbody(tPVM vm, tPCELL name, tPCELL* ret);
 void t2_clear(tTRANSLATOR trans);
 tINT t2_get_defining_function_parameter(tPVM vm);
 void t2_set_defining_function_parameter(tPVM vm, tINT pnum);
-// ¼­½ñ
+// è¾æ›¸
 VM_RET t2_push_name(tPVM vm, tPCELL list);
 void t2_pop_name(tPVM vm);
 tBOOL t2_search_variable(tPVM vm, tPCELL name, tINT* offset, tBOOL* stack);
 tBOOL t2_search_function(tPVM vm, tPCELL name, tPCELL* f, tINT* i);
-// ¥¹¥¿¥Ã¥¯¤Î¥È¥ì¡¼¥¹
+// ã‚¹ã‚¿ãƒƒã‚¯ã®ãƒˆãƒ¬ãƒ¼ã‚¹
 VM_RET t2_push_stack(tPVM vm, tPCELL command);
 VM_RET t2_pop_stack(tPVM vm, const tINT x);
 tINT t2_get_sp(tPVM vm);
@@ -185,12 +185,12 @@ void t2_reset_next_method(tPVM vm);
 tBOOL t2_use_next_method(tPVM vm);
 void t2_set_method_qualifier(tPVM vm, tINT qualifier);
 tINT t2_get_method_qualifier(tPVM vm);
-// Ì¿Îá¤ÎÃÖ¤­´¹¤¨
+// å‘½ä»¤ã®ç½®ãæ›ãˆ
 void t2_code_list_set_command(tPCELL* head, tINT command);
 void t2_increment_head(tPCELL* head);
 void t2_code_list_set_operand(tPCELL* head, tPOBJECT operand);
 void t2_code_list_close(tPCELL head);
-// Ì¿Îá¤Î°ú¿ô¤Î¼èÆÀ
+// å‘½ä»¤ã®å¼•æ•°ã®å–å¾—
 void t2_get_operand(tPCELL head, const tINT x, tPOBJECT operand);
 
 ///////////////////

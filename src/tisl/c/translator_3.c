@@ -14,7 +14,7 @@
 
 /////////////////////////////
 
-// c/function.c ¤ÇÄêµÁ
+// c/function.c ã§å®šç¾©
 extern VM_RET function_write_command(tPVM vm, tPCELL function, const tINT pc, void* command);
 extern tTRANSLATOR vm_get_translator(tPVM vm);
 
@@ -413,7 +413,7 @@ const T3_FUNCTION t3_table[]={
 
 /////////////////////////////
 
-// ¥³¡¼¥É¥ê¥¹¥È¤«¤é´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤òºîÀ®¤¹¤ë¡¥
+// ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã‹ã‚‰é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹ï¼
 VM_RET translate_pass3(tPVM vm, tPCELL code_list, tPCELL* function)
 {
 	VM_RET ret;
@@ -458,13 +458,13 @@ static VM_RET t3_clist_to_function(tPVM vm, tPCELL clist, tPCELL* function)
 {
 	tOBJECT tmp;
 	tINT size=0;
-	// ¥³¡¼¥É¥µ¥¤¥º¤Î·×»»
+	// ã‚³ãƒ¼ãƒ‰ã‚µã‚¤ã‚ºã®è¨ˆç®—
 	if (t3_code_list_get_size(vm, clist, &size)) return VM_ERROR;
-	// ´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤ÎºîÀ®
+	// é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
 	if (function_create(vm, 0, size, code_list_get_max_sp(clist), vm_get_current_package(vm), function)) return VM_ERROR;
 	OBJECT_SET_FUNCTION(&tmp, *function);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
-	// Ì¿Îá¤Î½ñ¤­¹ş¤ß
+	// å‘½ä»¤ã®æ›¸ãè¾¼ã¿
 	if (t3_code_list_write_code(vm, clist, *function)) { vm_pop(vm); return VM_ERROR; }
 	vm_pop(vm);
 	return VM_OK;
@@ -477,14 +477,14 @@ static VM_RET t3_flist_to_function(tPVM vm, tPCELL flist, tPCELL* function)
 	tPCELL clist, plist;
 	clist=function_list_get_code_list(flist);
 	plist=function_list_get_parameter_list(flist);
-	// ¥³¡¼¥É¥µ¥¤¥º¤Î·×»»
+	// ã‚³ãƒ¼ãƒ‰ã‚µã‚¤ã‚ºã®è¨ˆç®—
 	if (t3_code_list_get_size(vm, clist, &size)) return VM_ERROR;
-	// ´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤ÎºîÀ®
+	// é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
 	if (function_create(vm, plist, size, code_list_get_max_sp(clist), vm_get_current_package(vm), function)) return VM_ERROR;
 	function_list_set_function(flist, *function);
 	OBJECT_SET_FUNCTION(&tmp, *function);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
-	// Ì¿Îá¤Î½ñ¤­¹ş¤ß
+	// å‘½ä»¤ã®æ›¸ãè¾¼ã¿
 	if (t3_code_list_write_code(vm, clist, *function)) { vm_pop(vm); return VM_ERROR; }
 	vm_pop(vm);
 	return VM_OK;
@@ -597,7 +597,7 @@ static VM_RET t3_w_push_object(tPVM vm, tPCELL clist, const tINT code, tPCELL* h
 {
 	tOBJECT obj;
 	void* procedure;
-	// °ú¿ô¤ÎÆÉ¹ş¤ß
+	// å¼•æ•°ã®èª­è¾¼ã¿
 	t3_read_argument_1(head, &obj);
 
 	switch (OBJECT_GET_TYPE(&obj)) {
@@ -900,13 +900,13 @@ static VM_RET t3_s_labels(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, 
 		tPCELL clist, plist, flist, func;
 		code_list_increment_head(head);
 		cons_get_car(*head, &obj);
-		// ¥µ¥¤¥º¤Î·×»»¤È¥³¡¼¥ÉÉôÊ¬¤Î¶õ¤Î´Ø¿ô¤ÎºîÀ®
+		// ã‚µã‚¤ã‚ºã®è¨ˆç®—ã¨ã‚³ãƒ¼ãƒ‰éƒ¨åˆ†ã®ç©ºã®é–¢æ•°ã®ä½œæˆ
 		flist=OBJECT_GET_CELL(&obj);
 		clist=function_list_get_code_list(flist);
 		plist=function_list_get_parameter_list(flist);
-		// ¥³¡¼¥É¥µ¥¤¥º¤Î·×»»
+		// ã‚³ãƒ¼ãƒ‰ã‚µã‚¤ã‚ºã®è¨ˆç®—
 		if (t3_code_list_get_size(vm, clist, &s)) return VM_ERROR;
-		// ´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤ÎºîÀ®
+		// é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
 		if (function_create(vm, plist, s, code_list_get_max_sp(clist), vm_get_current_package(vm), &func)) return VM_ERROR;
 		function_list_set_function(flist, func);
 	}
@@ -919,7 +919,7 @@ static VM_RET t3_w_labels(tPVM vm, tPCELL clist, const tINT code, tPCELL* head, 
 {
 	tOBJECT nlist, obj;
 	tINT i, n;
-	// °ú¿ô¤Î¼èÆÀ¤È¶É½ê´Ø¿ô¤ÎÊÑ´¹
+	// å¼•æ•°ã®å–å¾—ã¨å±€æ‰€é–¢æ•°ã®å¤‰æ›
 	code_list_increment_head(head);
 	cons_get_car(*head, &nlist);
 	cons_get_car(OBJECT_GET_CELL(&nlist), &obj);

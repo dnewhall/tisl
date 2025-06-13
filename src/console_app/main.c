@@ -24,15 +24,15 @@ TISL_IMPORT_OR_EXPORT void TISLCALL tisl_interpreter_file(TNI* tni, const char* 
 
 int main(int argc, char *argv[], char *envp[])
 {
-	if (argc==1) {// TISL¥¤¥ó¥¿¥×¥ê¥¿¤Îµ¯Æ°
+	if (argc==1) {// TISLã‚¤ãƒ³ã‚¿ãƒ—ãƒªã‚¿ã®èµ·å‹•
 		TISL*	tisl;
 		TNI*	tni;
 		TNI_INIT_ARGS init_args;
 
 		printf(TISL_START_UP_1, __DATE__);
-		// ½èÍı·Ï¤È¥¤¥ó¥¿¥Õ¥§¡¼¥¹¤Î½é´ü²½
+		// å‡¦ç†ç³»ã¨ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹ã®åˆæœŸåŒ–
 		if (set_default_tni_init_args(&init_args)) return -1;
-		// °ú¿ô¤È´Ä¶­
+		// å¼•æ•°ã¨ç’°å¢ƒ
 		init_args.argc=argc;
 		init_args.argv=argv;
 		init_args.envp=envp;
@@ -41,12 +41,12 @@ int main(int argc, char *argv[], char *envp[])
 		tisl_interpreter_top_loop(tni);
 
 		return (*tisl)->destroy_tisl(tisl);
-	} else {// ¥¹¥¯¥ê¥×¥È¼Â¹Ô¤«¡©
+	} else {// ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œã‹ï¼Ÿ
 		TISL*			tisl;
 		TNI*			tni;
 		TNI_INIT_ARGS	init_args;
 
-		// ½èÍı·Ï¤Î¥¤¥ó¥¿¥Õ¥§¡¼¥¹¤Î½é´ü²½
+		// å‡¦ç†ç³»ã®ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹ã®åˆæœŸåŒ–
 		if (set_default_tni_init_args(&init_args)) return -1;
 		//
 		init_args.argc=argc;
@@ -54,7 +54,7 @@ int main(int argc, char *argv[], char *envp[])
 		init_args.envp=envp;
 		//
 		if (create_tni(&tisl, &tni, &init_args)) return -1;
-		// ºÙ¤«¤¤°ú¿ô¤Î½èÍı¤Ï¾ÊÎ¬
+		// ç´°ã‹ã„å¼•æ•°ã®å‡¦ç†ã¯çœç•¥
 		tisl_interpreter_file(tni, argv[1]);
 
 		return (*tisl)->destroy_tisl(tisl);

@@ -14,12 +14,12 @@
 
 extern tTRANSLATOR vm_get_translator(tPVM vm);
 
-// ¼Â¹Ô²ÄÇ½¤ÊÌ¿ÎáÎó¤È1ÂĞ1¤ËÂĞ±ş¤Ç¤­¤ëÌ¿Îá¤Î¥ê¥¹¥È¤òºîÀ®¤¹¤ë¡¥
-// ¼Â°ú¿ô¤Î¼Â¹Ô»ş¤Î°ÌÃÖ¤ò·èÄê¤·¡¤Ì¿Îá¤ò³ÎÄê¤¹¤ë¡¥
+// å®Ÿè¡Œå¯èƒ½ãªå‘½ä»¤åˆ—ã¨1å¯¾1ã«å¯¾å¿œã§ãã‚‹å‘½ä»¤ã®ãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹ï¼
+// å®Ÿå¼•æ•°ã®å®Ÿè¡Œæ™‚ã®ä½ç½®ã‚’æ±ºå®šã—ï¼Œå‘½ä»¤ã‚’ç¢ºå®šã™ã‚‹ï¼
 
 /////////////////////////////
 
-// ¥³¡¼¥É¥ê¥¹¥È¤ÎÊÑ´¹
+// ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã®å¤‰æ›
 static VM_RET t2_code_list(tPVM vm, tPCELL clist);
 static VM_RET t2_function_list(tPVM vm, tPCELL flist);
 
@@ -47,12 +47,12 @@ VM_RET translate_pass2_defun(tPVM vm, tPCELL flist, tINT pnum)
 VM_RET translate_pass2_method(tPVM vm, tPCELL mlist)
 {
 	t2_clear(vm_get_translator(vm));
-	// °ú¿ô
+	// å¼•æ•°
 	if (t2_push_name(vm, pplist_get_plist(mlist_get_pplist(mlist)))) goto ERROR;
 	switch (mlist_get_qualifier(mlist)) {
 	case METHOD_AROUND:
 	case METHOD_PRIMARY:
-		// call-next-method ¤È next-method-p
+		// call-next-method ã¨ next-method-p
 		if (function_name_list_is_referred(mlist_get_env(mlist))) {
 			t2_set_next_method(vm);
 			if (t2_push_name(vm, mlist_get_env(mlist))) goto ERROR;
@@ -120,9 +120,9 @@ static VM_RET t2_op_n(tPVM vm, const tINT id, tPCELL* head)
 	tPCELL h=*head;
 	tOBJECT n;
 	tINT code;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &n);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	switch (id) {
 	case iSET_AREF:		code=iiSET_AREF; break;
 	case iSET_GAREF:	code=iiSET_GAREF; break;
@@ -139,9 +139,9 @@ static VM_RET t2_op_n(tPVM vm, const tINT id, tPCELL* head)
 // iDISCARD
 static VM_RET t2_discard(tPVM vm, const tINT id, tPCELL* head)
 {
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	t2_code_list_set_command(head, iiDISCARD);
-	// ¥¹¥¿¥Ã¥¯¤ÎÃÍ¤ò°ì¤Ä¼Î¤Æ¤ë
+	// ã‚¹ã‚¿ãƒƒã‚¯ã®å€¤ã‚’ä¸€ã¤æ¨ã¦ã‚‹
 	t2_pop_stack(vm, 1);
 	return VM_OK;
 }
@@ -153,10 +153,10 @@ static VM_RET t2_push_nil(tPVM vm, const tINT id, tPCELL* head)
 	tINT code;
 	tPCELL p=*head;
 
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	code=(id==iPUSH_NIL) ? iiPUSH_NIL : iiPUSH_T;
 	t2_code_list_set_command(head, code);
-	// ¥¹¥¿¥Ã¥¯¤ËÃÍ¤ò°ì¤ÄÀÑ¤à
+	// ã‚¹ã‚¿ãƒƒã‚¯ã«å€¤ã‚’ä¸€ã¤ç©ã‚€
 	return t2_push_stack(vm, p);
 }
 
@@ -164,10 +164,10 @@ static VM_RET t2_push_nil(tPVM vm, const tINT id, tPCELL* head)
 static VM_RET t2_push_object(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL p=*head;
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	t2_code_list_set_command(head, iiPUSH_OBJECT);
 	t2_increment_head(head);// obj
-	// ¥¹¥¿¥Ã¥¯¤ËÃÍ¤ò°ì¤ÄÀÑ¤à
+	// ã‚¹ã‚¿ãƒƒã‚¯ã«å€¤ã‚’ä¸€ã¤ç©ã‚€
 	return t2_push_stack(vm, p);
 }
 
@@ -178,11 +178,11 @@ static VM_RET t2_push_local_variable(tPVM vm, const tINT id, tPCELL* head)
 	tOBJECT name, operand;
 	tBOOL stack;
 	tINT code, offset;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &name);
 
 
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	if (!t2_search_variable(vm, OBJECT_GET_CELL(&name), &offset, &stack))
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	if (stack) {
@@ -195,7 +195,7 @@ static VM_RET t2_push_local_variable(tPVM vm, const tINT id, tPCELL* head)
 	t2_code_list_set_command(head, code);
 	t2_code_list_set_operand(head, &operand);
 	//
-	// ¥¹¥¿¥Ã¥¯¤ËÃÍ¤ò°ì¤ÄÀÑ¤à
+	// ã‚¹ã‚¿ãƒƒã‚¯ã«å€¤ã‚’ä¸€ã¤ç©ã‚€
 	return t2_push_stack(vm, p);
 }
 
@@ -204,39 +204,39 @@ static VM_RET t2_push_global_variable(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL blist, h=*head;
 	tOBJECT name, operand;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &name);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	if (tisl_get_bind_list(vm_get_tisl(vm), vm, vm_get_current_package(vm), OBJECT_GET_CELL(&name), &blist)) return VM_ERROR;
 	OBJECT_SET_BIND_LIST(&operand, blist);
 	t2_code_list_set_command(head, iiPUSH_VARIABLE);
 	t2_code_list_set_operand(head, &operand);
-	// ¥¹¥¿¥Ã¥¯¤ËÃÍ¤ò°ì¤ÄÀÑ¤à
+	// ã‚¹ã‚¿ãƒƒã‚¯ã«å€¤ã‚’ä¸€ã¤ç©ã‚€
 	return t2_push_stack(vm, h);
 }
 
 // iCALL_REC
 static VM_RET t2_call_rec(tPVM vm, const tINT id, tPCELL* head)
-{// defun¤ÎÃæ¤Ë¤·¤«¤Ê¤¤¤Ï¤º
+{// defunã®ä¸­ã«ã—ã‹ãªã„ã¯ãš
 	tPCELL h=*head;
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiCALL_REC);
-	//°ú¿ô¤Î¾ÃÈñ
+	//å¼•æ•°ã®æ¶ˆè²»
 	t2_pop_stack(vm, t2_get_defining_function_parameter(vm));
 	return t2_push_stack(vm, h);
 }
 
 // iiCALL_TAIL_REC
 static VM_RET t2_call_tail_rec(tPVM vm, const tINT id, tPCELL* head)
-{// defun¤ÎÃæ¤Ë¤·¤«¤Ê¤¤¤Ï¤º
+{// defunã®ä¸­ã«ã—ã‹ãªã„ã¯ãš
 	tPCELL h=*head;
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiCALL_TAIL_REC);
-	// °ú¿ô¤Î¾ÃÈñ
+	// å¼•æ•°ã®æ¶ˆè²»
 	t2_pop_stack(vm, t2_get_defining_function_parameter(vm));
-	// Ìá¤êÃÍ°ì¤Ä
+	// æˆ»ã‚Šå€¤ä¸€ã¤
 	t2_push_stack(vm, h);
-	// ¤³¤ÎÌ¿Îá¤è¤ê¸å¤í¤ÏÊÑ´¹¤¹¤ëÉ¬Í×¤¬¤Ê¤¤¡¥
+	// ã“ã®å‘½ä»¤ã‚ˆã‚Šå¾Œã‚ã¯å¤‰æ›ã™ã‚‹å¿…è¦ãŒãªã„ï¼
 	t2_code_list_close(*head);
 	vm_set_last_condition_ok(vm);
 	return VM_ERROR;
@@ -247,16 +247,16 @@ static VM_RET t2_call_global(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT blist, anum;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &blist);
 	t2_get_operand(*head, 2, &anum);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	t2_code_list_set_command(head, iiCALL);
 	t2_code_list_set_operand(head, &blist);
 	t2_code_list_set_operand(head, &anum);
-	// °ú¿ô¤Î¾ÃÈñ
+	// å¼•æ•°ã®æ¶ˆè²»
 	t2_pop_stack(vm, OBJECT_GET_INTEGER(&anum));
-	// Ìá¤êÃÍ°ì¤Ä
+	// æˆ»ã‚Šå€¤ä¸€ã¤
 	return t2_push_stack(vm, h);
 }
 
@@ -265,18 +265,18 @@ static VM_RET t2_call_tail_global(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT blist, anum;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &blist);
 	t2_get_operand(*head, 2, &anum);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	t2_code_list_set_command(head, iiCALL_TAIL);
 	t2_code_list_set_operand(head, &blist);
 	t2_code_list_set_operand(head, &anum);
-	// °ú¿ô¤Î¾ÃÈñ
+	// å¼•æ•°ã®æ¶ˆè²»
 	t2_pop_stack(vm, OBJECT_GET_INTEGER(&anum));
-	// Ìá¤êÃÍ°ì¤Ä
+	// æˆ»ã‚Šå€¤ä¸€ã¤
 	t2_push_stack(vm, h);
-	// ¤³¤ÎÌ¿Îá¤è¤ê¸å¤í¤ÏÊÑ´¹¤¹¤ëÉ¬Í×¤¬¤Ê¤¤¡¥
+	// ã“ã®å‘½ä»¤ã‚ˆã‚Šå¾Œã‚ã¯å¤‰æ›ã™ã‚‹å¿…è¦ãŒãªã„ï¼
 	t2_code_list_close(*head);
 	vm_set_last_condition_ok(vm);
 	return VM_ERROR;
@@ -286,16 +286,16 @@ static VM_RET t2_call_bind(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT bind, anum;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &bind);
 	t2_get_operand(*head, 2, &anum);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	t2_code_list_set_command(head, iiCALL_BIND);
 	t2_code_list_set_operand(head, &bind);
 	t2_code_list_set_operand(head, &anum);
-	// °ú¿ô¤Î¾ÃÈñ
+	// å¼•æ•°ã®æ¶ˆè²»
 	t2_pop_stack(vm, OBJECT_GET_INTEGER(&anum));
-	// Ìá¤êÃÍ°ì¤Ä
+	// æˆ»ã‚Šå€¤ä¸€ã¤
 	return t2_push_stack(vm, h);
 }
 
@@ -303,18 +303,18 @@ static VM_RET t2_call_tail_bind(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT bind, anum;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &bind);
 	t2_get_operand(*head, 2, &anum);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	t2_code_list_set_command(head, iiCALL_TAIL_BIND);
 	t2_code_list_set_operand(head, &bind);
 	t2_code_list_set_operand(head, &anum);
-	// °ú¿ô¤Î¾ÃÈñ
+	// å¼•æ•°ã®æ¶ˆè²»
 	t2_pop_stack(vm, OBJECT_GET_INTEGER(&anum));
-	// Ìá¤êÃÍ°ì¤Ä
+	// æˆ»ã‚Šå€¤ä¸€ã¤
 	t2_push_stack(vm, h);
-	// ¤³¤ÎÌ¿Îá¤è¤ê¸å¤í¤ÏÊÑ´¹¤¹¤ëÉ¬Í×¤¬¤Ê¤¤¡¥
+	// ã“ã®å‘½ä»¤ã‚ˆã‚Šå¾Œã‚ã¯å¤‰æ›ã™ã‚‹å¿…è¦ãŒãªã„ï¼
 	t2_code_list_close(*head);
 	vm_set_last_condition_ok(vm);
 	return VM_ERROR;
@@ -326,20 +326,20 @@ static VM_RET t2_call_local(tPVM vm, const tINT id, tPCELL* head)
 	tPCELL dummy, h=*head;
 	tOBJECT name, flist, offset;
 	tINT i, pnum;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &name);
 	t2_get_operand(*head, 2, &flist);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	if (!t2_search_function(vm, OBJECT_GET_CELL(&name), &dummy, &i))
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	OBJECT_SET_INTEGER(&offset, i);
 	t2_code_list_set_command(head, iiCALL_LOCAL);
 	t2_code_list_set_operand(head, &offset);
 	t2_code_list_set_operand(head, &flist);
-	// °ú¿ô¤Î¾ÃÈñ
+	// å¼•æ•°ã®æ¶ˆè²»
 	pnum=function_list_get_parameter_number(OBJECT_GET_CELL(&flist));
 	t2_pop_stack(vm, pnum);
-	// Ìá¤êÃÍ°ì¤Ä
+	// æˆ»ã‚Šå€¤ä¸€ã¤
 	return t2_push_stack(vm, h);
 }
 
@@ -349,22 +349,22 @@ static VM_RET t2_call_tail_local(tPVM vm, const tINT id, tPCELL* head)
 	tPCELL dummy, h=*head;
 	tOBJECT name, flist, offset;
 	tINT i, pnum;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &name);
 	t2_get_operand(*head, 2, &flist);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	if (!t2_search_function(vm, OBJECT_GET_CELL(&name), &dummy, &i))
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	OBJECT_SET_INTEGER(&offset, i);
 	t2_code_list_set_command(head, iiCALL_LOCAL_TAIL);
 	t2_code_list_set_operand(head, &offset);
 	t2_code_list_set_operand(head, &flist);
-	// °ú¿ô¤Î¾ÃÈñ
+	// å¼•æ•°ã®æ¶ˆè²»
 	pnum=function_list_get_parameter_number(OBJECT_GET_CELL(&flist));
 	t2_pop_stack(vm, pnum);
-	// Ìá¤êÃÍ°ì¤Ä
+	// æˆ»ã‚Šå€¤ä¸€ã¤
 	t2_push_stack(vm, h);
-	// ¤³¤³¤«¤é¸å¤í¤ÏÊÑ´¹¤¹¤ëÉ¬Í×¤¬¤Ê¤¤
+	// ã“ã“ã‹ã‚‰å¾Œã‚ã¯å¤‰æ›ã™ã‚‹å¿…è¦ãŒãªã„
 	t2_code_list_close(*head);
 	vm_set_last_condition_ok(vm);
 	return VM_ERROR;
@@ -373,9 +373,9 @@ static VM_RET t2_call_tail_local(tPVM vm, const tINT id, tPCELL* head)
 // iiRET
 static VM_RET t2_ret(tPVM vm, const tINT id, tPCELL* head)
 {
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	t2_code_list_set_command(head, iiRET);
-	// ½ª¤ï¤ê
+	// çµ‚ã‚ã‚Š
 	vm_set_last_condition_ok(vm);
 	return VM_ERROR;
 }
@@ -385,15 +385,15 @@ static VM_RET t2_lambda_in(tPVM vm, const tINT id, tPCELL* head)
 {
 	tOBJECT plist;
 	tINT code;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &plist);
-	// ²¾°ú¿ô¥ê¥¹¥È¤ÎÅĞÏ¿
+	// ä»®å¼•æ•°ãƒªã‚¹ãƒˆã®ç™»éŒ²
 	if (t2_push_name(vm, OBJECT_GET_CELL(&plist))) return VM_ERROR;
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	code=parameter_list_is_stack(OBJECT_GET_CELL(&plist)) ? iiLAMBDA_IN : iiLAMBDA_HEAP_IN;
 	t2_code_list_set_command(head, code);
 	t2_code_list_set_operand(head, &plist);
-	// ¥¹¥¿¥Ã¥¯¤ÏÆ°¤«¤Ê¤¤
+	// ã‚¹ã‚¿ãƒƒã‚¯ã¯å‹•ã‹ãªã„
 	return VM_OK;
 }
 
@@ -403,17 +403,17 @@ static VM_RET t2_lambda_out(tPVM vm, const tINT id, tPCELL* head)
 	tOBJECT plist;
 	tPCELL h=*head;
 	tINT code;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &plist);
-	// ²¾°ú¿ô¥ê¥¹¥È¤Îºï½ü
+	// ä»®å¼•æ•°ãƒªã‚¹ãƒˆã®å‰Šé™¤
 	t2_pop_name(vm);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	code=parameter_list_is_stack(OBJECT_GET_CELL(&plist)) ? iiLAMBDA_OUT : iiLAMBDA_HEAP_OUT;
 	t2_code_list_set_command(head, code);
 	t2_code_list_set_operand(head, &plist);
-	//°ú¿ô²¼¤²¤ë
+	//å¼•æ•°ä¸‹ã’ã‚‹
 	t2_pop_stack(vm, parameter_list_get_number(OBJECT_GET_CELL(&plist)));
-	// ¸å½èÍı¤Î¤¿¤á¤ËÀÚ¤ë
+	// å¾Œå‡¦ç†ã®ãŸã‚ã«åˆ‡ã‚‹
 	t2_pop_stack(vm, 1);
 	return t2_push_stack(vm, h);
 }
@@ -423,14 +423,14 @@ static VM_RET t2_push_function(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL blist, h=*head;
 	tOBJECT name, obj;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &name);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	if (tisl_get_bind_list(vm_get_tisl(vm), vm, vm_get_current_package(vm), OBJECT_GET_CELL(&name), &blist)) return VM_ERROR;
 	OBJECT_SET_BIND_LIST(&obj, blist);
 	t2_code_list_set_command(head, iiPUSH_FUNCTION);
 	t2_code_list_set_operand(head, &obj);
-	// Ìá¤êÃÍ°ì¤Ä
+	// æˆ»ã‚Šå€¤ä¸€ã¤
 	return t2_push_stack(vm, h);
 }
 
@@ -440,17 +440,17 @@ static VM_RET t2_push_local_function(tPVM vm, const tINT id, tPCELL* head)
 	tPCELL dummy, h=*head;
 	tOBJECT name, flist, offset;
 	tINT i;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &name);
 	t2_get_operand(h, 2, &flist);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	if (!t2_search_function(vm, OBJECT_GET_CELL(&name), &dummy, &i))
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	OBJECT_SET_INTEGER(&offset, i);
 	t2_code_list_set_command(head, iiPUSH_LOCAL_FUNCTION);
 	t2_code_list_set_operand(head, &offset);
 	t2_code_list_set_operand(head, &flist);
-	// Ìá¤êÃÍ°ì¤Ä
+	// æˆ»ã‚Šå€¤ä¸€ã¤
 	return t2_push_stack(vm, h);
 }
 
@@ -459,13 +459,13 @@ static VM_RET t2_push_lambda(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT flist;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &flist);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	if (t2_function_list(vm, OBJECT_GET_CELL(&flist))) return VM_ERROR;
 	t2_code_list_set_command(head, iiPUSH_LAMBDA);
 	t2_code_list_set_operand(head, &flist);
-	// Ìá¤êÃÍ°ì¤Ä
+	// æˆ»ã‚Šå€¤ä¸€ã¤
 	return t2_push_stack(vm, h);
 }
 
@@ -477,11 +477,11 @@ static VM_RET t2_labels_in(tPVM vm, const tINT id, tPCELL* head)
 	tINT i, n;
 	//
 	fnl=cons_get_cdr_cons(*head);
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &nlist);
-	// ¿·¤·¤¤´Ø¿ôÌ¾¤ÎÄÉ²Ã
+	// æ–°ã—ã„é–¢æ•°åã®è¿½åŠ 
 	if (t2_push_name(vm, fnl)) return VM_ERROR;
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiLABELS_IN);
 	t2_code_list_set_operand(head, &nlist);
 	n=function_name_list_get_size(fnl);
@@ -491,7 +491,7 @@ static VM_RET t2_labels_in(tPVM vm, const tINT id, tPCELL* head)
 		if (t2_function_list(vm, OBJECT_GET_CELL(&flist))) return VM_ERROR;
 		t2_code_list_set_operand(head, &flist);
 	}
-	// ¥¹¥¿¥Ã¥¯¤ÏÆ°¤«¤º
+	// ã‚¹ã‚¿ãƒƒã‚¯ã¯å‹•ã‹ãš
 	return VM_OK;
 }
 
@@ -500,12 +500,12 @@ static VM_RET t2_labels_out(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tINT code;
-	// ´Ø¿ô¤ÎÌ¾Á°¤Îºï½ü
+	// é–¢æ•°ã®åå‰ã®å‰Šé™¤
 	t2_pop_name(vm);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	code=(id==iLABELS_OUT) ? iiLABELS_OUT : iiFLET_OUT;
 	t2_code_list_set_command(head, code);
-	// ¥¹¥¿¥Ã¥¯¤ÏÆ°¤«¤º
+	// ã‚¹ã‚¿ãƒƒã‚¯ã¯å‹•ã‹ãš
 	t2_pop_stack(vm, 1);
 	return t2_push_stack(vm, h);
 }
@@ -517,9 +517,9 @@ static VM_RET t2_flet_in(tPVM vm, const tINT id, tPCELL* head)
 	tINT i, n;
 	//
 	fnl=cons_get_cdr_cons(*head);
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &nlist);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiFLET_IN);
 	t2_code_list_set_operand(head, &nlist);
 	n=function_name_list_get_size(fnl);
@@ -529,9 +529,9 @@ static VM_RET t2_flet_in(tPVM vm, const tINT id, tPCELL* head)
 		if (t2_function_list(vm, OBJECT_GET_CELL(&flist))) return VM_ERROR;
 		t2_code_list_set_operand(head, &flist);
 	}
-	// ´Ø¿ôÌ¾Á°¤ÎÅĞÏ¿
+	// é–¢æ•°åå‰ã®ç™»éŒ²
 	if (t2_push_name(vm, fnl)) return VM_ERROR;
-	// ¥¹¥¿¥Ã¥¯¤ÏÆ°¤«¤º
+	// ã‚¹ã‚¿ãƒƒã‚¯ã¯å‹•ã‹ãš
 	return VM_OK;
 }
 
@@ -540,17 +540,17 @@ static VM_RET t2_and(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT cl;
-	//¡¡°ú¿ô¤Î¼èÆÀ
+	//ã€€å¼•æ•°ã®å–å¾—
 	t2_get_operand(*head, 1, &cl);
-	//¥¹¥¿¥Ã¥¯¤¬°ì¤Ä²¼¤¬¤Ã¤¿¾õÂÖ¤Çform¤Î¼Â¹Ô»ş¤Ï¤¤¤ë
+	//ã‚¹ã‚¿ãƒƒã‚¯ãŒä¸€ã¤ä¸‹ãŒã£ãŸçŠ¶æ…‹ã§formã®å®Ÿè¡Œæ™‚ã¯ã„ã‚‹
 	t2_pop_stack(vm, 1);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	if (t2_code_list(vm, OBJECT_GET_CELL(&cl))) return VM_ERROR;
 	t2_code_list_set_command(head, iiAND);
 	t2_code_list_set_operand(head, &cl);
 	// 
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&cl)));
-	//¥¹¥¿¥Ã¥¯
+	//ã‚¹ã‚¿ãƒƒã‚¯
 	return t2_push_stack(vm, h);
 }
 
@@ -558,16 +558,16 @@ static VM_RET t2_or(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT cl;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &cl);
-	// ¥¹¥¿¥Ã¥¯¤¬°ì¤Ä²¼¤¬¤Ã¤¿¾õÂÖ¤Çform¤Î¼Â¹Ô¤ËÆş¤ë
+	// ã‚¹ã‚¿ãƒƒã‚¯ãŒä¸€ã¤ä¸‹ãŒã£ãŸçŠ¶æ…‹ã§formã®å®Ÿè¡Œã«å…¥ã‚‹
 	t2_pop_stack(vm, 1);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	if (t2_code_list(vm, OBJECT_GET_CELL(&cl))) return VM_ERROR;
 	t2_code_list_set_command(head, iiOR);
 	t2_code_list_set_operand(head, &cl);
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&cl)));
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	return t2_push_stack(vm, h);
 }
 
@@ -577,9 +577,9 @@ static VM_RET t2_set_local_variable(tPVM vm, const tINT id, tPCELL* head)
 	tOBJECT name, offset;
 	tINT code, i;
 	tBOOL stack;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &name);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	if (!t2_search_variable(vm, OBJECT_GET_CELL(&name), &i, &stack))
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	if (stack) {
@@ -600,9 +600,9 @@ static VM_RET t2_set_global_variable(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL blist, h=*head;
 	tOBJECT name, obj;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &name);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	if (tisl_get_bind_list(vm_get_tisl(vm), vm, vm_get_current_package(vm), OBJECT_GET_CELL(&name), &blist)) return VM_ERROR;
 	OBJECT_SET_BIND_LIST(&obj, blist);
 	t2_code_list_set_command(head, iiSET_VARIABLE);
@@ -616,9 +616,9 @@ static VM_RET t2_set_dynamic(tPVM vm, const tINT id, tPCELL* head)
 {
 	tOBJECT name;
 	tPCELL h=*head;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &name);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiSET_DYNAMIC);
 	t2_code_list_set_operand(head, &name);
 	//
@@ -630,8 +630,8 @@ static VM_RET t2_set_elt(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tINT code;
-	// °ú¿ôÌµ¤·
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// å¼•æ•°ç„¡ã—
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	switch (id) {
 	case iSET_ELT:		code=iiSET_ELT; break;
 	case iSET_PROPERTY:	code=iiSET_PROPERTY; break;
@@ -648,8 +648,8 @@ static VM_RET t2_set_car(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tINT code;
-	// °ú¿ôÌµ¤·
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// å¼•æ•°ç„¡ã—
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	switch (id) {
 	case iSET_CAR:		code=iiSET_CAR; break;
 	case iSET_CDR:		code=iiSET_CDR; break;
@@ -666,12 +666,12 @@ static VM_RET t2_accessor(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT name;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &name);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiACCESSOR);
 	t2_code_list_set_operand(head, &name);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	t2_pop_stack(vm, 2);
 	return t2_push_stack(vm, h);
 }
@@ -680,12 +680,12 @@ static VM_RET t2_push_dynamic(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT name;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &name);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiPUSH_DYNAMIC);
 	t2_code_list_set_operand(head, &name);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	return t2_push_stack(vm, h);
 }
 
@@ -694,9 +694,9 @@ static VM_RET t2_dynamic_let(tPVM vm, const tINT id, tPCELL* head)
 	tPCELL h=*head;
 	tOBJECT N, clist;
 	tINT i, n;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &N);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiDYNAMIC_LET);
 	t2_code_list_set_operand(head, &N);
 	n=OBJECT_GET_INTEGER(&N);
@@ -708,7 +708,7 @@ static VM_RET t2_dynamic_let(tPVM vm, const tINT id, tPCELL* head)
 	if (t2_code_list(vm, OBJECT_GET_CELL(&clist))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&clist)));
 	t2_code_list_set_operand(head, &clist);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	t2_pop_stack(vm, n*2);
 	return t2_push_stack(vm, h);
 }
@@ -717,12 +717,12 @@ static VM_RET t2_if(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT then_list, else_list;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &then_list);
 	t2_get_operand(h, 2, &else_list);
-	// ¥¹¥¿¥Ã¥¯¤¬°ì¤Ä²¼¤¬¤Ã¤¿¾õÂÖ¤Çthen¤Ş¤¿¤Ïelse¤Î¼Â¹Ô¤ËÆş¤ë
+	// ã‚¹ã‚¿ãƒƒã‚¯ãŒä¸€ã¤ä¸‹ãŒã£ãŸçŠ¶æ…‹ã§thenã¾ãŸã¯elseã®å®Ÿè¡Œã«å…¥ã‚‹
 	t2_pop_stack(vm, 1);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiIF);
 	if (t2_code_list(vm, OBJECT_GET_CELL(&then_list))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&then_list)));
@@ -730,7 +730,7 @@ static VM_RET t2_if(tPVM vm, const tINT id, tPCELL* head)
 	if (t2_code_list(vm, OBJECT_GET_CELL(&else_list))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&else_list)));
 	t2_increment_head(head);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	return t2_push_stack(vm, h);
 }
 
@@ -740,9 +740,9 @@ static VM_RET t2_case(tPVM vm, const tINT id, tPCELL* head)
 	tPCELL h=*head;
 	tOBJECT N, keylist, clist;
 	tINT i, n, m, code;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &N);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	switch (id) {
 	case iCASE:			code=iiCASE;		break;
 	case iCASE_USING:	code=iiCASE_USING;	break;
@@ -761,7 +761,7 @@ static VM_RET t2_case(tPVM vm, const tINT id, tPCELL* head)
 		t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&clist)));
 		t2_increment_head(head);// clist
 	}
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	switch (id) {
 	case iCASE:			i=1; break;
 	case iiCASE_USING:	i=2; break;
@@ -774,10 +774,10 @@ static VM_RET t2_while(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT test, body;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &test);
 	t2_get_operand(h, 2, &body);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiWHILE);
 	if (t2_code_list(vm, OBJECT_GET_CELL(&test))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&test)));
@@ -785,7 +785,7 @@ static VM_RET t2_while(tPVM vm, const tINT id, tPCELL* head)
 	if (t2_code_list(vm, OBJECT_GET_CELL(&body))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&body)));
 	t2_increment_head(head);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	return t2_push_stack(vm, h);
 }
 
@@ -794,16 +794,16 @@ static VM_RET t2_for(tPVM vm, const tINT id, tPCELL* head)
 	tPCELL h=*head;
 	tOBJECT plist, end, result, iteration;
 	tINT code;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &plist);
 	t2_get_operand(h, 2, &end);
 	t2_get_operand(h, 3, &result);
 	t2_get_operand(h, 4, &iteration);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	code=parameter_list_is_stack(OBJECT_GET_CELL(&plist)) ? iiFOR_STACK : iiFOR_HEAP;
 	t2_code_list_set_command(head, code);	// iiFOR
 	t2_increment_head(head);				// plist
-	// Ì¾Á°¤ÎÄÉ²Ã
+	// åå‰ã®è¿½åŠ 
 	if (t2_push_name(vm, OBJECT_GET_CELL(&plist))) return VM_ERROR;
 	if (t2_code_list(vm, OBJECT_GET_CELL(&end))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&end)));
@@ -814,9 +814,9 @@ static VM_RET t2_for(tPVM vm, const tINT id, tPCELL* head)
 	if (t2_code_list(vm, OBJECT_GET_CELL(&iteration))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&iteration)));
 	t2_increment_head(head);				// iteration
-	// Ì¾Á°¤Îºï½ü
+	// åå‰ã®å‰Šé™¤
 	t2_pop_name(vm);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	t2_pop_stack(vm, parameter_list_get_number(OBJECT_GET_CELL(&plist)));
 	return t2_push_stack(vm, h);
 }
@@ -825,25 +825,25 @@ static VM_RET t2_block(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT clist, tag;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &clist);
 	t2_get_operand(h, 2, &tag);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiBLOCK);
 	if (t2_code_list(vm, OBJECT_GET_CELL(&clist))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&clist)));
 	t2_increment_head(head);
 	t2_increment_head(head);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	return t2_push_stack(vm, h);
 }
 
 static VM_RET t2_return_from(tPVM vm, const tINT id, tPCELL* head)
 {
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiRETURN_FROM);
 	t2_increment_head(head);
-	// ¤³¤ÎÌ¿Îá¤Î¸å¤í¤ËÀ©¸æ¤¬°Ü¤ë¤³¤È¤Ï¤Ê¤¤
+	// ã“ã®å‘½ä»¤ã®å¾Œã‚ã«åˆ¶å¾¡ãŒç§»ã‚‹ã“ã¨ã¯ãªã„
 	t2_code_list_close(*head);
 	vm_set_last_condition_ok(vm);
 	return VM_ERROR;
@@ -853,23 +853,23 @@ static VM_RET t2_catch(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT clist;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &clist);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiCATCH);
 	if (t2_code_list(vm, OBJECT_GET_CELL(&clist))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&clist)));
 	t2_increment_head(head);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	t2_pop_stack(vm, 1);
 	return t2_push_stack(vm, h);
 }
 
 static VM_RET t2_throw(tPVM vm, const tINT id, tPCELL* head)
 {
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiTHROW);
-	// ¤³¤ÎÌ¿Îá¤Î¸å¤í¤ËÀ©¸æ¤¬°Ü¤ë¤³¤È¤Ï¤Ê¤¤
+	// ã“ã®å‘½ä»¤ã®å¾Œã‚ã«åˆ¶å¾¡ãŒç§»ã‚‹ã“ã¨ã¯ãªã„
 	t2_code_list_close(*head);
 	vm_set_last_condition_ok(vm);
 	return VM_ERROR;
@@ -879,9 +879,9 @@ static VM_RET t2_tagbody(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL p, h=*head;
 	tOBJECT clist_list, clist;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 2, &clist_list);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiTAGBODY);
 	t2_increment_head(head);
 	t2_increment_head(head);
@@ -890,16 +890,16 @@ static VM_RET t2_tagbody(tPVM vm, const tINT id, tPCELL* head)
 		if (t2_code_list(vm, OBJECT_GET_CELL(&clist))) return VM_ERROR;
 		t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&clist)));
 	}
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	return t2_push_stack(vm, h);
 }
 
 static VM_RET t2_go(tPVM vm, const tINT id, tPCELL* head)
 {
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiGO);
 	t2_increment_head(head);
-	// ¤³¤ÎÌ¿Îá¤Î¸å¤í¤ËÀ©¸æ¤¬°Ü¤ë¤³¤È¤Ï¤Ê¤¤
+	// ã“ã®å‘½ä»¤ã®å¾Œã‚ã«åˆ¶å¾¡ãŒç§»ã‚‹ã“ã¨ã¯ãªã„
 	t2_code_list_close(*head);
 	vm_set_last_condition_ok(vm);
 	return VM_ERROR;
@@ -909,10 +909,10 @@ static VM_RET t2_unwind_protect(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT form, cleanup;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &form);
 	t2_get_operand(h, 2, &cleanup);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, iiUNWIND_PROTECT);
 	if (t2_code_list(vm, OBJECT_GET_CELL(&form))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&form)));
@@ -929,14 +929,14 @@ static VM_RET t2_push_class(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL blist, h=*head;
 	tOBJECT name, obj;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &name);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	if (tisl_get_bind_list(vm_get_tisl(vm), vm, vm_get_current_package(vm), OBJECT_GET_CELL(&name), &blist)) return VM_ERROR;
 	OBJECT_SET_BIND_LIST(&obj, blist);
 	t2_code_list_set_command(head, iiPUSH_CLASS);
 	t2_code_list_set_operand(head, &obj);
-	//¥¹¥¿¥Ã¥¯
+	//ã‚¹ã‚¿ãƒƒã‚¯
 	return t2_push_stack(vm, h);
 }
 
@@ -945,9 +945,9 @@ static VM_RET t2_the(tPVM vm, const tINT id, tPCELL* head)
 	tPCELL blist, h=*head;
 	tOBJECT name, obj;
 	tINT code;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &name);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	if (tisl_get_bind_list(vm_get_tisl(vm), vm, vm_get_current_package(vm), OBJECT_GET_CELL(&name), &blist)) return VM_ERROR;
 	OBJECT_SET_BIND_LIST(&obj, blist);
 	switch (id) {
@@ -959,7 +959,7 @@ static VM_RET t2_the(tPVM vm, const tINT id, tPCELL* head)
 	}
 	t2_code_list_set_command(head, code);
 	t2_code_list_set_operand(head, &obj);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	t2_pop_stack(vm, 1);
 	return t2_push_stack(vm, h);
 }
@@ -969,9 +969,9 @@ static VM_RET t2_with_standard_stream(tPVM vm, const tINT id, tPCELL* head)
 	tPCELL h=*head;
 	tOBJECT clist;
 	tINT code;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &clist);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	switch (id) {
 	case iWITH_STANDARD_INPUT:	code=iiWITH_STANDARD_INPUT;		break;
 	case iWITH_STANDARD_OUTPUT:	code=iiWITH_STANDARD_OUTPUT;	break;
@@ -983,7 +983,7 @@ static VM_RET t2_with_standard_stream(tPVM vm, const tINT id, tPCELL* head)
 	if (t2_code_list(vm, OBJECT_GET_CELL(&clist))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&clist)));
 	t2_increment_head(head);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	t2_pop_stack(vm, 1);
 	return t2_push_stack(vm, h);
 }
@@ -993,10 +993,10 @@ static VM_RET t2_with_open_file(tPVM vm, const tINT id, tPCELL* head)
 	tPCELL h=*head;
 	tOBJECT clist, plist;
 	tINT code;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &plist);
 	t2_get_operand(h, 2, &clist);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	switch (id) {
 	case iWITH_OPEN_INPUT_FILE:		code=iiWITH_OPEN_INPUT_FILE;	break;
 	case iWITH_OPEN_OUTPUT_FILE:	code=iiWITH_OPEN_OUTPUT_FILE;	break;
@@ -1007,17 +1007,17 @@ static VM_RET t2_with_open_file(tPVM vm, const tINT id, tPCELL* head)
 	t2_code_list_set_command(head, code);
 	t2_increment_head(head);
 	t2_pop_stack(vm, 2);
-	if (t2_push_stack(vm, h)) return VM_ERROR;// Ì¿Îá¤¬°ã¤¦open-input-file¡©
-	// Ì¾Á°¤ÎÅĞÏ¿
+	if (t2_push_stack(vm, h)) return VM_ERROR;// å‘½ä»¤ãŒé•ã†open-input-fileï¼Ÿ
+	// åå‰ã®ç™»éŒ²
 	if (t2_push_name(vm, OBJECT_GET_CELL(&plist))) return VM_ERROR;
-	// ¥¹¥¿¥Ã¥¯¤òÆó¤Ä¾ÃÈñ¤·¡¤¥¹¥È¥ê¡¼¥à¤ò°ì¤ÄÀÑ¤ó¤À¾õÂÖ¤Ç
+	// ã‚¹ã‚¿ãƒƒã‚¯ã‚’äºŒã¤æ¶ˆè²»ã—ï¼Œã‚¹ãƒˆãƒªãƒ¼ãƒ ã‚’ä¸€ã¤ç©ã‚“ã çŠ¶æ…‹ã§
 	if (t2_code_list(vm, OBJECT_GET_CELL(&clist))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&clist)));
 	t2_increment_head(head);
-	// Ì¾Á°¤Îºï½ü
+	// åå‰ã®å‰Šé™¤
 	t2_pop_name(vm);
-	// ¥¹¥¿¥Ã¥¯¡¡
-	// ºÇ¸å¤Ë°ì¤Ä¤µ¤²¤ÆÌá¤êÃÍ¤Ä¤à¤«¤é¤³¤Î¤Ş¤Ş¤Ë¤·¤Æ¤ª¤³¤¦
+	// ã‚¹ã‚¿ãƒƒã‚¯ã€€
+	// æœ€å¾Œã«ä¸€ã¤ã•ã’ã¦æˆ»ã‚Šå€¤ã¤ã‚€ã‹ã‚‰ã“ã®ã¾ã¾ã«ã—ã¦ãŠã“ã†
 	return VM_OK;
 }
 
@@ -1032,22 +1032,22 @@ static VM_RET t2_ignore_errors(tPVM vm, const tINT id, tPCELL* head)
 	default:
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	}
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &clist);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	t2_code_list_set_command(head, code);
 	if (t2_code_list(vm, OBJECT_GET_CELL(&clist))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&clist)));
 	t2_increment_head(head);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	return t2_push_stack(vm, h);
 }
 
 static VM_RET t2_continue_condition(tPVM vm, const tINT id, tPCELL* head)
 {
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	t2_code_list_set_command(head, iiCONTINUE_CONDITION);
-	// ¤³¤ÎÌ¿Îá¤Î¸å¤í¤ËÀ©¸æ¤¬°Ü¤ë¤³¤È¤Ï¤Ê¤¤
+	// ã“ã®å‘½ä»¤ã®å¾Œã‚ã«åˆ¶å¾¡ãŒç§»ã‚‹ã“ã¨ã¯ãªã„
 	t2_code_list_close(*head);
 	vm_set_last_condition_ok(vm);
 	return VM_ERROR;
@@ -1057,14 +1057,14 @@ static VM_RET t2_with_handler(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT clist;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &clist);
-	// ¿·¤·¤¤Ì¿Îá¤ËÃÖ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«ç½®ãæ›ãˆ
 	t2_code_list_set_command(head, iiWITH_HANDLER);
 	if (t2_code_list(vm, OBJECT_GET_CELL(&clist))) return VM_ERROR;
 	t2_marge_max(vm, code_list_get_max_sp(OBJECT_GET_CELL(&clist)));
 	t2_increment_head(head);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	t2_pop_stack(vm, 1);
 	return t2_push_stack(vm, h);
 }
@@ -1083,7 +1083,7 @@ static VM_RET t2_op_1(tPVM vm, const tINT id, tPCELL* head)
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	}
 	t2_code_list_set_command(head, code);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	t2_pop_stack(vm, 1);
 	return t2_push_stack(vm, h);
 }
@@ -1098,7 +1098,7 @@ static VM_RET t2_op_2(tPVM vm, const tINT id, tPCELL* head)
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	}
 	t2_code_list_set_command(head, code);
-	// ¥¹¥¿¥Ã¥¯
+	// ã‚¹ã‚¿ãƒƒã‚¯
 	t2_pop_stack(vm, 2);
 	return t2_push_stack(vm, h);
 }
@@ -1107,9 +1107,9 @@ static VM_RET t2_primitive(tPVM vm, const tINT id, tPCELL* head)
 {
 	tPCELL h=*head;
 	tOBJECT n;
-	// °ú¿ô¤Î¼èÆÀ
+	// å¼•æ•°ã®å–å¾—
 	t2_get_operand(h, 1, &n);
-	// ¿·¤·¤¤Ì¿Îá¤Ë½ñ¤­´¹¤¨
+	// æ–°ã—ã„å‘½ä»¤ã«æ›¸ãæ›ãˆ
 	t2_code_list_set_command(head, t2_table[id].t2_data);
 	t2_code_list_set_operand(head, &n);
 	//
@@ -1134,7 +1134,7 @@ static VM_RET t2_primitive_n(tPVM vm, const tINT id, tPCELL* head, const tINT m)
 		return t2_push_stack(vm, h);
 	} else {
 		t2_code_list_set_command(head, iiARITY_ERROR);
-		// ¤³¤ÎÌ¿Îá¤Î¸å¤í¤ËÀ©¸æ¤¬°Ü¤ë¤³¤È¤Ï¤Ê¤¤
+		// ã“ã®å‘½ä»¤ã®å¾Œã‚ã«åˆ¶å¾¡ãŒç§»ã‚‹ã“ã¨ã¯ãªã„
 		t2_code_list_close(*head);
 		vm_set_last_condition_ok(vm);
 		return VM_ERROR;
@@ -1182,12 +1182,12 @@ static VM_RET op_stack_integer(tPVM vm, const tINT command1, tPCELL* head)
 	cons_set_car(h1, &offset);
 	h1=cons_get_cdr_cons(h1);
 	cons_set_car(h1, &i);
-	// head¤Î°ÜÆ°
+	// headã®ç§»å‹•
 	cons_get_cdr(cons_get_cdr_cons(*head), &tmp);
 	cons_set_cdr(h1, &tmp);
 	*head=cons_get_cdr_cons(h1);
 
-	// Æó¤ÄÀÑ¤ó¤Ç¤¢¤Ã¤¿¤Ï¤º¤À¤«¤é°ì¤Ä¤Ï¤º¤¹.
+	// äºŒã¤ç©ã‚“ã§ã‚ã£ãŸã¯ãšã ã‹ã‚‰ä¸€ã¤ã¯ãšã™.
 	t2_pop_stack(vm, 1);
 	return VM_OK;
 }

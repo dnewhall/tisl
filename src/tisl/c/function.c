@@ -125,7 +125,7 @@ VM_RET function_call(tPVM vm, tPCELL function, tPCELL environment, tPOBJECT ret)
 	tPCELL last_function, last_environment, last_package;
 //	tPOBJECT last_invoke_point;
 
-	// ���楹���å���ƻ뤹�٤��Ǥϡ�/*!!!*/
+	// 制御スタックを監視すべきでは？/*!!!*/
 	vm->function_call_n++;
 	if (vm->function_call_n>VM_MAX_FUNCTION_CALL) { vm->function_call_n--; return signal_condition(vm, TISL_ERROR_STACK_OVERFLOW); }
 
@@ -170,7 +170,7 @@ VM_RET function_call(tPVM vm, tPCELL function, tPCELL environment, tPOBJECT ret)
 
 VM_RET function_call_(tPVM vm, tPCELL function, tPOBJECT ret)
 {
-	// �ؿ���ؿ��θƤӽФ�VM�δؿ�������ѹ������ʤ��С������
+	// 関数内関数の呼び出しVMの関数情報は変更させないバージョン
 	if (function_call__(vm, function)) {
 		OBJECT_SET_UNBOUND(ret);
 		return VM_ERROR;

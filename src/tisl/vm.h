@@ -24,22 +24,22 @@ struct tVM_INIT_ARGS_ {
 	int		max_stack_size;
 };
 
-// TNIÍÑ¤Î½é´ü²½°ú¿ô¤«¤éVMÍÑ¤Î½é´ü²½°ú¿ô¤ÎºîÀ®
+// TNIç”¨ã®åˆæœŸåŒ–å¼•æ•°ã‹ã‚‰VMç”¨ã®åˆæœŸåŒ–å¼•æ•°ã®ä½œæˆ
 void set_vm_init_args(tVM_INIT_ARGS* vm_args, TNI_INIT_ARGS* tni_args);
-// VM¤ÎÀ¸À®
+// VMã®ç”Ÿæˆ
 tBOOL create_vm(tPTISL tisl, tPVM* vm, tVM_INIT_ARGS* args);
-// VM¤Î³«Êü
+// VMã®é–‹æ”¾
 tBOOL free_vm(tPVM vm);
 
 ///////////////////
 
-// evaluator.c¤ÇÄêµÁ
+// evaluator.cã§å®šç¾©
 void vm_clear(tPVM vm);
 VM_RET vm_evaluate_top_form(tPVM vm, tPOBJECT form, tPOBJECT ret);
 
 ///////////////////
 
-TNI* vm_get_tni(tPVM vm);// tni.c ¤ÇÄêµÁ
+TNI* vm_get_tni(tPVM vm);// tni.c ã§å®šç¾©
 
 tPTISL vm_get_tisl(tPVM vm);
 tBOOL vm_is_main(tPVM vm);
@@ -70,7 +70,7 @@ void vm_set_function(tPVM vm, tPCELL function);
 //tPOBJECT vm_get_invoke_point(tPVM vm);
 //void vm_set_invoke_point(tPVM vm, tPOBJECT point);
 //void vm_set_invoke_point_sp(tPVM vm);
-// É¸½à¥¹¥È¥ê¡¼¥à
+// æ¨™æº–ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 tPCELL vm_get_standard_input(tPVM vm);
 tPCELL vm_get_standard_output(tPVM vm);
 tPCELL vm_get_error_output(tPVM vm);
@@ -82,7 +82,7 @@ VM_RET vm_push_error_output(tPVM vm, tPCELL stream);
 void vm_pop_error_output(tPVM vm);
 
 ///////////////////
-// ³°Éô»²¾È
+// å¤–éƒ¨å‚ç…§
 
 VM_RET vm_new_global_ref(tPVM vm, TISL_OBJECT ref, TISL_OBJECT* new_ref);
 void vm_delete_global_ref(tPVM vm, TISL_OBJECT ref);
@@ -118,7 +118,7 @@ void vm_reset_reader_eos_error(tPVM vm);
 
 tBOOL is_DBCS_lead_byte(tPVM vm, tCHAR c);
 
-// ÆâÉô¥¹¥È¥ê¡¼¥à
+// å†…éƒ¨ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 
 void vm_output_stream_clear(tPVM vm);
 VM_RET vm_output_stream_write_char(tPVM vm, tCHAR c);
@@ -227,7 +227,7 @@ enum {
 	TRANSLATOR_ERROR_NOT_TOP_FORM,
 };
 
-// ¥¿¥°
+// ã‚¿ã‚°
 VM_RET vm_push_tag(tPVM vm, tPOBJECT tag);
 void vm_pop_tag(tPVM vm);
 void vm_set_throw_object(tPVM vm, tPOBJECT obj);
@@ -236,14 +236,14 @@ void vm_clear_throw_object(tPVM vm);
 tBOOL vm_search_tag(tPVM vm, tPOBJECT tag);
 void vm_clear_tag(tPVM vm);
 tBOOL vm_search_tagbody_tag(tPVM vm, tPCELL tag_pair);
-// ¥Ï¥ó¥É¥é
+// ãƒãƒ³ãƒ‰ãƒ©
 VM_RET vm_push_handler(tPVM vm, tPOBJECT handler);
 void vm_pop_handler(tPVM vm);
 void vm_get_handler(tPVM vm, tPOBJECT handler);
-// ÆÃ¼ìÎã³°¥Ï¥ó¥É¥é
+// ç‰¹æ®Šä¾‹å¤–ãƒãƒ³ãƒ‰ãƒ©
 VM_RET vm_push_ignore_errors_handler(tPVM vm);
 VM_RET vm_push_foreign_function_handler(tPVM vm);
-// ¥Ï¥ó¥É¥é¤ÎÆ±Äê
+// ãƒãƒ³ãƒ‰ãƒ©ã®åŒå®š
 tBOOL handler_is_system_handler(tPOBJECT handler);
 tBOOL handler_is_ignore_errors(tPOBJECT handler);
 tBOOL handler_is_foreign_function(tPOBJECT handler);
@@ -273,7 +273,7 @@ VM_RET signal_violation(tPVM vm, const int error_id, tPOBJECT place);
 ///////////////////////////////////////
 
 VM_RET vm_load(tPVM vm, tPCELL stream, tPOBJECT last);
-// name¤Ïµ­¹æ
+// nameã¯è¨˜å·
 VM_RET vm_in_package(tPVM vm, tPCELL name);
 //
 tPVM tni_get_vm(TNI* tni);
@@ -295,13 +295,13 @@ tPVM tni_get_vm(TNI* tni);
 
 #ifdef TISL_VM_STRUCT
 
-struct tVM_ {// ½çÈÖÊÑ¤¨¤Ê¤¤¤Ç!!!
+struct tVM_ {// é †ç•ªå¤‰ãˆãªã„ã§!!!
 	tPOBJECT		SP;
 	// state
 	tINT			state;
 	// TISL
 	tPTISL			tisl;
-	// É¾²Á¥¹¥¿¥Ã¥¯
+	// è©•ä¾¡ã‚¹ã‚¿ãƒƒã‚¯
 	tPOBJECT		stack;
 	tINT			stack_size;
 	tINT			max_stack_size;
@@ -312,11 +312,11 @@ struct tVM_ {// ½çÈÖÊÑ¤¨¤Ê¤¤¤Ç!!!
 	tPCELL			tag_list;
 	tOBJECT			last_condition;
 	tOBJECT			throw_object;
-	// ³°Éô»²¾È
-	// TISL_OBJECT ¼«¿È¤Ï°ÜÆ°¤·¤Æ¤Ï¤¤¤±¤Ê¤¤
-	// Âç°è
+	// å¤–éƒ¨å‚ç…§
+	// TISL_OBJECT è‡ªèº«ã¯ç§»å‹•ã—ã¦ã¯ã„ã‘ãªã„
+	// å¤§åŸŸ
 	tPCELL			global_ref_head;
-	// ¶É½ê
+	// å±€æ‰€
 	tPCELL			local_ref_head;
 	// Garbage Collector
 	tPGC			gc;
@@ -328,7 +328,7 @@ struct tVM_ {// ½çÈÖÊÑ¤¨¤Ê¤¤¤Ç!!!
 	tPCELL			function;
 	// invoke_point
 //	tPOBJECT		invoke_point;
-	// É¸½à¥¹¥È¥ê¡¼¥à
+	// æ¨™æº–ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 	tPCELL			standard_input;
 	tPCELL			standard_output;
 	tPCELL			error_output;

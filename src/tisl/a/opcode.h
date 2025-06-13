@@ -16,7 +16,7 @@
 #define reg_ESI						6
 #define reg_EDI						7
 
-// ¾ò·ï¥Æ¥¹¥È¥Õ¥£¡¼¥ë¥É
+// æ¡ä»¶ãƒ†ã‚¹ãƒˆãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 #define tttn_O						 0
 #define tttn_NO						 1
 #define tttn_B						 2

@@ -25,7 +25,7 @@ extern void tisl_unlock(tPVM* lock);
 // tOBJECT
 
 VM_RET unbound_write(tPVM vm, tPCELL stream, tPOBJECT obj)
-{// �㳰��/*!!!*/
+{// 例外？/*!!!*/
 	return write_string(vm, stream, "#unbound");
 }
 
@@ -113,7 +113,7 @@ tCSTRING built_in_class_get_name(const tINT id)
 	case CLASS_FOREIGN_OBJECT:				string="<foreign-object>"; break;
 	case CLASS_VIOLATION:					string="<violation>"; break;
 	case CLASS_FOREIGN_CLASS:				string="<foreign-class>"; break;
-	default:/*!!!*//*�㳰��*/				string="<object>";
+	default:/*!!!*//*例外？*/				string="<object>";
 	}
 	return string;
 }
@@ -185,7 +185,7 @@ tBOOL object_equal(tPOBJECT obj1, tPOBJECT obj2)
 		return unquote_equal(OBJECT_GET_CELL(obj1), OBJECT_GET_CELL(obj2));
 	case OBJECT_UNQUOTE_SPLICING:
 		return unquote_splicing_equal(OBJECT_GET_CELL(obj1), OBJECT_GET_CELL(obj2));
-	default:// ɸ�४�֥������ȤȤ���ؿ��Ѱդ��롩
+	default:// 標準オブジェクトとかも関数用意する？
 		return (OBJECT_GET_CELL(obj1)==OBJECT_GET_CELL(obj2)) ? tTRUE : tFALSE;
 	}
 }
@@ -194,9 +194,9 @@ tBOOL object_is_instance(tPVM vm, tPOBJECT obj, tPOBJECT clss)
 {
 	tOBJECT clss1;
 	object_get_class(obj, &clss1);
-	// ľ�ܤΥ��󥹥���
+	// 直接のインスタンス
 	if (object_eql(&clss1, clss)) return tTRUE;
-	// ���̥��饹�Υ��󥹥���
+	// 下位クラスのインスタンス
 	if (class_is_subclass(vm, &clss1, clss)) return tTRUE;
 	return tFALSE;
 }
@@ -224,7 +224,7 @@ void object_get_class(tPOBJECT obj, tPOBJECT clss)
 	case OBJECT_SYMBOL:				OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_SYMBOL);				break;
 	case OBJECT_VECTOR:				OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_GENERAL_VECTOR);		break;
 	case OBJECT_ARRAY:				OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_GENERAL_ARRAY_A);		break;
-	case OBJECT_QUASIQUOTE:			// ���Τؤ�ϲ����饹�ˤʤ���������
+	case OBJECT_QUASIQUOTE:			// このへんは何クラスになるんだろう？
 	case OBJECT_UNQUOTE:
 	case OBJECT_UNQUOTE_SPLICING:	OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_OBJECT);				break;
 	case OBJECT_STRING_STREAM:		OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_STRING_STREAM);		break;
@@ -237,7 +237,7 @@ void object_get_class(tPOBJECT obj, tPOBJECT clss)
 	case OBJECT_LOCAL_FUNCTION:		OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_LOCAL_FUNCTION);		break;
 	case OBJECT_STANDARD_CLASS:		OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_STANDARD_CLASS);		break;
 	case OBJECT_GENERIC_FUNCTION:	OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_STANDARD_GENERIC_FUNCTION);	break;
-	case OBJECT_METHOD:				// first class�ˤϸ����ƤϤ��ʤ��Ϥ�
+	case OBJECT_METHOD:				// first classには現われてはこないはず
 	case OBJECT_APPLICABLE_METHOD:
 	case OBJECT_EFFECTIVE_METHOD:	OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_OBJECT); break;
 	case OBJECT_INSTANCE:			OBJECT_SET_STANDARD_CLASS(clss, instance_get_class(OBJECT_GET_CELL(obj))); break;
@@ -245,7 +245,7 @@ void object_get_class(tPOBJECT obj, tPOBJECT clss)
 	case OBJECT_LINKED_FUNCTION:	OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_LIBRARY_FUNCTION);	break;
 	case OBJECT_LINKED_LIBRARY:		OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_DYNAMIC_LINK_LIBRARY);break;
 	case OBJECT_FOREIGN_CLASS:		OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_FOREIGN_CLASS);		break;
-	case OBJECT_TISL_OBJECT:// first class�ˤ��롩
+	case OBJECT_TISL_OBJECT:// first classにくる？
 	default:						OBJECT_SET_BUILT_IN_CLASS(clss, CLASS_OBJECT);
 	}
 }
@@ -253,18 +253,18 @@ void object_get_class(tPOBJECT obj, tPOBJECT clss)
 tBOOL class_is_subclass(tPVM vm, tPOBJECT clss, tPOBJECT super)
 {
 	if (OBJECT_IS_BUILT_IN_CLASS(clss)&&OBJECT_IS_BUILT_IN_CLASS(super)) {
-		// ξ���Ȥ��ȹ��ߥ��饹
+		// 両方とも組込みクラス
 		return ((OBJECT_GET_INTEGER(clss)&OBJECT_GET_INTEGER(super))==OBJECT_GET_INTEGER(super)) ? tTRUE : tFALSE;
 	} else if (OBJECT_IS_STANDARD_CLASS(clss)&&OBJECT_IS_STANDARD_CLASS(super)) {
 		return standard_class_is_subclass(vm, OBJECT_GET_CELL(clss), OBJECT_GET_CELL(super));
 	} else if (OBJECT_IS_STANDARD_CLASS(clss)&&OBJECT_IS_BUILT_IN_CLASS(super)) {
-		// ɸ�९�饹�ξ�̤��ȹ��ߥ��饹��<object>�Τ�
+		// 標準クラスの上位の組込みクラスは<object>のみ
 		if (OBJECT_GET_INTEGER(super)==CLASS_OBJECT)
 			return tTRUE;
 		else
 			return tFALSE;
 	} else if (OBJECT_IS_BUILT_IN_CLASS(clss)&&OBJECT_IS_STANDARD_CLASS(super)) {
-		// ���ꤨ�ʤ�
+		// ありえない
 		return tFALSE;
 	} else if (OBJECT_IS_FOREIGN_CLASS(clss)&&OBJECT_IS_FOREIGN_CLASS(clss)) {
 		return foreign_class_is_subclass(OBJECT_GET_CELL(clss), OBJECT_GET_CELL(super));
@@ -275,7 +275,7 @@ tBOOL class_is_subclass(tPVM vm, tPOBJECT clss, tPOBJECT super)
 		else
 			return tFALSE;
 	} else if (OBJECT_IS_BUILT_IN_CLASS(clss)&&OBJECT_IS_FOREIGN_CLASS(super)) {
-		// ���ꤨ�ʤ�
+		// ありえない
 		return tFALSE;
 	} else {// domain-error?
 		return tFALSE;
@@ -285,11 +285,11 @@ tBOOL class_is_subclass(tPVM vm, tPOBJECT clss, tPOBJECT super)
 static tINT built_in_class_get_precedence(tINT clss1, tINT clss2);
 static tINT built_in_class_get_depth(tINT clss1);
 
-// class1�Υ��饹ͥ���٤ˤ�����class2��ͥ���٤μ���
+// class1のクラス優先度におけるclass2の優先度の取得
 tINT class_get_precedence(tPVM vm, tPOBJECT clss1, tPOBJECT clss2)
 {
 	if (OBJECT_IS_STANDARD_CLASS(clss1)) {
-		// ɸ�९�饹��ͥ����
+		// 標準クラスの優先度
 		return standard_class_get_precedence(vm, OBJECT_GET_CELL(clss1), clss2);
 	} else if (OBJECT_IS_BUILT_IN_CLASS(clss1)) {
 		if (OBJECT_IS_BUILT_IN_CLASS(clss2))
@@ -499,7 +499,7 @@ void free_set_next(tPCELL cell, tPCELL next)
 }
 
 VM_RET free_write(tPVM vm, tPCELL stream, tPOBJECT obj)
-{// �㳰?/*!!!*/
+{// 例外?/*!!!*/
 	return write_string(vm, stream, "#garbage");
 }
 
@@ -541,7 +541,7 @@ static VM_RET cons_write_(tPVM vm, tPCELL stream, tPCELL cons);
 #define CONS_GET_CDR(cons, obj)			(OBJECT_SET_TYPE(obj, CONS_GET_CDR_TYPE(cons)), (obj)->data=CONS_GET_CDR_DATA(cons))
 #define CONS_SET_CDR(cons, obj)			(CONS_SET_CDR_TYPE(cons, OBJECT_GET_TYPE(obj)), CONS_SET_CDR_DATA(cons, (obj)->data))
 
-// car cdr ���ݸ��
+// car cdr の保護あり
 VM_RET cons_create(tPVM vm, tPCELL* cons, tPOBJECT car, tPOBJECT cdr)
 {
 	VM_RET ret;
@@ -554,7 +554,7 @@ VM_RET cons_create(tPVM vm, tPCELL* cons, tPOBJECT car, tPOBJECT cdr)
 	return ret;
 }
 
-// car cdr ���ݸ�̵��
+// car cdr の保護無し
 VM_RET cons_create_(tPVM vm, tPCELL* cons, tPOBJECT car, tPOBJECT cdr)
 {
 	if (!allocate_cell(vm, CONS_SIZE, cons)) return signal_condition(vm, TISL_ERROR_CANNOT_CREATE_CONS);
@@ -631,13 +631,13 @@ VM_RET cons_write(tPVM vm, tPCELL stream, tPOBJECT obj)
 }
 
 // /*!!!*/
-// cdr������Ĺ���ꥹ�Ȥ�ɽ�����б�������
-// car�����Υꥹ�Ȥˤ��б����Ƥ��ʤ���Ĺ���Ȥ��Τ�������뤫��
-// (C��)�����å������դ줽���ʽ�ϺƵ��ƤӽФ��ǽ�����񤯤ΤϤޤ���
-// �����褦����ͳ�Ǥ��������ʤȤ��������������ˤ���
-// (�꡼�����饤�����������礭������equal����)
-// ���˽����Ϥ�񤯤Ȥ��ˤϡ����Τؤ���äȰռ����ƽ񤯤���!!!
-// (���뤤�ϡ����¤�Ĥ���)
+// cdr方向の長いリストの表示に対応させる
+// car方向のリストには対応していない．長いとそのうち落ちるかも
+// (Cの)スタックがあふれそうな所は再帰呼び出しで処理を書くのはまずい
+// 似たような理由でおちそうなところがあちこちにある
+// (リーダ，ライタ，次元の大きい配列，equal，…)
+// 次に処理系を書くときには，そのへんをもっと意識して書くこと!!!
+// (あるいは，制限をつける)
 // /*!!!*/
 static void cons_clear_loop(tPCELL cons);
 
@@ -750,7 +750,7 @@ VM_RET list_set_object(tPVM vm, tPCELL p, const tINT i, tPOBJECT obj)
 tBOOL cons_equal(tPCELL cons1, tPCELL cons2)
 {
 	if (cons1==cons2) return tTRUE;
-	{// loop���Ƥ��OUT
+	{// loopしてるとOUT
 		tOBJECT car1, car2, cdr1, cdr2;
 LOOP:
 		CONS_GET_CAR(cons1, &car1);
@@ -777,7 +777,7 @@ LOOP:
 VM_RET cons_mark(tPVM vm, tPCELL cell)
 {
 	tOBJECT obj;
-	// �����å���
+	// スタックへ
 	CONS_GET_CAR(cell, &obj);
 	if (gc_push(vm, &obj)) return VM_ERROR;
 	CONS_GET_CDR(cell, &obj);
@@ -796,21 +796,21 @@ VM_RET cons_mark(tPVM vm, tPCELL cell)
 #define STRING_GET_STRING(string)			((tCSTRING)((string)+4))
 #define STRING_GET_DATA(string)				((tSTRING)((string)+4))
 
-// ��ƥ��ʸ���� �ѹ��Բ�ǽ
+// リテラル文字列 変更不可能
 VM_RET string_create(tPVM vm, tCSTRING string, tPCELL* cell)
 {
 	tINT len;
 	tUINT s;
-	// Ĺ���μ���
+	// 長さの取得
 	len=strlen((char*)string)+1;
-	// VM����ҡ��פγ���
+	// VMからヒープの確保
 	s=allocate_cell(vm, sizeof(tCELL)*4+sizeof(tCHAR)*len, cell);
 	if (!s) return signal_condition(vm, TISL_ERROR_CANNOT_CREATE_STRING);
-	// CELL�η�������
+	// CELLの型の設定
 	CELL_SET_TYPE(*cell, CELL_STRING);
-	// ���������ؿ��Ǻ��������ʸ����ϥ�ƥ��ʸ����
+	// この生成関数で作成される文字列はリテラル文字列
 	CELL_SET_IMMUTABLE(*cell);
-	// ���ͤν����
+	// 各値の初期化
 	STRING_SET_SIZE(*cell, s);
 	STRING_SET_LENGTH(*cell, len);
 	strcpy((char*)STRING_GET_STRING(*cell), string);
@@ -818,7 +818,7 @@ VM_RET string_create(tPVM vm, tCSTRING string, tPCELL* cell)
 	return VM_OK;
 }
 
-// create-string�Ǻ��������ʸ�����ѹ���ǽ
+// create-stringで作成される文字列変更可能
 VM_RET string_create_2(tPVM vm, const tINT len, tCHAR c, tPCELL* cell)
 {
 	tUINT s;
@@ -1302,7 +1302,7 @@ VM_RET array_create_(tPVM vm, const tINT d, tPOBJECT list, tPCELL* cell)
 		CELL_SET_IMMUTABLE(*cell);
 		ARRAY_SET_SIZE(*cell, size);
 		ARRAY_SET_DIMENSION(*cell, d);
-		// �������Ǥη׻�
+		// 次元要素の計算
 		dimension=ARRAY_GET_DIMENSION_HEAD(*cell);
 		dimension[0].i=n;
 		for (p=OBJECT_GET_CELL(list), i=1; i<d; i++, p=cons_get_car_cons(p)) {
@@ -1312,7 +1312,7 @@ VM_RET array_create_(tPVM vm, const tINT d, tPOBJECT list, tPCELL* cell)
 			if (!len) return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 			dimension[i].i=dimension[i-1].i / len;
 		}
-		// �������Ǥν����
+		// 配列要素の初期化
 		if (array_create_set_object(vm, *cell, ARRAY_GET_OBJECT_HEAD(*cell), OBJECT_GET_CELL(list), 1)) return VM_ERROR;
 	} else { // d==0
 		tUINT size;
@@ -1333,21 +1333,21 @@ VM_RET array_create_2_(tPVM vm, tPCELL dimensions, tPOBJECT init, tPCELL* cell)
 	if (dimensions) {
 		tINT d;
 		d=cons_get_length(dimensions);
-		if (d==1) {// 1�������� �٥��ȥ�
+		if (d==1) {// 1次元配列 ベクトル
 			tOBJECT obj;
 			tINT dd;
 			CONS_GET_CAR(dimensions, &obj);
 			if (!OBJECT_IS_INTEGER(&obj)) return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_INTEGER, &obj);
 			dd=OBJECT_GET_INTEGER(&obj);
 			if (dd<0) return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_INTEGER, &obj);
-			// �٥��ȥ�Ȥ��ƽ����
+			// ベクトルとして初期化
 			return vector_create_2_(vm, dd, init, cell);
-		} else {// ����
+		} else {// 配列
 			tINT i, j, n, dd;
 			tUINT size;
 			tPCELL p;
 			tOBJECT obj;
-			for (p=dimensions, n=1; p; p=cons_get_cdr_cons(p)/*�ɥåȥꥹ�Ȥ�̵��*/) {
+			for (p=dimensions, n=1; p; p=cons_get_cdr_cons(p)/*ドットリストは無視*/) {
 				CONS_GET_CAR(p, &obj);
 				if (!OBJECT_IS_INTEGER(&obj)||
 					(OBJECT_GET_INTEGER(&obj)<=0)) return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_INTEGER, &obj);
@@ -1357,7 +1357,7 @@ VM_RET array_create_2_(tPVM vm, tPCELL dimensions, tPOBJECT init, tPCELL* cell)
 			if (!size) return signal_condition(vm, TISL_ERROR_CANNOT_CREATE_ARRAY);
 			CELL_SET_TYPE(*cell, CELL_ARRAY);
 			ARRAY_SET_SIZE(*cell, size);
-			// �����ǡ���
+			// 次元データ
 			ARRAY_SET_DIMENSION(*cell, d);
 			j=n;
 			for (p=dimensions, i=0; i<d-1; i++, p=cons_get_cdr_cons(p)) {
@@ -1368,12 +1368,12 @@ VM_RET array_create_2_(tPVM vm, tPCELL dimensions, tPOBJECT init, tPCELL* cell)
 			}
 			CONS_GET_CAR(p, &obj);
 			ARRAY_GET_DIMENSION_HEAD(*cell)[i].i=OBJECT_GET_INTEGER(&obj);
-			// �����Ǥν����
+			// 各要素の初期化
 			for (i=0; i<n; i++) {
 				ARRAY_GET_OBJECT_HEAD(*cell)[i]=*init;
 			}
 		}
-	} else {// 0��������
+	} else {// 0次元配列
 		tUINT size;
 		size=allocate_cell(vm, sizeof(tCELL)*3+sizeof(tOBJECT), cell);
 		if (!size) return signal_condition(vm, TISL_ERROR_CANNOT_CREATE_ARRAY);
@@ -1497,7 +1497,7 @@ VM_RET array_get_object(tPVM vm, tPCELL array, const tINT d, tPOBJECT ret)
 			d2=ARRAY_GET_DIMENSION_HEAD(array)[i].i;
 		}
 		*ret=ARRAY_GET_OBJECT_HEAD(array)[d3];
-	} else if (d==1) {// �٥����Ϥʤ��Ϥ�
+	} else if (d==1) {// ベクタはないはず
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	} else {// d==0
 		*ret=ARRAY_GET_OBJECT_HEAD(array)[0];
@@ -1526,7 +1526,7 @@ VM_RET array_set_object(tPVM vm, tPCELL array, const tINT d, tPOBJECT obj)
 			d2=ARRAY_GET_DIMENSION_HEAD(array)[i].i;
 		}
 		ARRAY_GET_OBJECT_HEAD(array)[d3]=*obj;
-	} else if (d==1) {// �٥����Ϥʤ��Ϥ�
+	} else if (d==1) {// ベクタはないはず
 		return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	} else {// d==0
 		ARRAY_GET_OBJECT_HEAD(array)[0]=*obj;
@@ -1842,7 +1842,7 @@ VM_RET string_buffer_create(tPVM vm, tPBUFFER* b)
 	return VM_OK;
 }
 
-// ��ʬ���Ȥ˻��Ѥ��Ƥ������γ���
+// 自分自身に使用しているメモリの開放
 void string_buffer_free(tPBUFFER buffer)
 {
 	if (buffer) {
@@ -2205,7 +2205,7 @@ VM_RET file_stream_create(tPVM vm, const tINT io_flag, tPCELL name, tPCELL* stre
 	FILE_STREAM_SET_NAME(*stream, name);
 
 	if ((io_flag&STREAM_INPUT)&&(io_flag&STREAM_OUTPUT)) {
-		// b t c �ɤ����褦��
+		// b t c どうしよう？
 		file=fopen(string_get_string(name), "w+");
 		FILE_STREAM_SET_INPUT(*stream);
 		FILE_STREAM_SET_OUTPUT(*stream);
@@ -2313,7 +2313,7 @@ tINT file_stream_get_y(tPCELL stream)
 }
 
 VM_RET file_stream_read_char(tPVM vm, tPCELL stream, tPCHAR c)
-{//�����θ����ϸƤӽФ���Ȥ����Ǥ�뤳��
+{//引数の検査は呼び出しもとの方でやること
 	*c=(tCHAR)fgetc(FILE_STREAM_GET_FILE(stream));
 	if (*c==(tCHAR)EOF) {
 		if (vm_get_reader_eos_error(vm)) {
@@ -2443,7 +2443,7 @@ VM_RET file_stream_get_position(tPVM vm, tPCELL stream, tINT* pos)
 	if (fpos<0) {
 		return signal_stream_error(vm, TISL_ERROR_STREAM_ERROR, stream);
 	}
-	*pos=(tINT)fpos;// ���ꤢ�ꤽ��?tINT�ʾ�Υ������Υե���������ꡡ2G���餤��/*!!!*/
+	*pos=(tINT)fpos;// 問題ありそう?tINT以上のサイズのファイルで問題　2Gぐらい？/*!!!*/
 	return VM_OK;
 }
 

@@ -41,18 +41,18 @@ typedef tINT					TISL_RET;
 #define TISL_OK		0
 #define TISL_ERROR	-1
 
-// TISL������
+// TISLの生成
 
 // create_tisl
 TISL_IMPORT_OR_EXPORT TISL_RET
 create_tni(TISL** tisl, TNI** tni, TNI_INIT_ARGS* args);
 
-// TISL�Υǥե���Ƚ��������������
+// TISLのデフォルト初期化引数の設定
 // set_default_tni_init_args
 TISL_IMPORT_OR_EXPORT TISL_RET
 set_default_tni_init_args(TNI_INIT_ARGS* args);
 
-// TISL�����Ͻ�����Ѱ���
+// TISL処理系初期化用引数
 struct TNI_INIT_ARGS_ {
 	int		argc;
 	char**	argv;
@@ -89,23 +89,23 @@ struct TNI_ {
 	TISL_OBJECT (TISLCALL *get_last_condition)(TNI* tni);
 	// clear_last_condition
 	void (TISLCALL *clear_last_condition)(TNI* tni);
-	// ��軲�Ȥ�����
+	// 大域参照の通知
 	TISL_OBJECT (TISLCALL *new_global_ref)(TNI* tni, TISL_OBJECT obj);
 	void (TISLCALL *delete_global_ref)(TNI* tni, TISL_OBJECT obj);
-	// �ɽ껲�Ȥ�����
+	// 局所参照の通知
 	void (TISLCALL *delete_local_ref)(TNI* tni, TISL_OBJECT obj);
-	// ̾��������ꤵ��륪�֥������Ȥμ���
-	// �ѿ�̾������
+	// 名前から指定されるオブジェクトの取得
+	// 変数名前空間
 	TISL_OBJECT (TISLCALL *get_variable)(TNI* tni, tCSTRING name);
 	void (TISLCALL *set_variable)(TNI* tni, tCSTRING name, TISL_OBJECT obj);
-	// �ؿ�̾������
+	// 関数名前空間
 	TISL_OBJECT (TISLCALL *get_function)(TNI* tni, tCSTRING name);
-	// ưŪ�ѿ�̾������
+	// 動的変数名前空間
 	TISL_OBJECT (TISLCALL *get_dynamic)(TNI* tni, tCSTRING name);
 	void (TISLCALL *set_dynamic)(TNI* tni, tCSTRING name, TISL_OBJECT obj);
-	// ���饹̾������
+	// クラス名前空間
 	TISL_OBJECT (TISLCALL *get_class)(TNI* tni, tCSTRING name);
-	// �ȹ��ߥ��֥������Ȥ������ȥǡ����μ���
+	// 組込みオブジェクトの生成とデータの取得
 	// <integer>
 	TISL_OBJECT (TISLCALL *create_integer)(TNI* tni, tINT i);
 	tINT (TISLCALL *object_get_integer)(TNI* tni, TISL_OBJECT obj);
@@ -124,20 +124,20 @@ struct TNI_ {
 	// <foreign-object>
 	TISL_OBJECT (TISLCALL *create_foreign_object)(TNI* tni, void* fobj, void (*release)(TNI* tni, void* fobj));
 	void* (TISLCALL *object_get_foreign_object)(TNI* tni, TISL_OBJECT obj);
-	// �ؿ��ƽФ�
+	// 関数呼出し
 	TISL_OBJECT (TISLCALL *function_call)(TNI* tni, TISL_OBJECT function, ...);
 	TISL_OBJECT (TISLCALL *function_call_l)(TNI* tni, TISL_OBJECT function, TISL_OBJECT arg_list);
-	// ��ɽ�æ��
+	// 非局所脱出
 	void (TISLCALL* tisl_throw)(TNI* tni, TISL_OBJECT tag, TISL_OBJECT obj);
-	// ������
+	// 型検査
 	TISL_OBJECT (TISLCALL* assure)(TNI* tni, tCSTRING clss, TISL_OBJECT obj);
-	// ���Ѵ�
+	// 型変換
 	TISL_OBJECT (TISLCALL* convert)(TNI* tni, TISL_OBJECT obj, tCSTRING clss);
-	// �ե�����Υ�����
+	// ファイルのロード
 	void (TISLCALL* load)(TNI* tni, tCSTRING file_name);
 	// evaluate_top_form
 	TISL_OBJECT (TISLCALL *evaluate_top_form)(TNI* tni, TISL_OBJECT form);
-	// �ѥå�����
+	// パッケージ
 	void (TISLCALL *in_package)(TNI* tni, tCSTRING name);
 	//
 	TISL_OBJECT (TISLCALL *evaluate)(TNI* tni, const void* buffer, const tUINT buffer_size);

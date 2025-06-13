@@ -21,7 +21,7 @@
 ///////////////////////////////////////
 extern VM_RET string_stream_create(tPVM vm, const tINT io_flag, tPCELL* cell);
 
-// TNIÍÑ¤Î½é´ü²½°ú¿ô¤«¤éVMÍÑ¤Î½é´ü²½°ú¿ô¤ÎºîÀ®
+// TNIç”¨ã®åˆæœŸåŒ–å¼•æ•°ã‹ã‚‰VMç”¨ã®åˆæœŸåŒ–å¼•æ•°ã®ä½œæˆ
 void set_vm_init_args(tVM_INIT_ARGS* vm_args, TNI_INIT_ARGS* tni_args)
 {
 	vm_args->init_stack_size=tni_args->init_stack_size;
@@ -30,7 +30,7 @@ void set_vm_init_args(tVM_INIT_ARGS* vm_args, TNI_INIT_ARGS* tni_args)
 
 #define HEAP_SIZE_UNIT		65536
 
-// VM ¤ÎÀ¸À®
+// VM ã®ç”Ÿæˆ
 tBOOL create_vm(tPTISL tisl, tPVM* vm, tVM_INIT_ARGS* args)
 {
 	*vm=malloc(sizeof(tVM));
@@ -76,7 +76,7 @@ tBOOL create_vm(tPTISL tisl, tPVM* vm, tVM_INIT_ARGS* args)
 	(*vm)->char_set=TISL_CHAR_SET_SJIS;
 	// writer
 	(*vm)->writer_flag=tFALSE;
-	// É¸½à¥¹¥È¥ê¡¼¥à
+	// æ¨™æº–ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 	(*vm)->standard_input=0;
 	(*vm)->standard_output=0;
 	(*vm)->error_output=0;
@@ -89,7 +89,7 @@ tBOOL create_vm(tPTISL tisl, tPVM* vm, tVM_INIT_ARGS* args)
 	if (create_translator(*vm, &(*vm)->translator)) goto ERROR3;
 	// 
 	if (cons_create_(*vm, &(*vm)->temp_stack, &nil, &nil)) return VM_ERROR;
-	// ³°Éô¤«¤é¸Æ½Ğ¤µ¤ì¤¿¤È¤­¤Î¤¿¤á¤Ë°ìËçÍÑ°Õ¤·¤Æ¤ª¤¯¡¥
+	// å¤–éƒ¨ã‹ã‚‰å‘¼å‡ºã•ã‚ŒãŸã¨ãã®ãŸã‚ã«ä¸€æšç”¨æ„ã—ã¦ãŠãï¼
 	if (vm_push_local_ref(*vm)) return VM_ERROR;
 
 	(*vm)->state=VM_STATE_OK;
@@ -105,7 +105,7 @@ ERROR:
 	return tFALSE;
 }
 
-// VM¤Î³«Êü
+// VMã®é–‹æ”¾
 tBOOL free_vm(tPVM vm)
 {
 	free_translator(vm->translator);
@@ -262,7 +262,7 @@ tPCELL vm_get_system_package(tPVM vm)
 }
 
 /////////////////////////////
-// ³°Éô»²¾È
+// å¤–éƒ¨å‚ç…§
 
 VM_RET vm_new_global_ref(tPVM vm, TISL_OBJECT ref, TISL_OBJECT* new_ref)
 {
@@ -343,7 +343,7 @@ VM_RET vm_new_local_ref_(tPVM vm, tPOBJECT obj, TISL_OBJECT* new_ref)
 void vm_delete_local_ref(tPVM vm, TISL_OBJECT ref)
 {
 	if (vm->local_ref_head) {
-		// ¥í¡¼¥«¥ë»²¾È¤¬¥ì¥Ù¥ë¤òÄ¶¤¨¤Æ»²¾È¤µ¤ì¤ë¤³¤È¤Ï¤Ê¤¤¤Ï¤º
+		// ãƒ­ãƒ¼ã‚«ãƒ«å‚ç…§ãŒãƒ¬ãƒ™ãƒ«ã‚’è¶…ãˆã¦å‚ç…§ã•ã‚Œã‚‹ã“ã¨ã¯ãªã„ã¯ãš
 		tPCELL p, last;
 		tOBJECT tmp;
 		cons_get_car(vm->local_ref_head, &tmp);
@@ -362,7 +362,7 @@ void vm_delete_local_ref(tPVM vm, TISL_OBJECT ref)
 }
 
 /////////////////////////////
-// ¥¹¥¿¥Ã¥¯
+// ã‚¹ã‚¿ãƒƒã‚¯
 
 static VM_RET vm_extend_stack(tPVM vm);
 
@@ -370,7 +370,7 @@ VM_RET vm_push(tPVM vm, tPOBJECT obj)
 {
 	vm->SP++;
 	if (vm->stack_size==vm->SP-vm->stack) {
-		// ¥¹¥¿¥Ã¥¯¤Î³ÈÄ¥
+		// ã‚¹ã‚¿ãƒƒã‚¯ã®æ‹¡å¼µ
 		if (vm_extend_stack(vm)) return VM_ERROR;
 	}
 	*vm->SP=*obj;
@@ -380,7 +380,7 @@ VM_RET vm_push(tPVM vm, tPOBJECT obj)
 VM_RET vm_check_stack_overflow(tPVM vm, const tINT n)
 {
 	while (vm->stack_size<=vm->SP-vm->stack+n) {
-		// ¥¹¥¿¥Ã¥¯¤Î³ÈÄ¥
+		// ã‚¹ã‚¿ãƒƒã‚¯ã®æ‹¡å¼µ
 		if (vm_extend_stack(vm)) return VM_ERROR;
 	}
 	return VM_OK;
@@ -445,7 +445,7 @@ VM_RET vm_list(tPVM vm, const tINT n)
 {
 	tINT i;
 	tPCELL p;
-	if (vm->SP-vm->stack<=n)// system-error¤«¡©
+	if (vm->SP-vm->stack<=n)// system-errorã‹ï¼Ÿ
 		return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
 	{
 		tOBJECT tmp=*(vm->SP);
@@ -521,7 +521,7 @@ tBOOL is_DBCS_lead_byte(tPVM vm, tCHAR c)
 	return (c>=0x80) ? tTRUE : tFALSE;
 }
 
-//¥¹¥È¥ê¡¼¥à
+//ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 
 void vm_output_stream_clear(tPVM vm)
 {
@@ -563,7 +563,7 @@ VM_RET vm_string_to_symbol(tPVM vm, tPCELL string, tPOBJECT symbol)
 }
 
 /////////////////////////////
-// É¸½à¥¹¥È¥ê¡¼¥à
+// æ¨™æº–ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 tPCELL vm_get_standard_input(tPVM vm)
 {
 	if (vm->standard_input) {
@@ -726,7 +726,7 @@ const tCONDITION_TABLE condition_table[]={
 	// <serious-condition>
 	{ "system-error",				CLASS_SERIOUS_CONDITION,	system_condition_create },
 	{ "unnamed-error",				CLASS_SERIOUS_CONDITION,	default_condition_create },
-	// ÊÌ¤Î¾ì½ê¤«¡©
+	// åˆ¥ã®å ´æ‰€ã‹ï¼Ÿ
 	{ "convert-error(array)",		CLASS_SERIOUS_CONDITION,	default_condition_create },
 	// <error>
 	// <arithmetic-error>
@@ -809,7 +809,7 @@ const tCONDITION_TABLE condition_table[]={
 
 ///////////////////
 
-// ¥¿¥°
+// ã‚¿ã‚°
 VM_RET vm_push_tag(tPVM vm, tPOBJECT tag)
 {
 	tPCELL p;
@@ -853,7 +853,7 @@ tBOOL vm_search_tag(tPVM vm, tPOBJECT tag)
 	for (p=vm->tag_list; p; p=cons_get_cdr_cons(p)) {
 		cons_get_car(p, &obj);
 		if (object_eql(&obj, tag)) {
-			// ¼«Ê¬¤è¤ê¤â¸å¤ËÀßÄê¤µ¤ì¤¿¥¿¥°¤òÌµ¸ú¤Ë¤¹¤ë
+			// è‡ªåˆ†ã‚ˆã‚Šã‚‚å¾Œã«è¨­å®šã•ã‚ŒãŸã‚¿ã‚°ã‚’ç„¡åŠ¹ã«ã™ã‚‹
 			vm->tag_list=cons_get_cdr_cons(p);
 			return tTRUE;
 		}
@@ -881,7 +881,7 @@ void vm_clear_tag(tPVM vm)
 	vm->tag_list=0;
 }
 
-// ¥Ï¥ó¥É¥é´Ø¿ô¤Î´ÉÍı
+// ãƒãƒ³ãƒ‰ãƒ©é–¢æ•°ã®ç®¡ç†
 
 #define SYSTEM_HANDLER_TOP					0
 #define SYSTEM_HANDLER_FOREIGN_FUNCTION		1
@@ -913,12 +913,12 @@ void vm_get_handler(tPVM vm, tPOBJECT handler)
 	if (vm->handler_list) {
 		cons_get_car(vm->handler_list, handler);
 	} else {
-		// ½èÍı·ÏÄêµÁ¥Ç¥Õ¥©¥ë¥È¥Ï¥ó¥É¥é
+		// å‡¦ç†ç³»å®šç¾©ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒãƒ³ãƒ‰ãƒ©
 		OBJECT_SET_INTEGER(handler, SYSTEM_HANDLER_TOP);
 	}
 }
 
-// ÆÃ¼ìÎã³°¥Ï¥ó¥É¥é
+// ç‰¹æ®Šä¾‹å¤–ãƒãƒ³ãƒ‰ãƒ©
 VM_RET vm_push_ignore_errors_handler(tPVM vm)
 {
 	tOBJECT handler;
@@ -933,7 +933,7 @@ VM_RET vm_push_foreign_function_handler(tPVM vm)
 	return vm_push_handler(vm, &handler);
 }
 
-// ¥Ï¥ó¥É¥é¤ÎÆ±Äê
+// ãƒãƒ³ãƒ‰ãƒ©ã®åŒå®š
 tBOOL handler_is_system_handler(tPOBJECT handler)
 {
 	return OBJECT_IS_INTEGER(handler) ? tTRUE : tFALSE;
@@ -953,7 +953,7 @@ tBOOL handler_is_foreign_function(tPOBJECT handler)
 		? tTRUE : tFALSE;
 }
 
-// VM¤Î¾õÂÖ
+// VMã®çŠ¶æ…‹
 
 #define VM_CONDITION_EOS_ERROR		1
 #define VM_CONDITION_IGNORE_ERRORS	2
@@ -1021,17 +1021,17 @@ VM_RET signal_condition(tPVM vm, const int error_id)
 	tOBJECT obj;
 
 	if (ERROR_IS_SYSTEM_ERROR(error_id)) {
-		// Îã³°½èÍı¤ÎÆñ¤·¤¤Îã³°
+		// ä¾‹å¤–å‡¦ç†ã®é›£ã—ã„ä¾‹å¤–
 		if ((*condition_table[error_id].create)(vm, error_id, &condition)) return VM_ERROR;
 		cell_to_object(condition, &obj);
 		vm_set_last_condition(vm, &obj);
-		// ºÇ¾å°Ì¤Ş¤ÇÃ¦½Ğ
+		// æœ€ä¸Šä½ã¾ã§è„±å‡º
 		return VM_ERROR;
 	} else {
-		// Îã³°½èÍı¤ÎÂĞ¾İ¤È¤Ê¤ëÎã³°
+		// ä¾‹å¤–å‡¦ç†ã®å¯¾è±¡ã¨ãªã‚‹ä¾‹å¤–
 		if ((*condition_table[error_id].create)(vm, error_id, &condition)) return VM_ERROR;
 		handle_condition(vm, condition);
-		// ¥Ï¥ó¥É¥é´Ø¿ô¤ÏÀµ¾ï½ªÎ»¤·¤Ê¤¤
+		// ãƒãƒ³ãƒ‰ãƒ©é–¢æ•°ã¯æ­£å¸¸çµ‚äº†ã—ãªã„
 		return VM_ERROR;
 	}
 }
@@ -1097,7 +1097,7 @@ VM_RET signal_domain_error_(tPVM vm, const int error_id, tPOBJECT c, tPOBJECT ob
 	}
 	if (tisl_get_string(vm_get_tisl(vm), vm, condition_table[error_id].name, &string)) return VM_ERROR;
 	if (condition_create(vm, condition_table[error_id].error_class_id, string, &unbound, &unbound, &unbound, &place, &condition)) return VM_ERROR;
-	// ¥¹¥í¥Ã¥ÈÀßÄê
+	// ã‚¹ãƒ­ãƒƒãƒˆè¨­å®š
 	domain_error_set_expected_class(condition, c);
 	domain_error_set_object(condition, obj);
 
@@ -1116,7 +1116,7 @@ VM_RET signal_stream_error(tPVM vm, const int error_id, tPCELL stream)
 	}
 	if (tisl_get_string(vm_get_tisl(vm), vm, condition_table[error_id].name, &string)) return VM_ERROR;
 	if (condition_create(vm, condition_table[error_id].error_class_id, string, &unbound, &unbound, &unbound, &place, &condition)) return VM_ERROR;
-	// ¥¹¥í¥Ã¥ÈÀßÄê
+	// ã‚¹ãƒ­ãƒƒãƒˆè¨­å®š
 	cell_to_object(stream, &obj);
 	stream_error_set_stream(condition, &obj);
 
@@ -1135,7 +1135,7 @@ VM_RET signal_parse_error(tPVM vm, const int error_id, tPCELL stream)
 	}
 	if (tisl_get_string(vm_get_tisl(vm), vm, condition_table[error_id].name, &string)) return VM_ERROR;
 	if (condition_create(vm, condition_table[error_id].error_class_id, string, &unbound, &unbound, &unbound, &place, &condition)) return VM_ERROR;
-	// ¥¹¥í¥Ã¥ÈÀßÄê
+	// ã‚¹ãƒ­ãƒƒãƒˆè¨­å®š
 	cell_to_object(stream, &obj);
 	stream_error_set_stream(condition, &obj);
 
@@ -1154,7 +1154,7 @@ VM_RET signal_undefined_entity(tPVM vm, const int error_id, tPCELL name, const t
 	}
 	if (tisl_get_string(vm_get_tisl(vm), vm, condition_table[error_id].name, &string)) return VM_ERROR;
 	if (condition_create(vm, condition_table[error_id].error_class_id, string, &unbound, &unbound, &unbound, &place, &condition)) return VM_ERROR;
-	// ¥¹¥í¥Ã¥ÈÀßÄê
+	// ã‚¹ãƒ­ãƒƒãƒˆè¨­å®š
 	cell_to_object(name, &obj);
 	undefined_entity_set_name(condition, &obj);
 	undefined_entity_set_namespace(condition, namespace_id);
@@ -1177,55 +1177,55 @@ VM_RET signal_violation(tPVM vm, const int error_id, tPOBJECT place)
 static void handle_condition(tPVM vm, tPCELL p)
 {
 	tOBJECT handler, condition;
-	cell_to_object(p, &condition);// condition¤ÎÊİÂ¸¤ËÃí°Õ
+	cell_to_object(p, &condition);// conditionã®ä¿å­˜ã«æ³¨æ„
 
 	vm_get_handler(vm, &handler);
 	if (handler_is_system_handler(&handler)) {
-		// ½èÍı·Ï¤ÎÍÑ°Õ¤·¤¿¥Ï¥ó¥É¥é¤Î¾ì¹ç
+		// å‡¦ç†ç³»ã®ç”¨æ„ã—ãŸãƒãƒ³ãƒ‰ãƒ©ã®å ´åˆ
 		if (handler_is_ignore_errors(&handler)) {
-			// ignore-errors¤ÇÀßÄê¤·¤¿¥Ï¥ó¥É¥é¤Î¾ì¹ç
+			// ignore-errorsã§è¨­å®šã—ãŸãƒãƒ³ãƒ‰ãƒ©ã®å ´åˆ
 			vm_set_last_condition_ignore_errors(vm);
 		} else if (handler_is_foreign_function(&handler)) {
-			// ³°Éô´Ø¿ô¤Î¼Â¹ÔÃæ¤Î¥Ç¥Õ¥©¥ë¥È¥Ï¥ó¥É¥é¤Î¾ì¹ç
-			// ¾õÂÖ¤òÎã³°¾õÂÖ¤Ë¤·¤Æ
-			// ³°Éô´Ø¿ô¤ËÀ©¸æ¤ò°Ü¤¹
+			// å¤–éƒ¨é–¢æ•°ã®å®Ÿè¡Œä¸­ã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®å ´åˆ
+			// çŠ¶æ…‹ã‚’ä¾‹å¤–çŠ¶æ…‹ã«ã—ã¦
+			// å¤–éƒ¨é–¢æ•°ã«åˆ¶å¾¡ã‚’ç§»ã™
 			vm_set_last_condition(vm, &condition);
 		} else {
-			// ¥Ç¥Õ¥©¥ë¥È¤Î¥Ï¥ó¥É¥é¤Î¾ì¹ç
-			// ¾õÂÖ¤òÎã³°¾õÂÖ¤Ë¤·¤ÆºÇ¾å°Ì¤Ş¤ÇÃ¦½Ğ
-			// ¥Ç¥Ğ¥Ã¥¯¤·¤Ë¤¯¤¤¡¥¤Ê¤Ë¤«ÍÑ°Õ¤¹¤ë¡©/*!!!*/
-			vm_clear_tag(vm);// ÅÓÃæ¤Î¥¿¥°¤ò¤¹¤Ù¤ÆÌµ¸ú¤Ë
+			// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒãƒ³ãƒ‰ãƒ©ã®å ´åˆ
+			// çŠ¶æ…‹ã‚’ä¾‹å¤–çŠ¶æ…‹ã«ã—ã¦æœ€ä¸Šä½ã¾ã§è„±å‡º
+			// ãƒ‡ãƒãƒƒã‚¯ã—ã«ãã„ï¼ãªã«ã‹ç”¨æ„ã™ã‚‹ï¼Ÿ/*!!!*/
+			vm_clear_tag(vm);// é€”ä¸­ã®ã‚¿ã‚°ã‚’ã™ã¹ã¦ç„¡åŠ¹ã«
 			vm_set_last_condition(vm, &condition);
 		}
 	} else {
-		// ¥æ¡¼¥¶¤Ë¤è¤Ã¤ÆÀßÄê¤µ¤ì¤¿¥Ï¥ó¥É¥é¤Î¾ì¹ç
-		tPOBJECT sp=vm->SP;// É¬Í×¤Ê¤¤¤«¤â/*!!!*/
+		// ãƒ¦ãƒ¼ã‚¶ã«ã‚ˆã£ã¦è¨­å®šã•ã‚ŒãŸãƒãƒ³ãƒ‰ãƒ©ã®å ´åˆ
+		tPOBJECT sp=vm->SP;// å¿…è¦ãªã„ã‹ã‚‚/*!!!*/
 		tOBJECT obj;
-		// continue-condition¤Çµ¢¤Ã¤Æ¤¯¤ë¤È¤­¤Î¤¿¤á¤Î¥¿¥°¤ÎÀßÄê
+		// continue-conditionã§å¸°ã£ã¦ãã‚‹ã¨ãã®ãŸã‚ã®ã‚¿ã‚°ã®è¨­å®š
 		if (vm_push_tag(vm, &condition)) return;
-		// Îã³°¥Ï¥ó¥É¥é¼Â¹ÔÃæ¤Ï¤Ò¤È¤Ä¾å¡Ê²¼?¡Ë¤Î¥Ï¥ó¥É¥é¤¬Í­¸ú¤Ë¤Ê¤ë
+		// ä¾‹å¤–ãƒãƒ³ãƒ‰ãƒ©å®Ÿè¡Œä¸­ã¯ã²ã¨ã¤ä¸Šï¼ˆä¸‹?ï¼‰ã®ãƒãƒ³ãƒ‰ãƒ©ãŒæœ‰åŠ¹ã«ãªã‚‹
 		if (vm_push(vm, &handler)) return;
 		vm_pop_handler(vm);
-		// °ú¿ô¡ÊÎã³°¡Ë¤ò¥¹¥¿¥Ã¥¯¤Ë¤Ä¤ó¤Ç¥Ï¥ó¥É¥é¤Î¸Æ¤Ó½Ğ¤·
+		// å¼•æ•°ï¼ˆä¾‹å¤–ï¼‰ã‚’ã‚¹ã‚¿ãƒƒã‚¯ã«ã¤ã‚“ã§ãƒãƒ³ãƒ‰ãƒ©ã®å‘¼ã³å‡ºã—
 		if (vm_push(vm, &condition)) return;
 		if (function_application_form(vm, &handler, SYMBOL_ERROR_HANDLER, 1)==VM_OK) {
-			// ¥Ï¥ó¥É¥é´Ø¿ô¤¬Àµ¾ï½ªÎ»¤·¤Æ¤¤¤ë
-			// ¥Ï¥ó¥É¥é´Ø¿ô¤ÏÀµ¾ï½ªÎ»¤·¤Æ¤Ï¤Ê¤é¤Ê¤¤
+			// ãƒãƒ³ãƒ‰ãƒ©é–¢æ•°ãŒæ­£å¸¸çµ‚äº†ã—ã¦ã„ã‚‹
+			// ãƒãƒ³ãƒ‰ãƒ©é–¢æ•°ã¯æ­£å¸¸çµ‚äº†ã—ã¦ã¯ãªã‚‰ãªã„
 			vm_pop_tag(vm);
-			// À©¸æ¥¨¥é¡¼¾õÂÖ¤Ë¤·¤Æ½ªÎ»
+			// åˆ¶å¾¡ã‚¨ãƒ©ãƒ¼çŠ¶æ…‹ã«ã—ã¦çµ‚äº†
 			signal_condition(vm, TISL_ERROR_CONTROL_ERROR);
 		}
 		if (vm_push_handler(vm, &handler)) return;
 		vm_get_last_condition(vm, &obj);
 		if (object_eql(&condition, &obj)) {
-			// continue-condition¤Ë¤è¤Ã¤ÆÌá¤Ã¤Æ¤­¤¿
-			// ¾õÂÖ¤ò¥¯¥ê¥¢¤·¤Æ½ªÎ»
+			// continue-conditionã«ã‚ˆã£ã¦æˆ»ã£ã¦ããŸ
+			// çŠ¶æ…‹ã‚’ã‚¯ãƒªã‚¢ã—ã¦çµ‚äº†
 			vm_set_last_condition_ok(vm);
 		}
-		// ÅĞÏ¿¤·¤¿¥¿¥°¤ÏÃ¦½ĞÌ¿Îá¤ÎÊı¤Ç²ó¼ı¤¹¤ë
-		// ´û¤ËÌµ¸ú¤È¤Ê¤Ã¤Æ¤¤¤ë¤È¤³¤í¤Ø¤ÎÃ¦½Ğ¤òËÉ¤°¤¿¤á
+		// ç™»éŒ²ã—ãŸã‚¿ã‚°ã¯è„±å‡ºå‘½ä»¤ã®æ–¹ã§å›åã™ã‚‹
+		// æ—¢ã«ç„¡åŠ¹ã¨ãªã£ã¦ã„ã‚‹ã¨ã“ã‚ã¸ã®è„±å‡ºã‚’é˜²ããŸã‚
 		// 
-		vm->SP=sp;// É¬Í×¤Ê¤¤¤«¤â/*!!!*/
+		vm->SP=sp;// å¿…è¦ãªã„ã‹ã‚‚/*!!!*/
 	}
 }
 
@@ -1295,7 +1295,7 @@ ERROR:
 	return VM_ERROR;
 }
 
-// name¤Ïµ­¹æ
+// nameã¯è¨˜å·
 VM_RET vm_in_package(tPVM vm, tPCELL name)
 {
 	tINT i, n;
@@ -1307,7 +1307,7 @@ VM_RET vm_in_package(tPVM vm, tPCELL name)
 	for (i=0; i<n; i++) {
 		if (!symbol_get_string(name, i, &string)) return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 		if (package_add_bind(vm, package, string, &bind)) return VM_ERROR;
-		// package ¤Î private ¤Ï¤È¤ê¤¢¤¨¤ºÌµ»ë¤·¤Æ¤ª¤¯
+		// package ã® private ã¯ã¨ã‚Šã‚ãˆãšç„¡è¦–ã—ã¦ãŠã
 		bind_get_package(bind, &tmp);
 		if (OBJECT_IS_PACKAGE(&tmp)) {
 			package=OBJECT_GET_CELL(&tmp);
@@ -1318,7 +1318,7 @@ VM_RET vm_in_package(tPVM vm, tPCELL name)
 			bind_set_package(bind, &tmp);
 			package=pp;
 		} else {
-			// ¤¢¤ê¤¦¤ë???
+			// ã‚ã‚Šã†ã‚‹???
 			return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 		}
 	}

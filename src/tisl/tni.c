@@ -154,27 +154,27 @@ create_tni(TISL** tisl, TNI** tni, TNI_INIT_ARGS* args)
 	//
 	tisl_=malloc(sizeof(PTISL)+sizeof(tPTISL));
 	if (!tisl_) goto ERROR_1;
-	// ¥¤¥ó¥¿¥Õ¥§¡¼¥¹´Ø¿ô¥Æ¡¼¥Ö¥ë¤ÎÀßÄê
+	// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹é–¢æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ã®è¨­å®š
 	tisl_[0]=&tisl_interface;
-	// TISL¤Èmain VM¤ÎºîÀ®
+	// TISLã¨main VMã®ä½œæˆ
 	set_tisl_init_args(&tisl_args, args);
 	set_vm_init_args(&vm_args, args);
 	if (!create_tisl(&tisl__, &tisl_args, &vm_args)) goto ERROR_2;
 	tisl_[1]=(PTISL)tisl__;
 	tisl_set_interface(tisl__, tisl_);
-	// VM¤«¤éTNI¤òºîÀ®
+	// VMã‹ã‚‰TNIã‚’ä½œæˆ
 	*tni=vm_set_tni(tisl_get_main_vm(tisl__));
 	if (!*tni) goto ERROR_2;
 	*tisl=(TISL*)tisl_;
 	return TISL_OK;
-	// ¥¨¥é¡¼»ş¤Î¸å½èÍı
+	// ã‚¨ãƒ©ãƒ¼æ™‚ã®å¾Œå‡¦ç†
 ERROR_2:
 	free(tisl_);
 ERROR_1:
 	return TISL_ERROR;
 }
 
-// TISL¤Î¥Ç¥Õ¥©¥ë¥È½é´ü²½°ú¿ô¤ÎÀßÄê
+// TISLã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆåˆæœŸåŒ–å¼•æ•°ã®è¨­å®š
 // set_default_tni_init_args
 TISL_IMPORT_OR_EXPORT TISL_RET
 set_default_tni_init_args(TNI_INIT_ARGS* args)
@@ -218,11 +218,11 @@ static void TISLCALL tisl_detach_tni(TISL* tisl, TNI* tni)
 {
 	tPTISL tisl_=tisl_get_tisl(tisl);
 	tPVM vm=tni_get_vm(tni);
-	// GC¾õÂÖ¤Ë¤Ê¤Ã¤Æ¤¤¤ë¤È¤­¤ÏGC¤ò¹Ô¤Ã¤Æ¤«¤é
+	// GCçŠ¶æ…‹ã«ãªã£ã¦ã„ã‚‹ã¨ãã¯GCã‚’è¡Œã£ã¦ã‹ã‚‰
 	vm_check_tisl_state(vm);
 	// 
 	tisl_detach_vm(tisl_, vm);
-	// tni¤Î³«Êü¤ÏVM¤ò³«Êü¤¹¤ë¤È¤­
+	// tniã®é–‹æ”¾ã¯VMã‚’é–‹æ”¾ã™ã‚‹ã¨ã
 }
 
 // TNI interface
@@ -235,7 +235,7 @@ static tINT TISLCALL tni_get_version(TNI* tni)
 static TISL* TISLCALL tni_get_tisl(TNI* tni)
 {
 	tPTISL tisl=vm_get_tisl(tni_get_vm(tni));
-	// ¥×¥í¥»¥¹¤Ë°ì¤Ä¤Ê¤éÂç°è¤Ë¤Ä¤¯¤Ã¤Æ¤ª¤¯¡©
+	// ãƒ—ãƒ­ã‚»ã‚¹ã«ä¸€ã¤ãªã‚‰å¤§åŸŸã«ã¤ãã£ã¦ãŠãï¼Ÿ
 	return tisl_get_interface(tisl);
 }
 
@@ -262,12 +262,12 @@ static TISL_OBJECT TISLCALL tni_get_last_condition(TNI* tni)
 {
 	tPVM vm=tni_get_vm(tni);
 	if (vm_last_condition_is_ok(vm)) {
-		return NULL;/*!!!*/// ¤³¤Ã¤Á¤òÊÑ¤¨¤ë¡©
+		return NULL;/*!!!*/// ã“ã£ã¡ã‚’å¤‰ãˆã‚‹ï¼Ÿ
 	} else {
 		tOBJECT condition;
 		TISL_OBJECT tobj;
 		vm_get_last_condition(vm, &condition);
-		// storage-exhausted¤É¤¦¤·¤è¤¦
+		// storage-exhaustedã©ã†ã—ã‚ˆã†
 		if (vm_new_local_ref(vm, &condition, &tobj)) return (TISL_OBJECT)tisl_object_storage_exhausted;
 		return tobj;
 	}
@@ -532,10 +532,10 @@ static TISL_OBJECT TISLCALL tni_function_call(TNI* tni, TISL_OBJECT function, ..
 		goto ERROR;
 	}
 	if (rest) {
-		// rest¤¢¤ê
+		// restã‚ã‚Š
 		TISL_OBJECT to;
 		for (anum=0, to=va_arg(ap, TISL_OBJECT); to; anum++) {
-			// ½ªÎ»¾ò·ï¤¬´í¸±¡©
+			// çµ‚äº†æ¡ä»¶ãŒå±é™ºï¼Ÿ
 			tisl_object_get_object(to, &tmp);
 			if (vm_push(vm, &tmp)) goto ERROR;
 			to=va_arg(ap, TISL_OBJECT);
@@ -544,7 +544,7 @@ static TISL_OBJECT TISLCALL tni_function_call(TNI* tni, TISL_OBJECT function, ..
 		goto ERROR;*/
 	} else {
 		anum=0;
-		// rest¤Ê¤·
+		// restãªã—
 		for (i=0; i<pnum; i++) {
 			TISL_OBJECT to;
 			to=va_arg(ap, TISL_OBJECT);
@@ -556,11 +556,11 @@ static TISL_OBJECT TISLCALL tni_function_call(TNI* tni, TISL_OBJECT function, ..
 			if (vm_push(vm, &tmp)) goto ERROR;
 			anum=pnum;
 		}
-		// °ú¿ô¤Î¿ô¤Î¸¡ºº¤¹¤ë¡©
+		// å¼•æ•°ã®æ•°ã®æ¤œæŸ»ã™ã‚‹ï¼Ÿ
 	}
 	if (function_application_form(vm, &op, global_symbol[sFUNCALL], anum)) goto ERROR;
 	vm_top(vm, &tmp);
-	// Ìá¤êÃÍ¤«¤é¶É½ê»²¾È¤ÎºîÀ®
+	// æˆ»ã‚Šå€¤ã‹ã‚‰å±€æ‰€å‚ç…§ã®ä½œæˆ
 	if (vm_new_local_ref(vm, &tmp, &tobj)) goto ERROR;
 	vm_pop(vm);
 	va_end(ap);
@@ -581,7 +581,7 @@ static TISL_OBJECT TISLCALL tni_function_call_l(TNI* tni, TISL_OBJECT function, 
 
 	if (!vm_last_condition_is_ok(vm)) return NULL;
 
-	// ¥ê¥¹¥È¾å¤Î°ú¿ô¤òÉ¾²Á¥¹¥¿¥Ã¥¯¾å¤ËÅ¸³«¤·¤Ä¤Ä°ú¿ô¤Î¿ô¤Î¥«¥¦¥ó¥È¤ò¹Ô¤¦
+	// ãƒªã‚¹ãƒˆä¸Šã®å¼•æ•°ã‚’è©•ä¾¡ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã«å±•é–‹ã—ã¤ã¤å¼•æ•°ã®æ•°ã®ã‚«ã‚¦ãƒ³ãƒˆã‚’è¡Œã†
 	if (arg_list) {
 		tisl_object_get_object(arg_list, &tmp);
 		if (OBJECT_IS_CONS(&tmp)) {
@@ -597,20 +597,20 @@ static TISL_OBJECT TISLCALL tni_function_call_l(TNI* tni, TISL_OBJECT function, 
 				}
 			}
 		} else if (!OBJECT_IS_NIL(&tmp)) {
-			// arg_list¤¬¥ê¥¹¥È¤Ç¤Ê¤«¤Ã¤¿.
+			// arg_listãŒãƒªã‚¹ãƒˆã§ãªã‹ã£ãŸ.
 			signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_LIST, &tmp);
 			goto ERROR;
 		}
 		vm_pop_temp(vm);
 	}
-	// ´Ø¿ô¤Î¸Æ¤Ó½Ğ¤·
+	// é–¢æ•°ã®å‘¼ã³å‡ºã—
 	tisl_object_get_object(function, &func);
 	if (function_application_form(vm, &func, global_symbol[sAPPLY], anum)) goto ERROR;
 	vm_top(vm, &tmp);
-	// Ìá¤êÃÍ¤«¤é¶É½ê»²¾È¤ÎºîÀ®
+	// æˆ»ã‚Šå€¤ã‹ã‚‰å±€æ‰€å‚ç…§ã®ä½œæˆ
 	if (vm_new_local_ref(vm, &tmp, &tobj)) goto ERROR;
 	vm_pop(vm);
-	vm->SP=vm->stack+sp;// ¤¤¤é¤Ê¤¤¡©
+	vm->SP=vm->stack+sp;// ã„ã‚‰ãªã„ï¼Ÿ
 	return tobj;
 ERROR:
 	vm->SP=vm->stack+sp;
@@ -628,11 +628,11 @@ static void TISLCALL tni_throw(TNI* tni, TISL_OBJECT tag, TISL_OBJECT obj)
 	tisl_object_get_object(obj, &obj_);
 
 	if (vm_search_tag(vm, &tag_)) {
-		// Ã¦½ĞÀèÈ¯¸«
+		// è„±å‡ºå…ˆç™ºè¦‹
 		vm_set_throw_object(vm, &obj_);
 		vm_set_last_condition(vm, &tag_);
 	} else {
-		// Ã¦½ĞÀè¤ò¸«¼º¤Ã¤Æ¤¤¤ë
+		// è„±å‡ºå…ˆã‚’è¦‹å¤±ã£ã¦ã„ã‚‹
 		signal_condition(vm, TISL_ERROR_CONTROL_ERROR);
 	}
 }
@@ -700,7 +700,7 @@ static TISL_OBJECT TISLCALL tni_convert(TNI* tni, TISL_OBJECT obj, tCSTRING clss
 
 	if (!vm_last_condition_is_ok(vm)) return NULL;
 
-	// ¥Ñ¥Ã¥±¡¼¥¸½¤¾ş»Ò¤ËÂĞ±ş¤·¤Æ¤¤¤Ê¤¤¡©
+	// ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ä¿®é£¾å­ã«å¯¾å¿œã—ã¦ã„ãªã„ï¼Ÿ
 	if (string_stream_create_input(vm, clss, &stream)) return NULL;
 	if (read_form(vm, stream, &obj_)) return NULL;
 	if (!OBJECT_IS_SYMBOL(&obj_)&&!OBJECT_IS_NIL(&obj_)) { signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_SYMBOL, &obj_); return NULL; }
@@ -785,7 +785,7 @@ static void TISLCALL tni_in_package(TNI* tni, tCSTRING name)
 	tPVM vm=tni_get_vm(tni);
 	if (!vm_last_condition_is_ok(vm)) return;
 	if (name) {
-		// NULL¤Î¤È¤­¤Ï¥È¥Ã¥×¥Ñ¥Ã¥±¡¼¥¸¤Ø
+		// NULLã®ã¨ãã¯ãƒˆãƒƒãƒ—ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã¸
 		vm_set_current_package(vm, vm_get_top_package(vm));
 	} else {
 		// 
@@ -908,7 +908,7 @@ static void TISLCALL tni_defclass_foreign_class(TNI* tni, tCSTRING name, tCSTRIN
 	if (package_add_bind(vm, vm_get_current_package(vm), name_string, &bind)) { vm_pop_temp(vm); return; }
 	bind_get_class(bind, &tmp);
 	if (OBJECT_IS_STANDARD_CLASS(&tmp)) {
-		// É¸½à¥¯¥é¥¹¤òÌµ¸ú¤Ë¤·¤Æ³°Éô¥¯¥é¥¹¤òÄêµÁ
+		// æ¨™æº–ã‚¯ãƒ©ã‚¹ã‚’ç„¡åŠ¹ã«ã—ã¦å¤–éƒ¨ã‚¯ãƒ©ã‚¹ã‚’å®šç¾©
 		if (foreign_class_create2_(vm, name_symbol, super_class, &new_class)) { vm_pop_temp(vm); return; }
 		standard_class_set_invalid(OBJECT_GET_CELL(&tmp));
 		OBJECT_SET_FOREIGN_CLASS(&tmp, new_class);
@@ -917,17 +917,17 @@ static void TISLCALL tni_defclass_foreign_class(TNI* tni, tCSTRING name, tCSTRIN
 		vm_pop_temp(vm);
 		return;
 	} else if (OBJECT_IS_BUILT_IN_CLASS(&tmp)) {
-		// ÁÈ¹ş¤ß¥¯¥é¥¹¤ÎºÆÄêµÁ¤Ïµö¤µ¤Ê¤¤
+		// çµ„è¾¼ã¿ã‚¯ãƒ©ã‚¹ã®å†å®šç¾©ã¯è¨±ã•ãªã„
 		vm_pop_temp(vm);
 		signal_condition(vm, TISL_ERROR_IMMUTABLE_BINDING);
 		return;
 	} else if (OBJECT_IS_FOREIGN_CLASS(&tmp)) {
-		// ³°Éô¥¯¥é¥¹¤ÎÀßÄê¤òÊÑ¹¹
+		// å¤–éƒ¨ã‚¯ãƒ©ã‚¹ã®è¨­å®šã‚’å¤‰æ›´
 		foreign_class_set_super(OBJECT_GET_CELL(&tmp), super_class);
 		vm_pop_temp(vm);
 		return;
 	} else {
-		// unbound? ¿·µ¬¤ËºîÀ®
+		// unbound? æ–°è¦ã«ä½œæˆ
 		if (foreign_class_create2_(vm, name_symbol, super_class, &new_class)) { vm_pop_temp(vm); return; }
 		OBJECT_SET_FOREIGN_CLASS(&tmp, new_class);
 		bind_set_class(bind, &tmp);
@@ -1011,9 +1011,9 @@ static TNI* vm_set_tni(tPVM vm)
 	//
 	tni_=malloc(sizeof(PTNI)+sizeof(tPVM));
 	if (!tni_) return NULL;
-	// ¥¤¥ó¥¿¥Õ¥§¡¼¥¹´Ø¿ô¥Æ¡¼¥Ö¥ë¤ÎÀßÄê
+	// ã‚¤ãƒ³ã‚¿ãƒ•ã‚§ãƒ¼ã‚¹é–¢æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ã®è¨­å®š
 	tni_[0]=&tni_interface;
-	// VM¤ÎÀßÄê
+	// VMã®è¨­å®š
 	tni_[1]=(PTNI)vm;
 	vm->tni=(TNI*)tni_;
 	return vm->tni;

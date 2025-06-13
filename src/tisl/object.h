@@ -53,7 +53,7 @@ struct TISL_OBJECT_	{
 /////////////////////////////////////////////////
 // TISL_OBJECT
 
-// CELL_TISL_OBJECT»²¾È
+// CELL_TISL_OBJECTå‚ç…§
 
 /////////////////////////////////////////////////
 // tOJBECT
@@ -202,9 +202,9 @@ VM_RET integer_write(tPVM vm, tPCELL stream, tPOBJECT obj);
 VM_RET float_write(tPVM vm, tPCELL stream, tPOBJECT obj);
 VM_RET character_write(tPVM vm, tPCELL stream, tPOBJECT obj);
 VM_RET built_in_class_write(tPVM vm, tPCELL stream, tPOBJECT obj);
-VM_RET special_operator_write(tPVM vm, tPCELL stream, tPOBJECT obj);// built_in_object.c¤ÇÄêµÁ
-VM_RET defining_operator_write(tPVM vm, tPCELL stream, tPOBJECT obj);// built_in_object.c¤ÇÄêµÁ
-VM_RET primitive_operator_write(tPVM vm, tPCELL stream, tPOBJECT obj);// built_in_object.c¤ÇÄêµÁ
+VM_RET special_operator_write(tPVM vm, tPCELL stream, tPOBJECT obj);// built_in_object.cã§å®šç¾©
+VM_RET defining_operator_write(tPVM vm, tPCELL stream, tPOBJECT obj);// built_in_object.cã§å®šç¾©
+VM_RET primitive_operator_write(tPVM vm, tPCELL stream, tPOBJECT obj);// built_in_object.cã§å®šç¾©
 
 tCSTRING built_in_class_get_name(const tINT id);
 
@@ -215,9 +215,9 @@ tBOOL object_equal(tPOBJECT obj1, tPOBJECT obj2);
 tBOOL object_is_instance(tPVM vm, tPOBJECT obj, tPOBJECT clss);
 VM_RET object_mark(tPVM vm, tPOBJECT obj);
 void object_get_class(tPOBJECT obj, tPOBJECT clss);
-// class¤¬super¤Î²¼°Ì¥¯¥é¥¹¤Î»ştTRUE¤òÊÖ¤¹
+// classãŒsuperã®ä¸‹ä½ã‚¯ãƒ©ã‚¹ã®æ™‚tTRUEã‚’è¿”ã™
 tBOOL class_is_subclass(tPVM vm, tPOBJECT clss, tPOBJECT super);
-// clss1¤Î¥¯¥é¥¹Í¥ÀèÅÙ¤Ë¤ª¤±¤ëclass2¤ÎÍ¥ÀèÅÙ¤Î¼èÆÀ
+// clss1ã®ã‚¯ãƒ©ã‚¹å„ªå…ˆåº¦ã«ãŠã‘ã‚‹class2ã®å„ªå…ˆåº¦ã®å–å¾—
 tINT class_get_precedence(tPVM vm, tPOBJECT clss1, tPOBJECT clss2);
 
 /////////////////////////////////////////////////
@@ -350,9 +350,9 @@ VM_RET free_mark(tPVM vm, tPCELL cell);
 /////////////////////////////////////////////////
 // CELL_CONS
 
-// car cdr ¤ÎÊİ¸î¤¢¤ê
+// car cdr ã®ä¿è­·ã‚ã‚Š
 VM_RET cons_create(tPVM vm, tPCELL* cons, tPOBJECT car, tPOBJECT cdr);
-// car cdr ¤ÎÊİ¸îÌµ¤·
+// car cdr ã®ä¿è­·ç„¡ã—
 VM_RET cons_create_(tPVM vm, tPCELL* cons, tPOBJECT car, tPOBJECT cdr);
 tUINT cons_get_size(tPCELL cons);
 void cons_get_car(tPCELL cons, tPOBJECT obj);
@@ -406,10 +406,10 @@ tBOOL symbol_is_complete(tPCELL symbol);
 tBOOL symbol_is_simple(tPCELL symbol);
 tBOOL symbol_get_string(tPCELL symbol, const tINT i, tPCELL* string);
 VM_RET symbol_write(tPVM vm, tPCELL stream, tPOBJECT obj);
-tBOOL symbol_is_special_operator(tPCELL symbol);// built_in_object.c¤ÇÄêµÁ
-tINT symbol_get_special_operator_id(tPCELL symbol);// built_in_object.c¤ÇÄêµÁ
+tBOOL symbol_is_special_operator(tPCELL symbol);// built_in_object.cã§å®šç¾©
+tINT symbol_get_special_operator_id(tPCELL symbol);// built_in_object.cã§å®šç¾©
 VM_RET symbol_mark(tPVM vm, tPCELL cell);
-VM_RET symbol_is_built_in_function(tPVM vm, tPCELL symbol);// built_in_object.c¤ÇÄêµÁ
+VM_RET symbol_is_built_in_function(tPVM vm, tPCELL symbol);// built_in_object.cã§å®šç¾©
 
 /////////////////////////////////////////////////
 // CELL_VECTOR
@@ -554,7 +554,7 @@ void condition_get_slot1(tPCELL condition, tPOBJECT slot1);
 void condition_get_slot2(tPCELL condition, tPOBJECT slot2);
 VM_RET condition_mark(tPVM vm, tPCELL cell);
 
-// Ì¾Á°ÉÕ¤­Îã³°¤Î¥¹¥í¥Ã¥È¥¢¥¯¥»¥¹
+// åå‰ä»˜ãä¾‹å¤–ã®ã‚¹ãƒ­ãƒƒãƒˆã‚¢ã‚¯ã‚»ã‚¹
 // arithmetic-error
 void arithmetic_error_get_operation(tPCELL condition, tPOBJECT obj);
 void arithmetic_error_set_operation(tPCELL condition, tPOBJECT obj);
@@ -635,8 +635,8 @@ void bind_set_package_public(tPCELL bind);
 void bind_set_package_private(tPCELL bind);
 tBOOL bind_package_is_public(tPCELL bind);
 
-// Â°À­¥ê¥¹¥È
-// propety_name ¤Ï CELL_SYMBOL
+// å±æ€§ãƒªã‚¹ãƒˆ
+// propety_name ã¯ CELL_SYMBOL
 tBOOL bind_get_property(tPCELL bind, tPCELL property_name, tPOBJECT obj);
 VM_RET bind_set_property(tPVM vm, tPCELL bind, tPCELL property_name, tPOBJECT obj);
 void bind_remove_property(tPCELL bind, tPCELL property_name, tPOBJECT obj);
@@ -655,7 +655,7 @@ tPCELL bind_list_get_name(tPCELL bind_list);
 VM_RET bind_list_mark(tPVM vm, tPCELL blist);
 
 /////////////////////////////////////////////////
-// package bind bind-list´Ø·¸
+// package bind bind-listé–¢ä¿‚
 
 tPCELL package_get_bind(tPCELL package, tPCELL name);
 tPCELL package_get_bind_list(tPCELL package, tPCELL name);

@@ -16,31 +16,31 @@ extern tTRANSLATOR vm_get_translator(tPVM vm);
 
 /////////////////////////////
 
-// bodyÉô¤¬form¤Î¾ì¹ç
+// bodyéƒ¨ãŒformã®å ´åˆ
 static VM_RET t1_code_list(tPVM vm, tPOBJECT form, tPCELL* clist, const tBOOL tail);
-// bodyÉô¤¬form*¤Î¾ì¹ç
+// bodyéƒ¨ãŒform*ã®å ´åˆ
 static VM_RET t1_code_list_(tPVM vm, tPOBJECT form, tPCELL* clist, const tBOOL tail);
-// É¾²Á·Á¼°¤ÎÊÑ´¹
+// è©•ä¾¡å½¢å¼ã®å¤‰æ›
 static VM_RET t1_evaluation_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL tail);
-// Ãà¼¡¼Â¹Ô¤ÎÊÑ´¹ form*
+// é€æ¬¡å®Ÿè¡Œã®å¤‰æ› form*
 static VM_RET t1_sequence(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL tail);
-// Ê£¹ç·Á¼°¤ÎÊÑ´¹(op argument*)
+// è¤‡åˆå½¢å¼ã®å¤‰æ›(op argument*)
 static VM_RET t1_compound_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL tail);
-// µÕ°úÍÑÉä¹½Ê¸¤ÎÊÑ´¹
+// é€†å¼•ç”¨ç¬¦æ§‹æ–‡ã®å¤‰æ›
 static VM_RET t1_quasiquote(tPVM vm, tPOBJECT form, tPCELL clist);
-// ´Ø¿ôÅ¬ÍÑ·Á¼°
+// é–¢æ•°é©ç”¨å½¢å¼
 static VM_RET t1_function_application_form(tPVM vm, tPCELL blist, tPOBJECT operands, tPCELL clist, const tBOOL tail);
-// (¶É½ê)´Ø¿ôÅ¬ÍÑ·Á¼°
+// (å±€æ‰€)é–¢æ•°é©ç”¨å½¢å¼
 static VM_RET t1_local_function_application_form(tPVM vm, tPCELL fname, tPCELL flist, tPOBJECT operands, tPCELL clist, const tBOOL tail);
-// ´Ø¿ôÅ¬ÍÑ·Á¼°(lambda·Á¼°)
+// é–¢æ•°é©ç”¨å½¢å¼(lambdaå½¢å¼)
 static VM_RET t1_lambda_operator(tPVM vm, tPOBJECT lambda, tPOBJECT operands, tPCELL clist, const tBOOL tail);
-// °ú¿ô¤ÎÉ¾²Á
+// å¼•æ•°ã®è©•ä¾¡
 static VM_RET t1_operands(tPVM vm, tPOBJECT operands, tINT* anum, tPCELL clist);
-// °ú¿ô¤ÎÄ´À°
+// å¼•æ•°ã®èª¿æ•´
 static VM_RET t1_arity_check(tPVM vm, tINT pnum, tINT anum, tPCELL clist);
-// lambda-list¤«¤é°ú¿ô¥ê¥¹¥È¤òºîÀ®
+// lambda-listã‹ã‚‰å¼•æ•°ãƒªã‚¹ãƒˆã‚’ä½œæˆ
 static VM_RET t1_lambda_list(tPVM vm, tPOBJECT lambda_list, tPCELL* plist);
-// ÆÃ¼ì·Á¼°
+// ç‰¹æ®Šå½¢å¼
 static VM_RET t1_special_form(tPVM vm, const tINT special_operator_id, tPOBJECT operands, tPCELL clist, const tBOOL tail);
 
 /////////////////////////////
@@ -157,12 +157,12 @@ T1_SPECIAL_OPERATOR t1_special_operator_table[]={
 
 /////////////////////////////
 
-// ¥Ş¥¯¥í¤ÈÆÃ¼ì·Á¼°¤ÎÅ¸³«¤ò¹Ô¤¤À©¸æ¾ğÊó¤Ë´ğ¤Å¤¤¤¿ÊÑ´¹¤ò¼ç¤Ë¹Ô¤¦¡¥
-// ¤Ş¤¿¡¤Ì¾Á°¤Î»²¾È¤Î¤µ¤ì¤«¤¿¤«¤éÃÍ¤ÎÂ¸ºß´ü´Ö¤ò¿äÏÀ¤·¡¤¼¡¤Î¥Ñ¥¹¤ÇÍøÍÑ¤¹¤ë¡¥
+// ãƒã‚¯ãƒ­ã¨ç‰¹æ®Šå½¢å¼ã®å±•é–‹ã‚’è¡Œã„åˆ¶å¾¡æƒ…å ±ã«åŸºã¥ã„ãŸå¤‰æ›ã‚’ä¸»ã«è¡Œã†ï¼
+// ã¾ãŸï¼Œåå‰ã®å‚ç…§ã®ã•ã‚Œã‹ãŸã‹ã‚‰å€¤ã®å­˜åœ¨æœŸé–“ã‚’æ¨è«–ã—ï¼Œæ¬¡ã®ãƒ‘ã‚¹ã§åˆ©ç”¨ã™ã‚‹ï¼
 VM_RET translate_pass1(tPVM vm, tPOBJECT form, tPCELL* code_list_1)
 {
 	VM_RET ret;
-	t1_clear(vm_get_translator(vm));// ¤¤¤é¤Ê¤¤?
+	t1_clear(vm_get_translator(vm));// ã„ã‚‰ãªã„?
 	ret=t1_code_list(vm, form, code_list_1, tTRUE);
 	t1_clear(vm_get_translator(vm));
 	return ret;
@@ -184,7 +184,7 @@ VM_RET translate_pass1_defun(tPVM vm, tPCELL name, tPOBJECT lambda_list, tPOBJEC
 	t1_clear(vm_get_translator(vm));
 	return VM_OK;
 ERROR:
-	t1_pop_variable(vm);// ¤¤¤é¤Ê¤¤¡©
+	t1_pop_variable(vm);// ã„ã‚‰ãªã„ï¼Ÿ
 	t1_clear(vm_get_translator(vm));
 	return VM_ERROR;
 }
@@ -200,13 +200,13 @@ VM_RET translate_pass1_method(tPVM vm, tPCELL form, tPOBJECT body, tPCELL* mlist
 	cell_to_object(pplist, &obj);
 	if (p) cell_to_object(p, body);
 	else OBJECT_SET_NIL(body);
-	// °ú¿ô
+	// å¼•æ•°
 	if (vm_push(vm, &obj)) return VM_ERROR;
 	if (t1_push_variable(vm, pplist_get_plist(pplist))) { vm_pop(vm); goto ERROR; }
 	t1_set_argument_point(vm, pplist_get_plist(pplist));
 	if ((qualifier==METHOD_AROUND)||(qualifier==METHOD_PRIMARY)) {
-		// around primary ¥á¥½¥Ã¥É
-		// call-next-method next-method-p ÍÑ´Ø¿ô¤òÅĞÏ¿
+		// around primary ãƒ¡ã‚½ãƒƒãƒ‰
+		// call-next-method next-method-p ç”¨é–¢æ•°ã‚’ç™»éŒ²
 		if (t1_create_method_env(vm, &envlist)) { vm_pop(vm); goto ERROR; }
 		if (t1_push_function(vm, envlist)) { vm_pop(vm); goto ERROR; }
 		if (code_list_create(vm, &clist)) { vm_pop(vm); goto ERROR; }
@@ -218,7 +218,7 @@ VM_RET translate_pass1_method(tPVM vm, tPCELL form, tPOBJECT body, tPCELL* mlist
 		vm_pop(vm);
 		if (method_list_create(vm, pplist, clist, envlist, qualifier, mlist)) goto ERROR;
 		t1_pop_function(vm);
-	} else {// before after ¥á¥½¥Ã¥É
+	} else {// before after ãƒ¡ã‚½ãƒƒãƒ‰
 		if (code_list_create(vm, &clist)) { vm_pop(vm); goto ERROR; }
 		cell_to_object(clist, &obj);
 		if (vm_push(vm, &obj)) { vm_pop(vm); goto ERROR; }
@@ -238,25 +238,25 @@ ERROR:
 
 /////////////////////////////
 
-// bodyÉô¤¬form¤Î¾ì¹ç
+// bodyéƒ¨ãŒformã®å ´åˆ
 static VM_RET t1_code_list(tPVM vm, tPOBJECT form, tPCELL* clist, const tBOOL tail)
 {
 	tOBJECT obj;
 
-	// ¶õ¤Î¥³¡¼¥É¥ê¥¹¥È¤ÎºîÀ®
+	// ç©ºã®ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã®ä½œæˆ
 	if (code_list_create(vm, clist)) return VM_ERROR;
-	// ¥³¡¼¥É¥ê¥¹¥È¤ÎÊİ¸î
+	// ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆã®ä¿è­·
 	cell_to_object(*clist, &obj);
 	if (vm_push(vm, &obj)) return VM_ERROR;
-	// form¤òÉ¾²Á¤¹¤ë¤¿¤á¤ÎÌ¿Îá¤òclist¤ËÄÉ²Ã¤·¤Æ¤¤¤¯
+	// formã‚’è©•ä¾¡ã™ã‚‹ãŸã‚ã®å‘½ä»¤ã‚’clistã«è¿½åŠ ã—ã¦ã„ã
 	if (t1_evaluation_form(vm, form, *clist, tail)) { vm_pop(vm); return VM_ERROR; }
 	if (code_list_add_command_1(vm, *clist, iRET)) { vm_pop(vm); return VM_ERROR; }
-	// ¥³¡¼¥É¥ê¥¹¥ÈÊİ¸î¤Î½ªÎ»
+	// ã‚³ãƒ¼ãƒ‰ãƒªã‚¹ãƒˆä¿è­·ã®çµ‚äº†
 	vm_pop(vm);
 	return VM_OK;
 }
 
-// bodyÉô¤¬form*¤Î¾ì¹ç
+// bodyéƒ¨ãŒform*ã®å ´åˆ
 static VM_RET t1_code_list_(tPVM vm, tPOBJECT form, tPCELL* clist, const tBOOL tail)
 {
 	tOBJECT obj;
@@ -270,11 +270,11 @@ static VM_RET t1_code_list_(tPVM vm, tPOBJECT form, tPCELL* clist, const tBOOL t
 	return VM_OK;
 }
 
-// É¾²Á·Á¼°¤ÎÊÑ´¹
+// è©•ä¾¡å½¢å¼ã®å¤‰æ›
 static VM_RET t1_evaluation_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL tail)
 {
 	switch (OBJECT_GET_TYPE(form)) {
-		// ¥ê¥Æ¥é¥ë¤Î¾ì¹ç : ¥ê¥Æ¥é¥ë¤½¤Î¤â¤Î¤òÊÖ¤¹
+		// ãƒªãƒ†ãƒ©ãƒ«ã®å ´åˆ : ãƒªãƒ†ãƒ©ãƒ«ãã®ã‚‚ã®ã‚’è¿”ã™
 	case OBJECT_NIL:
 		return code_list_add_command_1(vm, clist, iPUSH_NIL);
 	case OBJECT_INTEGER:
@@ -285,25 +285,25 @@ static VM_RET t1_evaluation_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBO
 	case OBJECT_ARRAY:
 		if (code_list_add_command_1(vm, clist, iPUSH_OBJECT)) return VM_ERROR;
 		return code_list_add_argument(vm, clist, form);
-		// ¼±ÊÌ»Ò¤Î¾ì¹ç : 
-		//  ¸½ºß¤ÎÀÅÅª´Ä¶­¤Ç¤ÎÊÑ¿ôÌ¾Á°¶õ´Ö¤Ç
-		//  ¤½¤Î¼±ÊÌ»Ò¤¬»ØÄê¤¹¤ë¥ª¥Ö¥¸¥§¥¯¥È¤ò·ë²Ì¤ò¤¹¤ë
+		// è­˜åˆ¥å­ã®å ´åˆ : 
+		//  ç¾åœ¨ã®é™çš„ç’°å¢ƒã§ã®å¤‰æ•°åå‰ç©ºé–“ã§
+		//  ãã®è­˜åˆ¥å­ãŒæŒ‡å®šã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’çµæœã‚’ã™ã‚‹
 	case OBJECT_SYMBOL:
 		{
 			tPCELL symbol=OBJECT_GET_CELL(form);
 			tINT code;
 			if (symbol_is_simple(symbol)&&
 				t1_search_variable(vm, symbol)) {
-				// ¶É½êÅª¤Ê¥¹¥³¡¼¥×¤ò¤â¤ÄÊÑ¿ô¤Î»²¾È
+				// å±€æ‰€çš„ãªã‚¹ã‚³ãƒ¼ãƒ—ã‚’ã‚‚ã¤å¤‰æ•°ã®å‚ç…§
 				code=iPUSH_LOCAL_VARIABLE;
 			} else {
-				// ºÇ¾å°Ì¤Î¥¹¥³¡¼¥×¤ò»ı¤ÄÊÑ¿ô¤Î»²¾È
+				// æœ€ä¸Šä½ã®ã‚¹ã‚³ãƒ¼ãƒ—ã‚’æŒã¤å¤‰æ•°ã®å‚ç…§
 				code=iPUSH_GLOBAL_VARIABLE;
 			}
 			return code_list_add_command_1(vm, clist, code)||
 				code_list_add_argument(vm, clist, form);
 		}
-		// Ê£¹ç·Á¼°¤Î¾ì¹ç :
+		// è¤‡åˆå½¢å¼ã®å ´åˆ :
 	case OBJECT_CONS:
 		{
 			VM_RET r;
@@ -312,7 +312,7 @@ static VM_RET t1_evaluation_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBO
 			t1_decrement_form_level(vm);
 			return r;
 		}
-		// µÕ°úÍÑ´Ø·¸¤Î¹½Ê¸¤Î¾ì¹ç
+		// é€†å¼•ç”¨é–¢ä¿‚ã®æ§‹æ–‡ã®å ´åˆ
 	case OBJECT_QUASIQUOTE:
 		{
 			VM_RET r;
@@ -325,43 +325,43 @@ static VM_RET t1_evaluation_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBO
 		}
 	case OBJECT_UNQUOTE:
 	case OBJECT_UNQUOTE_SPLICING:
-		// µÕ°úÍÑÉä¤Ë°Ï¤Ş¤ì¤Æ¤¤¤Ê¤¤unquote¹½Ê¸
+		// é€†å¼•ç”¨ç¬¦ã«å›²ã¾ã‚Œã¦ã„ãªã„unquoteæ§‹æ–‡
 		return signal_violation(vm, TRANSLATOR_ERROR_UNQUOTE, translator_get_form(vm));
 	}
-	// Ì¤ÃÎ¤ÎÉ¾²Á·Á¼°
+	// æœªçŸ¥ã®è©•ä¾¡å½¢å¼
 	return signal_violation(vm, TRANSLATOR_ERROR_UNKNOWN_OBJECT, translator_get_form(vm));
 }
 
-// Ãà¼¡¼Â¹Ô¤ÎÊÑ´¹ form*
+// é€æ¬¡å®Ÿè¡Œã®å¤‰æ› form*
 static VM_RET t1_sequence(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL tail)
 {
 	tPCELL p;
 	tOBJECT obj, cdr;
 	tBOOL b;
-	// ¶õ¥ê¥¹¥È
+	// ç©ºãƒªã‚¹ãƒˆ
 	if (OBJECT_IS_NIL(form))
 		return code_list_add_command_1(vm, clist, iPUSH_NIL);
-	// ¥É¥Ã¥È¥ê¥¹¥È
+	// ãƒ‰ãƒƒãƒˆãƒªã‚¹ãƒˆ
 	if (!OBJECT_IS_CONS(form))
 		return signal_violation(vm, TRANSLATOR_ERROR_DOT_LIST, translator_get_form(vm));
 	p=OBJECT_GET_CELL(form);
-	while (1) {// nil¤Ç¥ê¥¹¥È¤¬½ªÎ»¤¹¤ë¤Ş¤Ç¥ë¡¼¥×¤òÂ³¤±¤ë
+	while (1) {// nilã§ãƒªã‚¹ãƒˆãŒçµ‚äº†ã™ã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ—ã‚’ç¶šã‘ã‚‹
 		cons_get_car(p, &obj);
 		cons_get_cdr(p, &cdr);
 		b=OBJECT_IS_NIL(&cdr) ? tail : tFALSE;
 		if (t1_evaluation_form(vm, &obj, clist, b)) return VM_ERROR;
-		// ¥ê¥¹¥È¤¬nil¤Ç½ªÎ»¤·¤¿
+		// ãƒªã‚¹ãƒˆãŒnilã§çµ‚äº†ã—ãŸ
 		if (OBJECT_IS_NIL(&cdr)) return VM_OK;
-		// ¥É¥Ã¥È¥ê¥¹¥È
+		// ãƒ‰ãƒƒãƒˆãƒªã‚¹ãƒˆ
 		if (!OBJECT_IS_CONS(&cdr))
 			return signal_violation(vm, TRANSLATOR_ERROR_DOT_LIST, translator_get_form(vm));
 		p=OBJECT_GET_CELL(&cdr);
-		// ³ÆÉ¾²ÁÌ¿Îá¤Î´Ö¤ËDISCARDÌ¿Îá¤òÁŞÆş
+		// å„è©•ä¾¡å‘½ä»¤ã®é–“ã«DISCARDå‘½ä»¤ã‚’æŒ¿å…¥
 		if (code_list_add_command_1(vm, clist, iDISCARD)) return VM_ERROR;
 	}
 }
 
-// Ê£¹ç·Á¼°¤ÎÊÑ´¹(op argument*)
+// è¤‡åˆå½¢å¼ã®å¤‰æ›(op argument*)
 static VM_RET t1_compound_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL tail)
 {
 	tOBJECT op, operands;
@@ -372,17 +372,17 @@ static VM_RET t1_compound_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL
 		fname=OBJECT_GET_CELL(&op);
 		if (symbol_is_simple(fname)&&
 			t1_search_function(vm, fname, &flist)) {
-			// ¶É½ê´Ø¿ô
+			// å±€æ‰€é–¢æ•°
 			return t1_local_function_application_form(vm, fname, flist, &operands, clist, tail);
 		} else {
-			// Âç°è´Ø¿ô
+			// å¤§åŸŸé–¢æ•°
 			tOBJECT obj;
 			tPCELL bind, blist;
-			// ÄêµÁÃæ¤Î´Ø¿ô¤«Èİ¤«
+			// å®šç¾©ä¸­ã®é–¢æ•°ã‹å¦ã‹
 			if (symbol_is_simple(fname)&&
 				(t1_get_defining_function_name(vm)==fname)) {
 				tINT anum, pnum, code;
-				// ¸½ºßÄêµÁÃæ¤Î´Ø¿ô
+				// ç¾åœ¨å®šç¾©ä¸­ã®é–¢æ•°
 				if (t1_operands(vm, &operands, &anum, clist)) return VM_ERROR;
 				pnum=parameter_list_get_number(t1_get_defining_function_parameter_list(vm));
 				if (parameter_list_is_rest(t1_get_defining_function_parameter_list(vm))) pnum=-pnum;
@@ -391,7 +391,7 @@ static VM_RET t1_compound_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL
 				if (code_list_add_command_1(vm, clist, code)) return VM_ERROR;
 				return VM_OK;
 			}
-			// Âç°è´Ø¿ô¤Î¸Æ¤Ó½Ğ¤·
+			// å¤§åŸŸé–¢æ•°ã®å‘¼ã³å‡ºã—
 			if (tisl_get_bind_list(vm_get_tisl(vm), vm, vm_get_current_package(vm), fname, &blist)) return VM_ERROR;
 			bind=bind_list_get_bind(blist, NAMESPACE_FUNCTION, vm_get_current_package(vm));
 			if (bind)
@@ -399,11 +399,11 @@ static VM_RET t1_compound_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL
 			else
 				OBJECT_SET_UNBOUND(&obj);
 			if (OBJECT_IS_MACRO(&obj)) {
-				// ±é»»»Ò¤¬¥Ş¥¯¥í¤À¤Ã¤¿
+				// æ¼”ç®—å­ãŒãƒã‚¯ãƒ­ã ã£ãŸ
 				tOBJECT expanded;
 				VM_RET ret;
 				if (t_macro_expand(vm, OBJECT_GET_CELL(&obj), &operands, &expanded)) return VM_ERROR;
-				// ¥Ş¥¯¥íÅ¸³«¸å¤ÎÉ¾²Á·Á¼°¤òÊÑ´¹
+				// ãƒã‚¯ãƒ­å±•é–‹å¾Œã®è©•ä¾¡å½¢å¼ã‚’å¤‰æ›
 				t1_decrement_form_level(vm);
 				if (vm_push(vm, &expanded)) { t1_increment_form_level(vm); return VM_ERROR; }
 				ret=t1_evaluation_form(vm, &expanded, clist, tail);
@@ -413,17 +413,17 @@ static VM_RET t1_compound_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL
 			} else if (symbol_is_special_operator(fname)) {
 				return t1_special_form(vm, symbol_get_special_operator_id(fname), &operands, clist, tail);
 			} else if (OBJECT_IS_SPECIAL_OPERATOR(&obj)) {
-				// ÆÃ¼ì±é»»»Ò
+				// ç‰¹æ®Šæ¼”ç®—å­
 				return t1_special_form(vm, OBJECT_GET_INTEGER(&obj), &operands, clist, tail);
 			} else if (OBJECT_IS_DEFINING_OPERATOR(&obj)) {
 				return signal_violation(vm, TRANSLATOR_ERROR_NOT_TOP_FORM, translator_get_form(vm));
 			} else {
-				// ºÇ¾å°ÌÍ­¸úÈÏ°Ï¤ò»ı¤ÄÌ¾Á°¤òÂ«Çû¤·¤Æ¤¤¤ë´Ø¿ô¤Î¸Æ¤Ó½Ğ¤·
+				// æœ€ä¸Šä½æœ‰åŠ¹ç¯„å›²ã‚’æŒã¤åå‰ã‚’æŸç¸›ã—ã¦ã„ã‚‹é–¢æ•°ã®å‘¼ã³å‡ºã—
 				return t1_function_application_form(vm, blist, &operands, clist, tail);
 			}
 		}
 	} else if (OBJECT_IS_CONS(&op)) {
-		// ±é»»»Ò¤¬lambda·Á¼°¤Î¾ì¹ç
+		// æ¼”ç®—å­ãŒlambdaå½¢å¼ã®å ´åˆ
 		tOBJECT lambda;
 		cons_get_car(OBJECT_GET_CELL(&op), &lambda);
 		if (OBJECT_IS_SYMBOL(&lambda)) {
@@ -443,15 +443,15 @@ static VM_RET t1_compound_form(tPVM vm, tPOBJECT form, tPCELL clist, const tBOOL
 			}
 		}
 	}
-	// ±é»»»Ò¤¬ÊÑ
+	// æ¼”ç®—å­ãŒå¤‰
 	return signal_violation(vm, TRANSLATOR_ERROR_BAD_OPERATOR, translator_get_form(vm));
 }
 
-// µÕ°úÍÑÉä¹½Ê¸¤ÎÊÑ´¹
+// é€†å¼•ç”¨ç¬¦æ§‹æ–‡ã®å¤‰æ›
 static VM_RET t1_quasiquote(tPVM vm, tPOBJECT form, tPCELL clist)
 {
 	switch (OBJECT_GET_TYPE(form)) {
-	case OBJECT_NIL:// ¥ê¥Æ¥é¥ë
+	case OBJECT_NIL:// ãƒªãƒ†ãƒ©ãƒ«
 		return code_list_add_command_1(vm, clist, iPUSH_NIL);
 	case OBJECT_INTEGER:
 	case OBJECT_FLOAT:
@@ -463,7 +463,7 @@ static VM_RET t1_quasiquote(tPVM vm, tPOBJECT form, tPCELL clist)
 		if (code_list_add_command_1(vm, clist, iPUSH_OBJECT)) return VM_ERROR;
 		return code_list_add_argument(vm, clist, form);
 	case OBJECT_CONS:
-		{// ¥³¥ó¥¹
+		{// ã‚³ãƒ³ã‚¹
 			tOBJECT car, cdr;
 			cons_get_car(OBJECT_GET_CELL(form), &car);
 			if (t1_quasiquote(vm, &car, clist)) return VM_ERROR;
@@ -518,7 +518,7 @@ static VM_RET t1_quasiquote(tPVM vm, tPOBJECT form, tPCELL clist)
 	}
 }
 
-// ¥Ş¥¯¥íÅ¸³«
+// ãƒã‚¯ãƒ­å±•é–‹
 VM_RET t_macro_expand(tPVM vm, tPCELL macro, tPOBJECT operands, tPOBJECT ret)
 {
 	tPCELL p;
@@ -533,31 +533,31 @@ VM_RET t_macro_expand(tPVM vm, tPCELL macro, tPOBJECT operands, tPOBJECT ret)
 		anum=0;
 	}
 	for (i=0; i<anum; i++) {
-		// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¤ËÀÑ¤à
+		// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ã«ç©ã‚€
 		cons_get_car(p, &obj);
 		if (vm_push(vm, &obj)) return VM_ERROR;
 		p=cons_get_cdr_cons(p);
 	}
 	if (macro_get_rest(macro)) {
-		// restÍ­¤ê
+		// restæœ‰ã‚Š
 		if (anum<pnum-1) return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
 		if (anum==pnum-1) {
 			if (vm_push(vm, &nil)) return VM_ERROR;
-		} else {// Í¾Ê¬¤Ê°ú¿ô¤ò¥ê¥¹¥È¤Ë¤Ş¤È¤á¤ë
+		} else {// ä½™åˆ†ãªå¼•æ•°ã‚’ãƒªã‚¹ãƒˆã«ã¾ã¨ã‚ã‚‹
 			if (vm_list(vm, anum-pnum+1)) return VM_ERROR;
 		}
 	} else {
-		// restÌµ¤·
+		// restç„¡ã—
 		if (anum!=pnum) return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
 	}
-	// ¥Ş¥¯¥íÅ¸³«¤Î¼Â¹Ô
+	// ãƒã‚¯ãƒ­å±•é–‹ã®å®Ÿè¡Œ
 	if (macro_expand(vm, macro, ret)) return VM_ERROR;
-	// É¾²Á¥¹¥¿¥Ã¥¯¤ò¸µ¤ËÌá¤¹
+	// è©•ä¾¡ã‚¹ã‚¿ãƒƒã‚¯ã‚’å…ƒã«æˆ»ã™
 	if (vm_discard(vm, pnum)) return VM_ERROR;
 	return VM_OK;
 }
 
-// ´Ø¿ôÅ¬ÍÑ·Á¼°
+// é–¢æ•°é©ç”¨å½¢å¼
 static VM_RET t1_function_application_form(tPVM vm, tPCELL blist, tPOBJECT operands, tPCELL clist, const tBOOL tail)
 {// iCALL_GLOBAL bind-list anum
 	tINT anum, code;
@@ -567,7 +567,7 @@ static VM_RET t1_function_application_form(tPVM vm, tPCELL blist, tPOBJECT opera
 	bind=bind_list_get_bind(blist, NAMESPACE_FUNCTION, vm_get_current_package(vm));
 	if (bind) {
 		bind_get_function(bind, &obj);
-		// ÁÈ¹ş¤ß´Ø¿ô¤ÎÊÑ´¹
+		// çµ„è¾¼ã¿é–¢æ•°ã®å¤‰æ›
 		if (OBJECT_IS_PRIMITIVE_OPERATOR(&obj)) {
 			return t1_primitive_function(vm, OBJECT_GET_INTEGER(&obj), anum, clist);
 		}
@@ -589,7 +589,7 @@ static VM_RET t1_function_application_form(tPVM vm, tPCELL blist, tPOBJECT opera
 	}
 }
 
-// (¶É½ê)´Ø¿ôÅ¬ÍÑ·Á¼°
+// (å±€æ‰€)é–¢æ•°é©ç”¨å½¢å¼
 static VM_RET t1_local_function_application_form(tPVM vm, tPCELL fname, tPCELL flist, tPOBJECT operands, tPCELL clist, const tBOOL tail)
 {// iCALL_LOCAL symbol flist
 	tINT anum, pnum, code;
@@ -606,20 +606,20 @@ static VM_RET t1_local_function_application_form(tPVM vm, tPCELL fname, tPCELL f
 	return code_list_add_argument(vm, clist, &obj);
 }
 
-// ´Ø¿ôÅ¬ÍÑ·Á¼°(lambda·Á¼°)
+// é–¢æ•°é©ç”¨å½¢å¼(lambdaå½¢å¼)
 static VM_RET t1_lambda_operator(tPVM vm, tPOBJECT lambda, tPOBJECT operands, tPCELL clist, const tBOOL tail)
 {
 	tOBJECT obj, obj2, lambda_list, forms;
 	tINT anum, pnum;
 	tPCELL plist;
 
-	// °ú¿ô¤ÎÊÑ´¹
+	// å¼•æ•°ã®å¤‰æ›
 	if (t1_operands(vm, operands, &anum, clist)) return VM_ERROR;
-	// ±é»»»Ò¤Îlambda·Á¼°¤«¤é´Ø¿ô¥ª¥Ö¥¸¥§¥¯¥È¤òºîÀ®¤¹¤ë
+	// æ¼”ç®—å­ã®lambdaå½¢å¼ã‹ã‚‰é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹
 	cons_get_cdr(OBJECT_GET_CELL(lambda), &obj);
 	if (!OBJECT_IS_CONS(&obj)) return signal_violation(vm, TRANSLATOR_ERROR_LAMBDA, translator_get_form(vm));
 	cons_get_car(OBJECT_GET_CELL(&obj), &lambda_list);
-	// °ú¿ô¥ê¥¹¥È¤ÎºîÀ®
+	// å¼•æ•°ãƒªã‚¹ãƒˆã®ä½œæˆ
 	if (t1_lambda_list(vm, &lambda_list, &plist)) return VM_ERROR;
 	if (t1_push_variable(vm, plist)) return VM_ERROR;
 	pnum=parameter_list_get_number(plist);
@@ -640,7 +640,7 @@ static VM_RET t1_lambda_operator(tPVM vm, tPOBJECT lambda, tPOBJECT operands, tP
 	t1_decrement_form_level(vm);
 	t1_pop_variable(vm);
 	return VM_OK;
-	// ¥¨¥é¡¼È¯À¸»ş¤Î¸å½èÍı
+	// ã‚¨ãƒ©ãƒ¼ç™ºç”Ÿæ™‚ã®å¾Œå‡¦ç†
 ERROR2:
 	t1_decrement_form_level(vm);
 ERROR:
@@ -648,7 +648,7 @@ ERROR:
 	return VM_ERROR;
 }
 
-// °ú¿ô¤ÎÉ¾²Á
+// å¼•æ•°ã®è©•ä¾¡
 static VM_RET t1_operands(tPVM vm, tPOBJECT operands, tINT* anum, tPCELL clist)
 {
 	tOBJECT obj;
@@ -662,71 +662,71 @@ static VM_RET t1_operands(tPVM vm, tPOBJECT operands, tINT* anum, tPCELL clist)
 	}
 	p=OBJECT_GET_CELL(operands);
 	while (1) {
-		// °ú¿ô¤ÎÊÑ´¹
+		// å¼•æ•°ã®å¤‰æ›
 		cons_get_car(p, &obj);
 		if (t1_evaluation_form(vm, &obj, clist, tFALSE)) return VM_ERROR;
 		++*anum;
-		// ¼¡¤Î°ú¿ô¤Ø
+		// æ¬¡ã®å¼•æ•°ã¸
 		cons_get_cdr(p, &obj);
 		if (!OBJECT_IS_CONS(&obj)) {
 			if (OBJECT_IS_NIL(&obj))
-				// ¥ê¥¹¥È¤¬nil¤Ç½ªÎ»
+				// ãƒªã‚¹ãƒˆãŒnilã§çµ‚äº†
 				return VM_OK;
 			else
-				// ¥É¥Ã¥È¥ê¥¹¥È?
+				// ãƒ‰ãƒƒãƒˆãƒªã‚¹ãƒˆ?
 				return signal_violation(vm, TRANSLATOR_ERROR_DOT_LIST, translator_get_form(vm));
 		}
-		// ¼¡¤Ø
+		// æ¬¡ã¸
 		p=cons_get_cdr_cons(p);
 	}
 }
 
-// °ú¿ô¤ÎÄ´À°
+// å¼•æ•°ã®èª¿æ•´
 static VM_RET t1_arity_check(tPVM vm, tINT pnum, tINT anum, tPCELL clist)
 { 
 	if (pnum<0) {
-		// restÍ­¤ê
+		// restæœ‰ã‚Š
 		pnum=-pnum;
 		if (anum<pnum-1) return signal_violation(vm, TRANSLATOR_ERROR_ARITY_ERROR, translator_get_form(vm));
 		if (anum==pnum-1) {
 			if (code_list_add_command_1(vm, clist, iPUSH_NIL)) return VM_ERROR;
 		} else {
-			// Í¾Ê¬¤Ê°ú¿ô¤«¤é¥ê¥¹¥È¤òºîÀ®¤¹¤ë
+			// ä½™åˆ†ãªå¼•æ•°ã‹ã‚‰ãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹
 			tOBJECT num;
 			OBJECT_SET_INTEGER(&num, anum-pnum+1);
 			if (code_list_add_command_1(vm, clist, iLIST)) return VM_ERROR;
 			if (code_list_add_argument(vm, clist, &num)) return VM_ERROR;
 		}
 	} else {
-		// rest1Ìµ¤·
+		// rest1ç„¡ã—
 		if (anum!=pnum) return signal_violation(vm, TRANSLATOR_ERROR_ARITY_ERROR, translator_get_form(vm));
 	}
 	return VM_OK;
 }
 
-// lambda-list¤«¤é°ú¿ô¥ê¥¹¥È¤òºîÀ®
+// lambda-listã‹ã‚‰å¼•æ•°ãƒªã‚¹ãƒˆã‚’ä½œæˆ
 static VM_RET t1_lambda_list(tPVM vm, tPOBJECT lambda_list, tPCELL* plist)
 {
 	tOBJECT obj, name;
 	tPCELL p;
-	// °ú¿ô¥ê¥¹¥È¤ÎºîÀ®
+	// å¼•æ•°ãƒªã‚¹ãƒˆã®ä½œæˆ
 	if (parameter_list_create(vm, plist)) return VM_ERROR;
 	cell_to_object(*plist, &obj);
 	if (vm_push(vm, &obj)) return VM_ERROR;
 	//
 	if (OBJECT_IS_NIL(lambda_list)) {
-		//¡¡°ú¿ôÌµ¤·
+		//ã€€å¼•æ•°ç„¡ã—
 		vm_pop(vm);
 		parameter_list_finish_initialization(*plist);
 		return VM_OK;
 	}
 	if (!OBJECT_IS_CONS(lambda_list)) { vm_pop(vm); return VM_ERROR; }
 	p=OBJECT_GET_CELL(lambda_list);
-	while (1) {// °ú¿ô¤ÎÆÉ¹ş¤ß
+	while (1) {// å¼•æ•°ã®èª­è¾¼ã¿
 		cons_get_car(p, &name);
-		// ²¾°ú¿ô¤Ïµ­¹æ
+		// ä»®å¼•æ•°ã¯è¨˜å·
 		if (!OBJECT_IS_SYMBOL(&name)) { vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_LAMBDA_LIST, translator_get_form(vm)); }
-		// ²¾°ú¿ô¤Ë¥Ñ¥Ã¥±¡¼¥¸½¤¾ş»Ò¤ò¤Ä¤±¤ë¤³¤È¤Ï¤Ç¤­¤Ê¤¤¡¥
+		// ä»®å¼•æ•°ã«ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ä¿®é£¾å­ã‚’ã¤ã‘ã‚‹ã“ã¨ã¯ã§ããªã„ï¼
 		if (!symbol_is_simple(OBJECT_GET_CELL(&name))) { vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_LAMBDA_LIST, translator_get_form(vm)); }
 		if (OBJECT_GET_CELL(&name)==KEYWORD_REST) {
 			// :rest
@@ -735,15 +735,15 @@ static VM_RET t1_lambda_list(tPVM vm, tPOBJECT lambda_list, tPCELL* plist)
 			p=OBJECT_GET_CELL(&obj);
 			cons_get_car(p, &name);
 			cons_get_cdr(p, &obj);
-			// name¤Ïµ­¹æ¤Ç¤Ê¤±¤ì¤Ğ¤Ê¤é¤Ê¤¤
-			// :rest¤Î¸å¤í¤Ï°ì¤Ä¤Îµ­¹æ¤Î¤ß
+			// nameã¯è¨˜å·ã§ãªã‘ã‚Œã°ãªã‚‰ãªã„
+			// :restã®å¾Œã‚ã¯ä¸€ã¤ã®è¨˜å·ã®ã¿
 			if (!OBJECT_IS_NIL(&obj)||
 				!OBJECT_IS_SYMBOL(&name)||
 				!symbol_is_simple(OBJECT_GET_CELL(&name))) { vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_LAMBDA_LIST, translator_get_form(vm)); }
 			if (parameter_list_add_parameter(vm, *plist, &name)) { vm_pop(vm); return VM_ERROR; }
-			// restÉÕ¤­
+			// restä»˜ã
 			parameter_list_set_rest(*plist);
-			// °ú¿ô¥ê¥¹¥È¤Î½é´ü²½½ªÎ»
+			// å¼•æ•°ãƒªã‚¹ãƒˆã®åˆæœŸåŒ–çµ‚äº†
 			parameter_list_finish_initialization(*plist);
 			vm_pop(vm);
 			return VM_OK;
@@ -751,13 +751,13 @@ static VM_RET t1_lambda_list(tPVM vm, tPOBJECT lambda_list, tPCELL* plist)
 		if (parameter_list_add_parameter(vm, *plist, &name)) { vm_pop(vm); return VM_ERROR; }
 		cons_get_cdr(p, &obj);
 		if (OBJECT_IS_NIL(&obj)) {
-			// nil¤Ç¥ê¥¹¥È¤¬½ªÎ»¤·¤¿
+			// nilã§ãƒªã‚¹ãƒˆãŒçµ‚äº†ã—ãŸ
 			parameter_list_finish_initialization(*plist);
 			vm_pop(vm);
 			return VM_OK;
 		}
 		if (!OBJECT_IS_CONS(&obj)) return signal_violation(vm, TRANSLATOR_ERROR_LAMBDA_LIST, translator_get_form(vm));
-		// ¼¡¤Î²¾°ú¿ô¤ÎÆÉ¹ş¤ß
+		// æ¬¡ã®ä»®å¼•æ•°ã®èª­è¾¼ã¿
 		p=OBJECT_GET_CELL(&obj);
 	}
 }
@@ -767,7 +767,7 @@ static VM_RET t1_lambda_to_function_list(tPVM vm, tPOBJECT operands, tPCELL* fli
 {
 	tPCELL plist, clist, p, old_defining_function_name, old_defining_function_plist, old_argument_point;
 	tOBJECT lambda_list, form, obj;
-	// ½ñ¤­Ä¾¤·¤¿¤¤/*!!!*/
+	// æ›¸ãç›´ã—ãŸã„/*!!!*/
 	old_argument_point=t1_get_argument_point(vm);
 	old_defining_function_name=t1_get_defining_function_name(vm);
 	old_defining_function_plist=t1_get_defining_function_parameter_list(vm);
@@ -779,7 +779,7 @@ static VM_RET t1_lambda_to_function_list(tPVM vm, tPOBJECT operands, tPCELL* fli
 		t1_set_defining_function_name(vm, 0);
 		t1_set_defining_function_parameter_list(vm, 0);
 	}
-	// ½ñ¤­Ä¾¤·¤¿¤¤/*!!!*/
+	// æ›¸ãç›´ã—ãŸã„/*!!!*/
 	if (!OBJECT_IS_CONS(operands)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &lambda_list);
@@ -843,7 +843,7 @@ static VM_RET t1_parameter_profiler(tPVM vm, tPCELL* head, tPCELL* pplist)
 	cell_to_object(*pplist, &tmp);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
 	cons_get_car(*head, &tmp);
-	// ¥á¥½¥Ã¥É¤Çnil¤Î¤Ï¤º¤¬¤Ê¤¤!?
+	// ãƒ¡ã‚½ãƒƒãƒ‰ã§nilã®ã¯ãšãŒãªã„!?
 	if (!OBJECT_IS_CONS(&tmp)) { vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm)); }
 	for (p=OBJECT_GET_CELL(&tmp); p; p=cons_get_cdr_cons(p)) {
 		cons_get_car(p, &tmp);
@@ -866,23 +866,23 @@ static VM_RET t1_parameter_profiler(tPVM vm, tPCELL* head, tPCELL* pplist)
 			if (OBJECT_GET_CELL(&tmp)==KEYWORD_REST) {
 				tOBJECT specializer;
 				tPCELL pp;
-				// :rest ÊÑ¿ô
+				// :rest å¤‰æ•°
 				p=cons_get_cdr_cons(p);
 				if (!p) { vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm)); }
 				cons_get_car(p, &tmp);
 				if (!OBJECT_IS_SYMBOL(&tmp)) { vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm)); }
 				pp=cons_get_cdr_cons(p);
 				if (pp) { vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm)); }
-				// ½¤¾ş»Ò¤Ï<list>¤Ë¤·¤È¤¯
+				// ä¿®é£¾å­ã¯<list>ã«ã—ã¨ã
 				OBJECT_SET_SYMBOL(&specializer, SYMBOL_LIST_CLASS);
 				if (pplist_add_profiler(vm, *pplist, &tmp, &specializer)) { vm_pop(vm); return VM_ERROR; }
 				pplist_set_rest(*pplist);
 			} else {
-				// :rest°Ê³°
+				// :restä»¥å¤–
 				tOBJECT specializer;
 				if (!OBJECT_IS_SYMBOL(&tmp)) { vm_pop(vm); return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_SYMBOL, &tmp); }
 				if (!symbol_is_simple(OBJECT_GET_CELL(&tmp))) { vm_pop(vm); return signal_condition(vm, TISL_ERROR_PACKAGE_QUALIFIER); }
-				// ¾ÊÎ¬»ş¤Ï<object>
+				// çœç•¥æ™‚ã¯<object>
 				OBJECT_SET_SYMBOL(&specializer, SYMBOL_OBJECT_CLASS);
 				if (pplist_add_profiler(vm, *pplist, &tmp, &specializer)) { vm_pop(vm); return VM_ERROR; }
 			}
@@ -897,7 +897,7 @@ static VM_RET t1_parameter_profiler(tPVM vm, tPCELL* head, tPCELL* pplist)
 	return VM_OK;
 }
 
-// ÆÃ¼ì·Á¼°
+// ç‰¹æ®Šå½¢å¼
 static VM_RET t1_special_form(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, const tBOOL tail)
 {
 	return (*t1_special_operator_table[id])(vm, id, operands, clist, tail);
@@ -928,7 +928,7 @@ static VM_RET t1_syntax_check(tPVM vm, tPOBJECT operands, const tINT n)
 	} else {
 		return signal_violation(vm, TRANSLATOR_ERROR_DOT_LIST, translator_get_form(vm));
 	}
-	//°ú¿ô¤Î¿ô¤¬¹ç¤ï¤Ê¤¤
+	//å¼•æ•°ã®æ•°ãŒåˆã‚ãªã„
 	if (i!=n) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	return VM_OK;
 }
@@ -941,11 +941,11 @@ static VM_RET t1_function(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clis
 	tOBJECT name;
 	tPCELL flist;
 	tINT code;
-	// ¹½Ê¸¤Î¸¡ºº
+	// æ§‹æ–‡ã®æ¤œæŸ»
 	if (t1_syntax_check(vm, operands, 1)) return VM_ERROR;
 	//
 	cons_get_car(OBJECT_GET_CELL(operands), &name);
-	// name¤Ïµ­¹æ
+	// nameã¯è¨˜å·
 	if (!OBJECT_IS_SYMBOL(&name)) return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_SYMBOL, &name);
 	if (symbol_is_simple(OBJECT_GET_CELL(&name))&&
 		t1_search_function(vm, OBJECT_GET_CELL(&name), &flist)) {
@@ -977,7 +977,7 @@ static VM_RET t1_lambda(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist,
 }
 
 static VM_RET t1_no_local_function(tPVM vm, tPCELL p, tPCELL clist, const tBOOL tail)
-{// flet labels¤Ç¶É½ê´Ø¿ô¤òºîÀ®¤·¤Ê¤¤¾ì¹ç
+{// flet labelsã§å±€æ‰€é–¢æ•°ã‚’ä½œæˆã—ãªã„å ´åˆ
 	tOBJECT obj;
 	cons_get_cdr(p, &obj);
 	if (OBJECT_IS_NIL(&obj)) {
@@ -1003,12 +1003,12 @@ static VM_RET t1_check_local_function_head(tPVM vm, tPCELL head, tPCELL nlist)
 	cons_get_car(func, &obj);
 	if (!OBJECT_IS_SYMBOL(&obj)||
 		!symbol_is_simple(OBJECT_GET_CELL(&obj))) {
-		//¹½Ê¸¥¨¥é¡¼¡©
+		//æ§‹æ–‡ã‚¨ãƒ©ãƒ¼ï¼Ÿ
 		return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_SYMBOL, &obj);
 	}
 	cons_get_cdr(head, &obj2);
 	if (!OBJECT_IS_CONS(&obj2)&&!OBJECT_IS_NIL(&obj2)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
-	// Ì¾Á°¤ÎÄÉ²Ã
+	// åå‰ã®è¿½åŠ 
 	for (pp=nlist; cons_get_cdr_cons(pp); pp=cons_get_cdr_cons(pp)) {
 		cons_get_car(cons_get_cdr_cons(pp), &obj2);
 		if (OBJECT_GET_CELL(&obj)==OBJECT_GET_CELL(&obj2)) return signal_violation(vm, TRANSLATOR_ERROR_SAME_NAME_FUNCTION, translator_get_form(vm));
@@ -1040,12 +1040,12 @@ static VM_RET t1_labels(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist,
 	// pf : function-name-list
 	/*!!!*/pf=cons_get_cdr_cons(cons_get_car_cons(clist));/*!!!*/
 	// local-functions
-	// ºÇ½é¤Ë´Ø¿ôÌ¾¤È¥é¥à¥À¥ê¥¹¥È¤ÎÉôÊ¬¤Ş¤Ç¤Î²òÀÏ¤ò¹Ô¤¦¡¥
-	// ¶É½ê´Ø¿ô¤ÎËÜÂÎÉô¤Ï°ìÅÙÁ´Éô¤Î¶É½ê´Ø¿ô¤ò¸«¤¿¸å¤ÇÊÑ´¹¤ò¹Ô¤¦¡¥
+	// æœ€åˆã«é–¢æ•°åã¨ãƒ©ãƒ ãƒ€ãƒªã‚¹ãƒˆã®éƒ¨åˆ†ã¾ã§ã®è§£æã‚’è¡Œã†ï¼
+	// å±€æ‰€é–¢æ•°ã®æœ¬ä½“éƒ¨ã¯ä¸€åº¦å…¨éƒ¨ã®å±€æ‰€é–¢æ•°ã‚’è¦‹ãŸå¾Œã§å¤‰æ›ã‚’è¡Œã†ï¼
 	for (flist=cons_get_car_cons(p), n=0; flist; flist=cons_get_cdr_cons(flist), n++) {
 		tPCELL p3, p4, plist;
 		if (t1_check_local_function_head(vm, flist, pp)) return VM_ERROR;
-		// ´Ø¿ô¤Î°ú¿ô¤ÎÆÉ¹ş¤ß
+		// é–¢æ•°ã®å¼•æ•°ã®èª­è¾¼ã¿
 		p3=cons_get_car_cons(flist);
 		cons_get_cdr(p3, &obj);
 		if (!OBJECT_IS_CONS(&obj)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
@@ -1056,7 +1056,7 @@ static VM_RET t1_labels(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist,
 		OBJECT_SET_CONS(&obj, p4);
 		if (code_list_add_argument(vm, clist, &obj)) return VM_ERROR;
 	}
-	// ¿·¤·¤¤¶É½ê´Ä¶­¤Î¤â¤È¤Ç¶É½ê´Ø¿ô¤ÎËÜÂÎÉô¤òÊÑ´¹¤¹¤ë
+	// æ–°ã—ã„å±€æ‰€ç’°å¢ƒã®ã‚‚ã¨ã§å±€æ‰€é–¢æ•°ã®æœ¬ä½“éƒ¨ã‚’å¤‰æ›ã™ã‚‹
 	if (t1_push_function(vm, pf)) return VM_ERROR;
 	flist=cons_get_car_cons(p);
 	function_name_list_set_number(pf, n);
@@ -1064,7 +1064,7 @@ static VM_RET t1_labels(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist,
 		tPCELL p3, p4, pl, pa=t1_get_argument_point(vm), cl;
 		p3=cons_get_cdr_cons(cons_get_car_cons(flist));
 		pf=cons_get_cdr_cons(pf);
-		// ´Ø¿ô¤ÎÄÉ²Ã
+		// é–¢æ•°ã®è¿½åŠ 
 		cons_get_cdr(p3, &obj);
 		p4=cons_get_car_cons(pf);
 		pl=function_list_get_parameter_list(p4);
@@ -1076,10 +1076,10 @@ static VM_RET t1_labels(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist,
 		//
 		t1_set_argument_point(vm, pa);
 		t1_pop_variable(vm);
-		//¼¡¤Ø
+		//æ¬¡ã¸
 		flist=cons_get_cdr_cons(flist);
 	}
-	// ËÜÂÎÉô
+	// æœ¬ä½“éƒ¨
 	cons_get_cdr(p, &obj);
 	if (t1_progn(vm, bPROGN, &obj, clist, tFALSE)) { t1_pop_function(vm); return VM_ERROR; }
 	t1_pop_function(vm);
@@ -1108,7 +1108,7 @@ static VM_RET t1_flet(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, c
 	for (flist=cons_get_car_cons(p); flist; flist=cons_get_cdr_cons(flist)) {
 		tPCELL p3, p4;
 		if (t1_check_local_function_head(vm, flist, pp)) return VM_ERROR;
-		// ´Ø¿ô¤ÎÄÉ²Ã
+		// é–¢æ•°ã®è¿½åŠ 
 		p3=cons_get_car_cons(flist);
 		cons_get_cdr(p3, &obj);
 		if (t1_lambda_to_function_list(vm, &obj, &p4)) return VM_ERROR;
@@ -1173,9 +1173,9 @@ static VM_RET t1_setq(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, c
 {
 	tOBJECT var, form;
 	tPCELL p;
-	// ¹½Ê¸¸¡ºº
+	// æ§‹æ–‡æ¤œæŸ»
 	if (t1_syntax_check(vm, operands, 2)) return VM_ERROR;
-	// °ú¿ô¤ÎÈ´¤­½Ğ¤·
+	// å¼•æ•°ã®æŠœãå‡ºã—
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &var);
 	cons_get_car(cons_get_cdr_cons(p), &form);
@@ -1183,9 +1183,9 @@ static VM_RET t1_setq(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, c
 	return t1_setq_(vm, &var, &form, clist);
 }
 
-// setf¤Î¤¿¤á¤ËÊ¬Î¥¤µ¤ì¤Æ¤¤¤ë
+// setfã®ãŸã‚ã«åˆ†é›¢ã•ã‚Œã¦ã„ã‚‹
 static VM_RET t1_setq_(tPVM vm, tPOBJECT var, tPOBJECT form, tPCELL clist)
-{// ÊÑ¿ôvar¤òform¤ÎÉ¾²Á·ë²Ì¤ÎÃÍ¤Ë¤¹¤ë
+{// å¤‰æ•°varã‚’formã®è©•ä¾¡çµæœã®å€¤ã«ã™ã‚‹
 	tINT code;
 	if (!OBJECT_IS_SYMBOL(var)) return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_SYMBOL, var);
 	if (t1_evaluation_form(vm, form, clist, tFALSE)) return VM_ERROR;
@@ -1204,13 +1204,13 @@ static VM_RET t1_setf(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, c
 {
 	tPCELL p;
 	tOBJECT form, place;
-	// ¹½Ê¸¸¡ºº
+	// æ§‹æ–‡æ¤œæŸ»
 	if (t1_syntax_check(vm, operands, 2)) return VM_ERROR;
-	// °ú¿ô¤ÎÈ´¤­½Ğ¤·
+	// å¼•æ•°ã®æŠœãå‡ºã—
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &place);
 	cons_get_car(cons_get_cdr_cons(p), &form);
-	// ¥Ş¥¯¥íÅ¸³«¤Î¤¿¤á¤ËÊ¬¤±¤ë
+	// ãƒã‚¯ãƒ­å±•é–‹ã®ãŸã‚ã«åˆ†ã‘ã‚‹
 	return t1_setf_(vm, &place, &form, clist);
 }
 
@@ -1219,7 +1219,7 @@ static VM_RET t1_setf_(tPVM vm, tPOBJECT place, tPOBJECT form, tPCELL clist)
 	tOBJECT obj;
 
 	if (OBJECT_IS_SYMBOL(place)) {
-		// place¤¬¼±ÊÌ»Ò¤Î¾ì¹ç
+		// placeãŒè­˜åˆ¥å­ã®å ´åˆ
 		return t1_setq_(vm, place, form, clist);
 	} else if (OBJECT_IS_CONS(place)) {
 		tPCELL p;
@@ -1237,7 +1237,7 @@ static VM_RET t1_setf_(tPVM vm, tPOBJECT place, tPOBJECT form, tPCELL clist)
 		} else if ((p==SYMBOL_CAR)||(p==SYMBOL_CDR)) {
 			return t1_setf_cons(vm, OBJECT_GET_CELL(place), form, clist);
 		}
-		// ¥Ş¥¯¥í¤Î¾ì¹ç
+		// ãƒã‚¯ãƒ­ã®å ´åˆ
 		{
 			tPCELL blist, bind;
 			if (tisl_get_bind_list(vm_get_tisl(vm), vm, vm_get_current_package(vm), p, &blist)) return VM_ERROR;
@@ -1246,18 +1246,18 @@ static VM_RET t1_setf_(tPVM vm, tPOBJECT place, tPOBJECT form, tPCELL clist)
 				bind_get_object(bind, NAMESPACE_FUNCTION, &obj);
 				if (OBJECT_IS_MACRO(&obj)) {
 					tOBJECT arg;
-					// ¥Ş¥¯¥í
+					// ãƒã‚¯ãƒ­
 					cons_get_cdr(OBJECT_GET_CELL(place), &arg);
 					if (t_macro_expand(vm, OBJECT_GET_CELL(&obj), &arg, &obj)) return VM_ERROR;
-					// Å¸³«¤·¤ÆÊ¬´ô¤·¤Ê¤ª¤¹
+					// å±•é–‹ã—ã¦åˆ†å²ã—ãªãŠã™
 					return t1_setf_(vm, &obj, form, clist);
 				}
 			}
 		}
-		// ¥Ş¥¯¥í¤Ç¤â¤Ê¤¤¾ì¹ç
+		// ãƒã‚¯ãƒ­ã§ã‚‚ãªã„å ´åˆ
 		if (!symbol_is_simple(p)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 		return t1_setf_accessor(vm, OBJECT_GET_CELL(place), form, clist);
-	} else {// place¤¬ÊÑ
+	} else {// placeãŒå¤‰
 		return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	}
 }
@@ -1270,7 +1270,7 @@ static VM_RET t1_setf_dynamic(tPVM vm, tPCELL place, tPOBJECT form, tPCELL clist
 	if (t1_syntax_check(vm, &obj, 1)) return VM_ERROR;
 	cons_get_car(cons_get_cdr_cons(place), &obj);
 	if (!OBJECT_IS_SYMBOL(&obj)) return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_SYMBOL, &obj);
-	// form¤ÎÉ¾²Á
+	// formã®è©•ä¾¡
 	if (t1_evaluation_form(vm, form, clist, tFALSE)) return VM_ERROR;
 	// iSET_DYNAMIC name
 	return code_list_add_command_1(vm, clist, iSET_DYNAMIC)||
@@ -1370,7 +1370,7 @@ static VM_RET t1_setf_accessor(tPVM vm, tPCELL place, tPOBJECT form, tPCELL clis
 	//
 	cons_get_car(place, &name);
 	cons_get_car(cons_get_cdr_cons(place), &instance);
-	// name¤ÏÃ±½ãµ­¹æ ¥Ñ¥Ã¥±¡¼¥¸½¤¾ş»Ò¤ÏÉÔ²Ä(º£¤Î¤È¤³¤í)
+	// nameã¯å˜ç´”è¨˜å· ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ä¿®é£¾å­ã¯ä¸å¯(ä»Šã®ã¨ã“ã‚)
 	if (!OBJECT_IS_SYMBOL(&name)||
 		!symbol_is_simple(OBJECT_GET_CELL(&name))) return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_SYMBOL, &name);
 	// form instance
@@ -1423,9 +1423,9 @@ static VM_RET t1_let(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, co
 			cons_get_car(OBJECT_GET_CELL(&obj), &form);
 			if (t1_evaluation_form(vm, &form, clist, tFALSE)) { vm_pop(vm); return VM_ERROR; }
 		}
-		// ²¾°ú¿ô¥ê¥¹¥È¤ËÄÉ²Ã
+		// ä»®å¼•æ•°ãƒªã‚¹ãƒˆã«è¿½åŠ 
 		if (parameter_list_add_parameter(vm, plist, &var)) { vm_pop(vm); return VM_ERROR; }
-		// ¼¡¤Ø
+		// æ¬¡ã¸
 		cons_get_cdr(pp, &obj);
 		if (OBJECT_IS_NIL(&obj)) {
 			pp=0;
@@ -1435,10 +1435,10 @@ static VM_RET t1_let(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, co
 			vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_DOT_LIST, translator_get_form(vm));
 		}
 	}
-	// parameter-list¤ÎºîÀ®½ªÎ»
+	// parameter-listã®ä½œæˆçµ‚äº†
 	vm_pop(vm);
 	parameter_list_finish_initialization(plist);
-	// ²¾°ú¿ô¤ò´Ä¶­¤ËÄÉ²Ã
+	// ä»®å¼•æ•°ã‚’ç’°å¢ƒã«è¿½åŠ 
 	if (t1_push_variable(vm, plist)) return VM_ERROR;
 	// iLAMBDA_IN plist
 	OBJECT_SET_CONS(&obj, plist);
@@ -1447,7 +1447,7 @@ static VM_RET t1_let(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, co
 	// form*
 	cons_get_cdr(p, &obj);
 	if (t1_sequence(vm, &obj, clist, tFALSE)) { t1_pop_variable(vm); return VM_ERROR; }
-	// ²¾°ú¿ôºï½ü
+	// ä»®å¼•æ•°å‰Šé™¤
 	t1_pop_variable(vm);
 	OBJECT_SET_CONS(&obj, plist);
 	// iLAMBDA_OUT plist
@@ -1479,14 +1479,14 @@ static VM_RET t1_leta(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, c
 static VM_RET t1_letb(tPVM vm, tPOBJECT parameter, tPOBJECT body, tPCELL clist, const tBOOL tail)
 {
 	if (OBJECT_IS_CONS(parameter)) {
-		// ²¾°ú¿ô¤ò°ì¤ÄÊÑ´¹¤¹¤ë
+		// ä»®å¼•æ•°ã‚’ä¸€ã¤å¤‰æ›ã™ã‚‹
 		tPCELL p, pp, plist;
 		tOBJECT obj, name, form;
-		// ²¾°ú¿ô¥ê¥¹¥È¤òºîÀ®¤·¡¤Êİ¸î¤·¤Æ¤ª¤¯
+		// ä»®å¼•æ•°ãƒªã‚¹ãƒˆã‚’ä½œæˆã—ï¼Œä¿è­·ã—ã¦ãŠã
 		if (parameter_list_create(vm, &plist)) return VM_ERROR;
 		OBJECT_SET_CONS(&obj, plist);
 		if (vm_push(vm, &obj)) return VM_ERROR;
-		// ³Æ°ú¿ô¤ÎÈ´¤­½Ğ¤·¤È¹½Ê¸¥Á¥§¥Ã¥¯
+		// å„å¼•æ•°ã®æŠœãå‡ºã—ã¨æ§‹æ–‡ãƒã‚§ãƒƒã‚¯
 		p=OBJECT_GET_CELL(parameter);
 		cons_get_car(p, &obj);
 		if (!OBJECT_IS_CONS(&obj)) { vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm)); }
@@ -1500,7 +1500,7 @@ static VM_RET t1_letb(tPVM vm, tPOBJECT parameter, tPOBJECT body, tPCELL clist, 
 		if (!OBJECT_IS_NIL(&obj)) { vm_pop(vm); return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm)); }
 		// form
 		if (t1_evaluation_form(vm, &form, clist, tFALSE)) { vm_pop(vm); return VM_ERROR; }
-		// ²¾°ú¿ô¥ê¥¹¥È¤ÎºîÀ®
+		// ä»®å¼•æ•°ãƒªã‚¹ãƒˆã®ä½œæˆ
 		if (parameter_list_add_parameter(vm, plist, &name)) { vm_pop(vm); return VM_ERROR; }
 		parameter_list_finish_initialization(plist);
 		// iLAMBDA_IN plist
@@ -1509,7 +1509,7 @@ static VM_RET t1_letb(tPVM vm, tPOBJECT parameter, tPOBJECT body, tPCELL clist, 
 		OBJECT_SET_CONS(&obj, plist);
 		if (code_list_add_command_1(vm, clist, iLAMBDA_IN)||
 			code_list_add_argument(vm, clist, &obj)) { t1_pop_variable(vm); return VM_ERROR; }
-		// ¼¡¤Î°ú¿ô¤Ø
+		// æ¬¡ã®å¼•æ•°ã¸
 		cons_get_cdr(p, &obj);
 		if (t1_letb(vm, &obj, body, clist, tail)) { t1_pop_variable(vm); return VM_ERROR; }
 		// iLAMBDA_OUT plist
@@ -1518,7 +1518,7 @@ static VM_RET t1_letb(tPVM vm, tPOBJECT parameter, tPOBJECT body, tPCELL clist, 
 		return code_list_add_command_1(vm, clist, iLAMBDA_OUT)||
 			code_list_add_argument(vm, clist, &obj);
 	} else if (OBJECT_IS_NIL(parameter)) {
-		// let¤ÎËÜÂÎÉô¤ÎÅ¸³«
+		// letã®æœ¬ä½“éƒ¨ã®å±•é–‹
 		return t1_sequence(vm, body, clist, tail);
 	} else {
 		return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
@@ -1604,7 +1604,7 @@ static VM_RET t1_if(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, con
 {
 	tOBJECT test_form, then_form, else_form, obj;
 	tPCELL p, then_list, else_list;
-	// ¹½Ê¸¸¡ºº¤È°ú¿ô¤ÎÈ´¤­½Ğ¤·
+	// æ§‹æ–‡æ¤œæŸ»ã¨å¼•æ•°ã®æŠœãå‡ºã—
 	if (!OBJECT_IS_CONS(operands)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &test_form);
@@ -1681,7 +1681,7 @@ static VM_RET t1_cond(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, c
 	if (code_list_create(vm, &cl)) return VM_ERROR;
 	OBJECT_SET_CONS(&obj, cl);
 	if (code_list_add_argument(vm, clist, &obj)) return VM_ERROR;
-	// »Ä¤ê¤ò¿·¤·¤¤cond·Á¼°¤È¤·¤ÆÊÑ´¹
+	// æ®‹ã‚Šã‚’æ–°ã—ã„condå½¢å¼ã¨ã—ã¦å¤‰æ›
 	cons_get_cdr(p, &obj);
 	if (t1_cond(vm, bCOND, &obj, cl, tail)) return VM_ERROR;
 	if (code_list_add_command_1(vm, cl, iRET)) return VM_ERROR;
@@ -1714,7 +1714,7 @@ static VM_RET t1_case(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, c
 	// iCASE n key-list clist .... key-list clist
 	code=(id==bCASE) ? iCASE : iCASE_USING;
 	if (code_list_add_command_1(vm, clist, code)) return VM_ERROR;
-	// ((key*)form*)*¤Î¿ô
+	// ((key*)form*)*ã®æ•°
 	n=cons_get_length(p);
 	OBJECT_SET_INTEGER(&obj, n);
 	if (code_list_add_argument(vm, clist, &obj)) return VM_ERROR;
@@ -1728,7 +1728,7 @@ static VM_RET t1_case(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, c
 		cons_get_cdr(pp, &form);
 		if (OBJECT_IS_CONS(&keylist)) {
 			pp=OBJECT_GET_CELL(&keylist);
-			// key-list¤Î¸¡ºº
+			// key-listã®æ¤œæŸ»
 			while (pp) {
 				cons_get_cdr(pp, &obj);
 				if (OBJECT_IS_CONS(&obj)) pp=OBJECT_GET_CELL(&obj);
@@ -1762,7 +1762,7 @@ static VM_RET t1_case_using(tPVM vm, const tINT id, tPOBJECT operands, tPCELL cl
 	cons_get_car(p, &predform);
 	if (t1_evaluation_form(vm, &predform, clist, tFALSE)) return VM_ERROR;
 	cons_get_cdr(p, &obj);
-	// °Ê²¼¤Ïcase-using¤ÈÆ±¤¸
+	// ä»¥ä¸‹ã¯case-usingã¨åŒã˜
 	return t1_case(vm, id, &obj, clist, tail);
 }
 
@@ -1800,7 +1800,7 @@ static VM_RET t1_for(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, co
 	tOBJECT obj, form, endtest, result;
 	tPCELL p, pp, iteration_spec, end, plist, cl;
 
-	// ¹½Ê¸¤Î¸¡ºº¤È°ú¿ô¤ÎÃê½Ğ
+	// æ§‹æ–‡ã®æ¤œæŸ»ã¨å¼•æ•°ã®æŠ½å‡º
 	// (iteration-spec*)
 	if (!OBJECT_IS_CONS(operands)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	p=OBJECT_GET_CELL(operands);
@@ -1823,7 +1823,7 @@ static VM_RET t1_for(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, co
 	if (parameter_list_create(vm, &plist)) return VM_ERROR;
 	OBJECT_SET_CONS(&obj, plist);
 	if (vm_push(vm, &obj)) return VM_ERROR;
-	// init¤òÊÑ´¹¤·¤Ê¤¬¤éplist¤Ëvar¤òÄÉ²Ã¤·¤Æ¤¤¤¯step¤Ï¸å¤Ç
+	// initã‚’å¤‰æ›ã—ãªãŒã‚‰plistã«varã‚’è¿½åŠ ã—ã¦ã„ãstepã¯å¾Œã§
 	p=iteration_spec;
 	while (p) {// iteration-spec ::= (var init [step])
 		tOBJECT var, init;
@@ -1835,7 +1835,7 @@ static VM_RET t1_for(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, co
 		if (!OBJECT_IS_SYMBOL(&var)||!symbol_is_simple(OBJECT_GET_CELL(&var))) {
 			vm_pop(vm); return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_SYMBOL, &var);
 		}
-		// ÄÉ²Ã
+		// è¿½åŠ 
 		if (parameter_list_add_parameter(vm, plist, &var)) { vm_pop(vm); return VM_ERROR; }
 		// init
 		cons_get_cdr(pp, &obj);
@@ -1843,7 +1843,7 @@ static VM_RET t1_for(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, co
 		pp=OBJECT_GET_CELL(&obj);
 		cons_get_car(pp, &init);
 		if (t1_evaluation_form(vm, &init, clist, tFALSE)) { vm_pop(vm); return VM_ERROR; }
-		// step¤Ï¸å¤Ç
+		// stepã¯å¾Œã§
 		cons_get_cdr(p, &obj);
 		if (OBJECT_IS_CONS(&obj)) {
 			p=OBJECT_GET_CELL(&obj);
@@ -1883,7 +1883,7 @@ static VM_RET t1_for(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, co
 		pp=cons_get_cdr_cons(pp);
 		cons_get_cdr(pp, &obj);
 		if (OBJECT_IS_NIL(&obj)) {
-			// step¾ÊÎ¬»ş
+			// stepçœç•¥æ™‚
 			if (t1_evaluation_form(vm, &var, cl, tFALSE)) { t1_pop_variable(vm); return VM_ERROR; }
 		} else if (OBJECT_IS_CONS(&obj)) {
 			tOBJECT step;
@@ -1910,7 +1910,7 @@ static VM_RET t1_block(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, 
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &name);
 	cons_get_cdr(p, &form);
-	// name¤ÏÃ±½ãµ­¹æ
+	// nameã¯å˜ç´”è¨˜å·
 	if (!OBJECT_IS_SYMBOL(&name)||
 		!symbol_is_simple(OBJECT_GET_CELL(&name))) {
 		return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_SYMBOL, &name);
@@ -1931,16 +1931,16 @@ static VM_RET t1_return_from(tPVM vm, const tINT id, tPOBJECT operands, tPCELL c
 {
 	tOBJECT name, form, obj;
 	tPCELL p, block;
-	// ¹½Ê¸¸¡ºº
+	// æ§‹æ–‡æ¤œæŸ»
 	if (t1_syntax_check(vm, operands, 2)) return VM_ERROR;
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &name);
 	cons_get_car(cons_get_cdr_cons(p), &form);
-	// Ã¦½ĞÀè¤ÎÀÅÅª¤Ê³ÎÇ§
+	// è„±å‡ºå…ˆã®é™çš„ãªç¢ºèª
 	if (!t1_search_block(vm, &name, &block)) {
 		return signal_violation(vm, TRANSLATOR_ERROR_BAD_BLOCK, translator_get_form(vm));
 	}
-	// form¤ÎÊÑ´¹
+	// formã®å¤‰æ›
 	if (t1_evaluation_form(vm, &form, clist, tFALSE)) return VM_ERROR;
 	// iRETURN_FROM block-tag
 	OBJECT_SET_CONS(&obj, block);
@@ -1953,12 +1953,12 @@ static VM_RET t1_catch(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, 
 {
 	tPCELL p, cl;
 	tOBJECT obj, tag, form;
-	// ¹½Ê¸¸¡ºº
+	// æ§‹æ–‡æ¤œæŸ»
 	if (!OBJECT_IS_CONS(operands)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &tag);
 	cons_get_cdr(p, &form);
-	// tag¤ÎÉ¾²Á
+	// tagã®è©•ä¾¡
 	if (t1_evaluation_form(vm, &tag, clist, tFALSE)) return VM_ERROR;
 	// iCATCH code-list
 	if (code_list_add_command_1(vm, clist, iCATCH)) return VM_ERROR;
@@ -1972,14 +1972,14 @@ static VM_RET t1_throw(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, 
 {
 	tOBJECT tag, form;
 	tPCELL p;
-	// ¹½Ê¸¸¡ºº
+	// æ§‹æ–‡æ¤œæŸ»
 	if (t1_syntax_check(vm, operands, 2)) return VM_ERROR;
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &tag);
 	cons_get_car(cons_get_cdr_cons(p), &form);
-	// tag¤ÎÉ¾²Á
+	// tagã®è©•ä¾¡
 	if (t1_evaluation_form(vm, &tag, clist, tFALSE)) return VM_ERROR;
-	// result¤ÎÉ¾²Á
+	// resultã®è©•ä¾¡
 	if (t1_evaluation_form(vm, &form, clist, tFALSE)) return VM_ERROR;
 	// iTHROW
 	return code_list_add_command_1(vm, clist, iTHROW);
@@ -1999,16 +1999,16 @@ static VM_RET t1_tagbody(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist
 		return signal_violation(vm, TRANSLATOR_ERROR_DOT_LIST, translator_get_form(vm));
 	}
 	p=OBJECT_GET_CELL(operands);
-	// tagbodytag_list ¤ÎºîÀ®
+	// tagbodytag_list ã®ä½œæˆ
 	if (head_list_create(vm, &tag_list)) return VM_ERROR;
 	if (t1_push_tagbody(vm, tag_list)) return VM_ERROR;
 	//
-	i=1;// tag¤«¤é»Ï¤Ş¤ë¤«Èİ¤«
+	i=1;// tagã‹ã‚‰å§‹ã¾ã‚‹ã‹å¦ã‹
 	while (p) {
 		cons_get_car(p, &obj);
 		if (OBJECT_IS_SYMBOL(&obj)&&symbol_is_simple(OBJECT_GET_CELL(&obj))) {
-			// tag¤ÎÄÉ²Ã
-			// tag¤«¤é»Ï¤Ş¤Ã¤Æ¤¤¤ë
+			// tagã®è¿½åŠ 
+			// tagã‹ã‚‰å§‹ã¾ã£ã¦ã„ã‚‹
 			if (p==OBJECT_GET_CELL(operands)) i=-1;
 			if (head_list_add_object(vm, tag_list, &obj)) { t1_pop_tagbody(vm); return VM_ERROR; }
 		}
@@ -2044,7 +2044,7 @@ static VM_RET t1_tagbody(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist
 			if (OBJECT_IS_SYMBOL(&obj)&&symbol_is_simple(OBJECT_GET_CELL(&obj))) {
 				// tag
 				if (f||i) {
-					// tag¤¬Â³¤¤¤Æ¤¤¤ë¤È¤­¤Ë¤Ïpush-nil¤òÆş¤ì¤Æ¤ª¤¯
+					// tagãŒç¶šã„ã¦ã„ã‚‹ã¨ãã«ã¯push-nilã‚’å…¥ã‚Œã¦ãŠã
 					if (!f&&i&&code_list_add_command_1(vm, cl, iPUSH_NIL)) { t1_pop_tagbody(vm); return VM_ERROR; }
 					if (code_list_add_command_1(vm, cl, iRET)) { t1_pop_tagbody(vm); return VM_ERROR; }
 					if (code_list_create(vm, &cl)) { t1_pop_tagbody(vm); return VM_ERROR; }
@@ -2054,13 +2054,13 @@ static VM_RET t1_tagbody(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist
 					cons_set_cdr(list, &obj);
 					list=pp;
 				}
-				f=0;// ºÇ¸å¤Ïtag
+				f=0;// æœ€å¾Œã¯tag
 				i=1;
 			} else {
 				// form
 				if (f&&code_list_add_command_1(vm, cl, iDISCARD)) { t1_pop_tagbody(vm); return VM_ERROR; }
 				if (t1_evaluation_form(vm, &obj, cl, tFALSE)) { t1_pop_tagbody(vm); return VM_ERROR; }
-				f=1;// ºÇ¸å¤Ïtag°Ê³°
+				f=1;// æœ€å¾Œã¯tagä»¥å¤–
 			}
 		}
 		//
@@ -2069,7 +2069,7 @@ static VM_RET t1_tagbody(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist
 		//
 		t1_pop_tagbody(vm);
 		return VM_OK;
-	} else {// tag¤¬°ì¤Ä¤â¤Ê¤«¤Ã¤¿
+	} else {// tagãŒä¸€ã¤ã‚‚ãªã‹ã£ãŸ
 		t1_pop_tagbody(vm);
 		return t1_sequence(vm, operands, clist, tail);
 	}
@@ -2100,7 +2100,7 @@ static VM_RET t1_unwind_protect(tPVM vm, const tINT id, tPOBJECT operands, tPCEL
 {
 	tOBJECT form, cleanup, obj;
 	tPCELL p, cl;
-	// ¹½Ê¸¸¡ºº
+	// æ§‹æ–‡æ¤œæŸ»
 	if (!OBJECT_IS_CONS(operands)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &form);
@@ -2134,7 +2134,7 @@ static VM_RET t1_the(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist, co
 	tOBJECT name, form;
 	tPCELL p;
 	tINT code;
-	// ¹½Ê¸¤Î¸¡ºº
+	// æ§‹æ–‡ã®æ¤œæŸ»
 	if (t1_syntax_check(vm, operands, 2)) return VM_ERROR;
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &name);
@@ -2153,7 +2153,7 @@ static VM_RET t1_convert(tPVM vm, const tINT id, tPOBJECT operands, tPCELL clist
 {
 	tOBJECT obj, name;
 	tPCELL p;
-	// ¹½Ê¸¤Î¸¡ºº
+	// æ§‹æ–‡ã®æ¤œæŸ»
 	if (t1_syntax_check(vm, operands, 2)) return VM_ERROR;
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &obj);
@@ -2170,7 +2170,7 @@ static VM_RET t1_with_standard(tPVM vm, const tINT id, tPOBJECT operands, tPCELL
 	tOBJECT stream, form, obj;
 	tPCELL cl;
 	tINT code;
-	//¡¡¹½Ê¸¤Î¸¡ºº
+	//ã€€æ§‹æ–‡ã®æ¤œæŸ»
 	if (!OBJECT_IS_CONS(operands)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	cl=OBJECT_GET_CELL(operands);
 	cons_get_car(cl, &stream);
@@ -2195,7 +2195,7 @@ static VM_RET t1_with_open_file(tPVM vm, const tINT id, tPOBJECT operands, tPCEL
 	tOBJECT obj, form, name, file_name, element_class;
 	tPCELL p, pl, cl;
 	tINT code;
-	// ¹½Ê¸¤Î¸¡ºº¤È°ú¿ô¤ÎÈ´¤­½Ğ¤·
+	// æ§‹æ–‡ã®æ¤œæŸ»ã¨å¼•æ•°ã®æŠœãå‡ºã—
 	if (!OBJECT_IS_CONS(operands)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	p=OBJECT_GET_CELL(operands);
 	cons_get_cdr(p, &form);
@@ -2214,7 +2214,7 @@ static VM_RET t1_with_open_file(tPVM vm, const tINT id, tPOBJECT operands, tPCEL
 		cons_get_cdr(p, &obj);
 		if (!OBJECT_IS_NIL(&obj)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	} else if (OBJECT_IS_NIL(&obj)) {
-		// [element-class]¾ÊÎ¬»ş¤Ï8¤Ë¤·¤Æ¤ª¤¯
+		// [element-class]çœç•¥æ™‚ã¯8ã«ã—ã¦ãŠã
 		OBJECT_SET_INTEGER(&element_class, 8);
 	} else {
 		return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
@@ -2268,7 +2268,7 @@ static VM_RET t1_continue_condition(tPVM vm, const tINT id, tPOBJECT operands, t
 {
 	tPCELL p;
 	tOBJECT obj, condition, value;
-	// ¹½Ê¸¤Î¸¡ºº¤ª¤è¤Ó°ú¿ô¤ÎÈ´¤­½Ğ¤·
+	// æ§‹æ–‡ã®æ¤œæŸ»ãŠã‚ˆã³å¼•æ•°ã®æŠœãå‡ºã—
 	if (!OBJECT_IS_CONS(operands)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &condition);
@@ -2279,12 +2279,12 @@ static VM_RET t1_continue_condition(tPVM vm, const tINT id, tPOBJECT operands, t
 		cons_get_cdr(p, &obj);
 		if (!OBJECT_IS_NIL(&obj)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	} else if (OBJECT_IS_NIL(&obj)) {
-		//¡¡¾ÊÎ¬»ş value nil
+		//ã€€çœç•¥æ™‚ value nil
 		value=nil;
 	} else {
 		return signal_violation(vm, TRANSLATOR_ERROR_DOT_LIST, translator_get_form(vm));
 	}
-	//°ú¿ô¤Ïº¸¤«¤é±¦¤Ø
+	//å¼•æ•°ã¯å·¦ã‹ã‚‰å³ã¸
 	if (t1_evaluation_form(vm, &condition, clist, tFALSE)) return VM_ERROR;
 	if (t1_evaluation_form(vm, &value, clist, tFALSE)) return VM_ERROR;
 	//
@@ -2296,7 +2296,7 @@ static VM_RET t1_with_handler(tPVM vm, const tINT id, tPOBJECT operands, tPCELL 
 {
 	tPCELL p;
 	tOBJECT handler, form, obj;
-	// ¹½Ê¸¤Î¸¡ºº¤ª¤è¤Ó°ú¿ô¤ÎÈ´¤­½Ğ¤·
+	// æ§‹æ–‡ã®æ¤œæŸ»ãŠã‚ˆã³å¼•æ•°ã®æŠœãå‡ºã—
 	if (!OBJECT_IS_CONS(operands)) return signal_violation(vm, TRANSLATOR_ERROR_SYNTAX_ERROR, translator_get_form(vm));
 	p=OBJECT_GET_CELL(operands);
 	cons_get_car(p, &handler);

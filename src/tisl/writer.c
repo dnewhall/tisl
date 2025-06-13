@@ -60,7 +60,7 @@ VM_RET format_fresh_line(tPVM vm, tPCELL stream)
 	return ret;
 }
 
-// format§œ«À¥˛
+// format„ÅØÁ†¥Ê£Ñ
 
 VM_RET format_l(tPVM vm, tPCELL stream, tCSTRING string, tPCELL list)
 {
@@ -79,9 +79,9 @@ VM_RET format_l(tPVM vm, tPCELL stream, tCSTRING string, tPCELL list)
 		} else if (string[x]=='~') {
 			x++;
 			switch (string[x]) {
-			case 'A'://ISLISP•™•÷•∏•ß•Ø•»
+			case 'A'://ISLISP„Ç™„Éñ„Ç∏„Çß„ÇØ„Éà
 			case 'a':
-			case 'S':// •®•π•±°º•◊…’§≠
+			case 'S':// „Ç®„Çπ„Ç±„Éº„Éó‰ªò„Åç
 			case 's':
 				if ((string[x]=='S')||(string[x]=='s')) vm_set_writer_flag(vm);
 				if (list) {
@@ -95,7 +95,7 @@ VM_RET format_l(tPVM vm, tPCELL stream, tCSTRING string, tPCELL list)
 				if (write_object(vm, stream, &obj)) { vm_reset_writer_flag(vm); goto ERROR; }
 				vm_reset_writer_flag(vm);
 				break;
-				// ¿∞øÙ
+				// Êï¥Êï∞
 			case 'c':
 			case 'C':
 				if (list) {
@@ -112,16 +112,16 @@ VM_RET format_l(tPVM vm, tPCELL stream, tCSTRING string, tPCELL list)
 				if (write_char(vm, stream, '~')) goto ERROR;
 				break;
 			case 'B':
-			case 'b'://°°2ø øÙ
+			case 'b'://„ÄÄ2ÈÄ≤Êï∞
 				r=2;
 			case 'O':
-			case 'o': // 8ø øÙ
+			case 'o': // 8ÈÄ≤Êï∞
 				if (!r) r=8;
 			case 'D':
-			case 'd': // 10ø øÙ
+			case 'd': // 10ÈÄ≤Êï∞
 				if (!r) r=10;
 			case 'X':
-			case 'x': // 16ø øÙ
+			case 'x': // 16ÈÄ≤Êï∞
 				if (!r) r=16;
 				if (list) {
 					cons_get_car(list, &obj);
@@ -133,7 +133,7 @@ VM_RET format_l(tPVM vm, tPCELL stream, tCSTRING string, tPCELL list)
 				if (!OBJECT_IS_INTEGER(&obj)) { signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_INTEGER, &obj); goto ERROR; }
 				if (write_integer(vm, stream, OBJECT_GET_INTEGER(&obj), r)) goto ERROR;
 				break;
-				// …‘∆∞æÆøÙ≈¿øÙ
+				// ‰∏çÂãïÂ∞èÊï∞ÁÇπÊï∞
 			case 'G':
 			case 'g':
 				if (list) {
@@ -146,13 +146,13 @@ VM_RET format_l(tPVM vm, tPCELL stream, tCSTRING string, tPCELL list)
 				if (!OBJECT_IS_FLOAT(&obj)) { signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_FLOAT, &obj); goto ERROR; }
 				if (write_float(vm, stream, OBJECT_GET_FLOAT(&obj))) goto ERROR;
 				break;
-			case '%':// ≤˛π‘
+			case '%':// ÊîπË°å
 				if (write_char(vm, stream, '\n')) goto ERROR;
 				break;
-			case '&':// æÚ∑Ô…’≤˛π‘
+			case '&':// Êù°‰ª∂‰ªòÊîπË°å
 				if (write_fresh_line(vm, stream)) goto ERROR;
 				break;
-			case '0':// •ø•÷§´nø øÙ¿∞øÙ
+			case '0':// „Çø„Éñ„ÅãnÈÄ≤Êï∞Êï¥Êï∞
 			case '1':
 			case '2':
 			case '3':
@@ -170,7 +170,7 @@ VM_RET format_l(tPVM vm, tPCELL stream, tCSTRING string, tPCELL list)
 						x++;
 					}
 					if ((string[x]=='R')||(string[x]=='r')) {
-						// Rø øÙ
+						// RÈÄ≤Êï∞
 						if (list) {
 							cons_get_car(list, &obj);
 							list=cons_get_cdr_cons(list);
@@ -181,7 +181,7 @@ VM_RET format_l(tPVM vm, tPCELL stream, tCSTRING string, tPCELL list)
 						if (!OBJECT_IS_INTEGER(&obj)) { signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_INTEGER, &obj); goto ERROR; }
 						if (write_integer(vm, stream, OBJECT_GET_INTEGER(&obj), m)) goto ERROR;
 					} else if ((string[x]=='T')||(string[x]=='t')) {
-						// •ø•÷
+						// „Çø„Éñ
 						if (write_tab(vm, stream, m)) goto ERROR;
 					} else {
 						signal_condition(vm, TISL_ERROR_UNKNOWN_FORMAT_CONTROL);

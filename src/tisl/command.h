@@ -6,29 +6,29 @@
 #ifndef TISL_COMMAND_H
 #define TISL_COMMAND_H
 
-// ̿�᥻�åȣ�(pass1����������̿��ꥹ�Ȥǻ��Ѥ���)
+// 命令セット１(pass1が生成する命令リストで使用する)
 enum {
-	// �����å�
-	iDISCARD,				// iDISCARD							�����å����ͤ��ļΤƤ�
+	// スタック
+	iDISCARD,				// iDISCARD							スタックの値を一つ捨てる
 	// 
-	iPUSH_NIL,				// iPUSH_NIL						�����å���nil���֥������Ȥ��Ѥ�
+	iPUSH_NIL,				// iPUSH_NIL						スタックにnilオブジェクトを積む
 	iPUSH_T,				// 
-	iPUSH_OBJECT,			// iPUSH_OBJECT obj					�����å���obj���֥������Ȥ��Ѥ�
-	// ���̻Ҥ�ɾ��
-	iPUSH_LOCAL_VARIABLE,	// iPUSH_LOCAL_VARIABLE symbol		symbol���б������ͤ򥹥��å����Ѥࡥsymbol�ϲ���������ˤ��ä�
-	iPUSH_GLOBAL_VARIABLE,	// iPUSH_GLOBAL_VARIABLE symbol		symbol���б������ͤ򥹥��å����Ѥࡥsymbol�ϺǾ�̤�«���򻲾�
-	// ʣ�����
-	// �ؿ�Ŭ�ѷ���
-	iCALL_REC,				// iCALL_REC						��ʬ���Ȥ�ƽФ�
-	iCALL_TAIL_REC,			// iCALL_TAIL_REC					��ʬ���Ȥ�ƽФ�(����)
-	iCALL_GLOBAL,			// iCALL_GLOBAL bind-list anum		bind-list�δؿ���anum�Ĥΰ����ǸƽФ�
-	iCALL_TAIL_GLOBAL,		// iCALL_TAIL_GLOBAL bind-list anum	bind-list�δؿ���anum�Ĥΰ����ǸƽФ�(����)
+	iPUSH_OBJECT,			// iPUSH_OBJECT obj					スタックにobjオブジェクトを積む
+	// 識別子の評価
+	iPUSH_LOCAL_VARIABLE,	// iPUSH_LOCAL_VARIABLE symbol		symbolに対応する値をスタックに積む．symbolは仮引数の中にあった
+	iPUSH_GLOBAL_VARIABLE,	// iPUSH_GLOBAL_VARIABLE symbol		symbolに対応する値をスタックに積む．symbolは最上位の束縛を参照
+	// 複合形式
+	// 関数適用形式
+	iCALL_REC,				// iCALL_REC						自分自身を呼出す
+	iCALL_TAIL_REC,			// iCALL_TAIL_REC					自分自身を呼出す(末尾)
+	iCALL_GLOBAL,			// iCALL_GLOBAL bind-list anum		bind-listの関数をanum個の引数で呼出す
+	iCALL_TAIL_GLOBAL,		// iCALL_TAIL_GLOBAL bind-list anum	bind-listの関数をanum個の引数で呼出す(末尾)
 	iCALL_BIND,				// iCALL_BIND bind anum
 	iCALL_TAIL_BIND,		// iCALL_TAIL_BIND bind anum
 	iCALL_LOCAL,			// iCALL_LOCAL symbol flist
 	iCALL_TAIL_LOCAL,		// iCALL_TAIL_LOCAL symbol flist
-	iRET,					// iRET								�ƽФ���Ȥ��֤�
-	// �ü����
+	iRET,					// iRET								呼出しもとに返る
+	// 特殊形式
 	iLAMBDA_IN,				// iLAMBDA_IN plist
 	iLAMBDA_OUT,			// iLAMBDA_OUT plist
 	//
@@ -80,9 +80,9 @@ enum {
 	iWITH_HANDLER,			// iWITH_HANDLER clist
 	iTIME,					// iTIME clist
 
-	// ��ʸ
-	iQUASIQUOTE,			// iQUASIQUOTE						�����å�����Ͱ�Ĥ���Ѥ���quasiquote���������
-	iQUASIQUOTE2,			// iQUASIQUOTE2						�����å��������Ĥ���Ѥ���quasiquote���������
+	// 構文
+	iQUASIQUOTE,			// iQUASIQUOTE						スタック上の値一つを使用してquasiquoteを作成する
+	iQUASIQUOTE2,			// iQUASIQUOTE2						スタック上の値二つを使用してquasiquoteを作成する
 	iUNQUOTE,				// iUNQUOTE
 	iUNQUOTE_SPLICING,		// iUNQUOTE_SPLICING
 	iUNQUOTE_SPLICING2,		// iUNQUOTE_SPLICING2
@@ -259,7 +259,7 @@ enum {
 	NUMBER_OF_COMMAND_1,
 };
 
-// ̿�᥻�å�2(pass2���������륳���ɤǻ��Ѥ���)
+// 命令セット2(pass2が生成するコードで使用する)
 enum {
 	iiDISCARD,					// iiDISCARD
 	iiPUSH_NIL,					// iiPUSH_NIL

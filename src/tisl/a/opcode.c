@@ -117,7 +117,7 @@ VM_RET opcode_pop_reg(tPVM vm, tPCELL function, tINT* pc, unsigned int reg_id)
 {
 	// POP Pop a Word from the Stack
 	// register
-	// Ã»¤¤¤Û¤¦¤Ë¤·¤È¤¯
+	// çŸ­ã„ã»ã†ã«ã—ã¨ã
 	// 0101 1 reg
 	if (function_write_code(vm, function, *pc, (unsigned char)(POP_REG|reg_id))) return VM_ERROR;
 	++*pc;
@@ -128,7 +128,7 @@ VM_RET opcode_push_reg(tPVM vm, tPCELL function, tINT* pc, unsigned int reg_id)
 {
 	// PUSH Push Operand onto the Stack
 	// resister
-	// Ã»¤¤¤Û¤¦¤Ë¤·¤Æ¤ª¤¯
+	// çŸ­ã„ã»ã†ã«ã—ã¦ãŠã
 	// 0101 0 reg
 	if (function_write_code(vm, function, *pc, (unsigned char)(PUSH_REG|reg_id))) return VM_ERROR;
 	++*pc;

@@ -200,13 +200,13 @@ VM_RET OPERATION_CALL op_call_tail_rec(tPVM vm)
 	return VM_OK;
 }
 
-// Âç°è´Ø¿ô¤Î¸Æ¤Ó½Ğ¤·
+// å¤§åŸŸé–¢æ•°ã®å‘¼ã³å‡ºã—
 VM_RET OPERATION_CALL op_call(tINT anum, tPCELL blist, tPVM vm)
 {
 	tOBJECT function;
 	tPCELL bind=bind_list_get_bind(blist, NAMESPACE_FUNCTION, vm_get_current_package(vm));
 	if (!bind) {
-		// ´Ø¿ô¤¬Â¸ºß¤·¤Æ¤¤¤Ê¤¤¡©
+		// é–¢æ•°ãŒå­˜åœ¨ã—ã¦ã„ãªã„ï¼Ÿ
 		tPCELL name=bind_list_get_name(blist);
 		return signal_undefined_entity(vm, TISL_ERROR_UNDEFINED_FUNCTION, name, NAMESPACE_FUNCTION);
 	}
@@ -214,7 +214,7 @@ VM_RET OPERATION_CALL op_call(tINT anum, tPCELL blist, tPVM vm)
 	return function_application_form(vm, &function, bind_list_get_name(blist), anum);
 }
 
-// Âç°è´Ø¿ô¤Î¸Æ¤Ó½Ğ¤·
+// å¤§åŸŸé–¢æ•°ã®å‘¼ã³å‡ºã—
 VM_RET OPERATION_CALL op_call_tail(tINT anum, tPCELL blist, tPVM vm)
 {
 	tOBJECT function;
@@ -224,7 +224,7 @@ VM_RET OPERATION_CALL op_call_tail(tINT anum, tPCELL blist, tPVM vm)
 		return signal_undefined_entity(vm, TISL_ERROR_UNDEFINED_FUNCTION, name, NAMESPACE_FUNCTION);
 	}
 	bind_get_function(bind, &function);
-	// ¤¤¤Ş¤Î¤È¤³ËöÈø¸Æ¤Ó½Ğ¤·¤ÈÉáÄÌ¤Î¸Æ¤Ó½Ğ¤·¤Ç½èÍı¤Î°ã¤¤¤Ï¤Ê¤¤
+	// ã„ã¾ã®ã¨ã“æœ«å°¾å‘¼ã³å‡ºã—ã¨æ™®é€šã®å‘¼ã³å‡ºã—ã§å‡¦ç†ã®é•ã„ã¯ãªã„
 	return function_application_form(vm, &function, bind_list_get_name(blist), anum);
 }
 
@@ -303,7 +303,7 @@ VM_RET OPERATION_CALL op_call_local_stack_tail(tPCELL func, tINT offset, tPVM vm
 	vm->SP-=pnum-1;
 	*vm->SP=obj;
 	vm_set_last_condition_ok(vm);
-	return VM_ERROR;// ¤ß¤Æ¤Ê¤¤¤±¤É°ì±ş
+	return VM_ERROR;// ã¿ã¦ãªã„ã‘ã©ä¸€å¿œ
 }
 
 VM_RET OPERATION_CALL op_call_local_heap_tail(tPCELL func, tINT offset, tPVM vm)
@@ -323,12 +323,12 @@ VM_RET OPERATION_CALL op_call_local_heap_tail(tPCELL func, tINT offset, tPVM vm)
 	vm->SP-=pnum;
 	*vm->SP=obj;
 	vm_set_last_condition_ok(vm);
-	return VM_ERROR;// ¤ß¤Æ¤Ê¤¤¤±¤É°ì±ş
+	return VM_ERROR;// ã¿ã¦ãªã„ã‘ã©ä¸€å¿œ
 }
 
 VM_RET OPERATION_CALL op_lambda_in(tPCELL plist, tPVM vm)
-{	// ¤¤¤Ş¤Î¤È¤³²¿¤â¤¹¤ë¤³¤È¤Ï¤Ê¤¤¤Ï¤º
-	// ¥Ç¥Ğ¥Ã¥¯ÍÑ¤Ë¼Â°ú¿ô¤Î¥Ş¥Ã¥×¤ò¤Ä¤¯¤ë¤È¤­¤Ë¤Ï²¿¤«½èÍı¤¬¤¤¤ë¤Ï¤º
+{	// ã„ã¾ã®ã¨ã“ä½•ã‚‚ã™ã‚‹ã“ã¨ã¯ãªã„ã¯ãš
+	// ãƒ‡ãƒãƒƒã‚¯ç”¨ã«å®Ÿå¼•æ•°ã®ãƒãƒƒãƒ—ã‚’ã¤ãã‚‹ã¨ãã«ã¯ä½•ã‹å‡¦ç†ãŒã„ã‚‹ã¯ãš
 	return VM_OK;
 }
 
@@ -544,7 +544,7 @@ VM_RET OPERATION_CALL op_set_elt(tPVM vm)
 		if (!OBJECT_IS_CHARACTER(vm->SP-2)) return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_CHARACTER, vm->SP-2);
 		if (string_set_character(vm, OBJECT_GET_CELL(vm->SP-1), i, OBJECT_GET_CHARACTER(vm->SP-2))) return VM_ERROR;
 		break;
-	default:// expected class¤Ï¡©<sequence>??
+	default:// expected classã¯ï¼Ÿ<sequence>??
 		return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_LIST, vm->SP);
 	}
 	vm->SP-=2;
@@ -633,7 +633,7 @@ VM_RET OPERATION_CALL op_dynamic_let(tPCELL function, tINT n, tPVM vm)
 
 	sp=vm->SP-vm->stack;
 	ret=function_call_(vm, function, &value);
-	vm->SP=vm->stack+sp;// Îã³°»ş¤Ë¤¤¤ë¡©
+	vm->SP=vm->stack+sp;// ä¾‹å¤–æ™‚ã«ã„ã‚‹ï¼Ÿ
 	for (i=0; i<n; i++) {
 		bind=OBJECT_GET_CELL(vm->SP-n+1+i);
 		bind_set_dynamic(bind, vm->SP-n*2+1+i);
@@ -688,7 +688,7 @@ VM_RET OPERATION_CALL op_case_using_predicate(tPCELL p, tPVM vm)
 			vm->SP++;
 			*vm->SP=obj;
 			if (po_funcall(vm, 3)) return VM_ERROR;
-			// nil°Ê³°¤òÊÖ¤·¤¿¤é½ªÎ»
+			// nilä»¥å¤–ã‚’è¿”ã—ãŸã‚‰çµ‚äº†
 			if (!OBJECT_IS_NIL(vm->SP)) return VM_OK;
 			vm->SP--;
 		}
@@ -720,10 +720,10 @@ void OPERATION_CALL op_case_using_end(tPVM vm)
 VM_RET OPERATION_CALL op_while_check(tPVM vm)
 {
 	if (OBJECT_IS_NIL(vm->SP)) {
-		// NIL¤Î¾ì¹ç while·Á¼°¤ÏÄ¾¤Á¤Ënil¤òÊÖ¤¹
+		// NILã®å ´åˆ whileå½¢å¼ã¯ç›´ã¡ã«nilã‚’è¿”ã™
 		return VM_OK;
 	} else {
-		// nil°Ê³°¤Ç¤¢¤ì¤Ğ°ìÏ¢¤ÎÉ¾²Á·Á¼°¤òÉ¾²Á
+		// nilä»¥å¤–ã§ã‚ã‚Œã°ä¸€é€£ã®è©•ä¾¡å½¢å¼ã‚’è©•ä¾¡
 		vm->SP--;
 		return VM_ERROR;
 	}
@@ -731,7 +731,7 @@ VM_RET OPERATION_CALL op_while_check(tPVM vm)
 
 VM_RET OPERATION_CALL op_for_stack_init(tPCELL plist, tPVM vm)
 {
-	// Â¿Ê¬²¿¤â¤¹¤ë¤³¤È¤Ï¤Ê¤¤
+	// å¤šåˆ†ä½•ã‚‚ã™ã‚‹ã“ã¨ã¯ãªã„
 	return VM_OK;
 }
 
@@ -748,7 +748,7 @@ VM_RET OPERATION_CALL op_for_heap_init(tPCELL plist, tPVM vm)
 }
 
 VM_RET OPERATION_CALL op_for_test(tPVM vm)
-{// nil¤Î¾ì¹ç¤Ï·«¤êÊÖ¤·,nil°Ê³°¤Î¤È¤­½ªÎ»
+{// nilã®å ´åˆã¯ç¹°ã‚Šè¿”ã—,nilä»¥å¤–ã®ã¨ãçµ‚äº†
 	return OBJECT_IS_NIL(vm->SP--) ? VM_ERROR : VM_OK;
 }
 
@@ -798,20 +798,20 @@ VM_RET OPERATION_CALL op_block(tPCELL function, tPCELL tag, tPVM vm)
 	cell_to_object(tag, &t);
 	if (vm_push_tag(vm, &t)) return VM_ERROR;
 	if (function_call_(vm, function, &obj)) {
-		// ²¿¤«°Û¾ï½ªÎ»¤·¤¿
+		// ä½•ã‹ç•°å¸¸çµ‚äº†ã—ãŸ
 		vm_get_last_condition(vm, &obj);
 		if (object_eql(&t, &obj)) {
-			// ¼«Ê¬¤Ø¤ÎÈó¶É½êÃ¦½Ğ
+			// è‡ªåˆ†ã¸ã®éå±€æ‰€è„±å‡º
 			vm->SP=sp+1;
 			vm_get_throw_object(vm, vm->SP);
 			vm_set_last_condition_ok(vm);
 			return VM_OK;
 		} else {
-			// Â¾¤Ø¤ÎÃ¦½Ğ
+			// ä»–ã¸ã®è„±å‡º
 			return VM_ERROR;
 		}
 	} else {
-		// Àµ¾ï¤Ë½ªÎ»¤·¤¿
+		// æ­£å¸¸ã«çµ‚äº†ã—ãŸ
 		*++(vm->SP)=obj;
 		vm_pop_tag(vm);
 		return VM_OK;
@@ -823,12 +823,12 @@ VM_RET OPERATION_CALL op_return_from(tPCELL tag, tPVM vm)
 	tOBJECT obj;
 	cell_to_object(tag, &obj);
 	if (vm_search_tag(vm, &obj)) {
-		// Ã¦½ĞÀèÈ¯¸«
+		// è„±å‡ºå…ˆç™ºè¦‹
 		vm_set_throw_object(vm, vm->SP);
 		vm_set_last_condition(vm, &obj);
 		return VM_ERROR;
 	} else {
-		// Ã¦½ĞÀè¤ò¸«¼º¤Ã¤Æ¤¤¤ë
+		// è„±å‡ºå…ˆã‚’è¦‹å¤±ã£ã¦ã„ã‚‹
 		return signal_condition(vm, TISL_ERROR_CONTROL_ERROR);
 	}
 }
@@ -841,20 +841,20 @@ VM_RET OPERATION_CALL op_catch(tPCELL function, tPVM vm)
 	if (vm_push_tag(vm, &obj)) return VM_ERROR;
 	if (function_call_(vm, function, &obj)) {
 		tOBJECT last;
-		// ²¿¤«°Û¾ï½ªÎ»¤·¤¿
+		// ä½•ã‹ç•°å¸¸çµ‚äº†ã—ãŸ
 		vm_get_last_condition(vm, &last);
 		if (object_eql(sp, &last)) {
-			// ¼«Ê¬¤Ø¤ÎÃ¦½Ğ
+			// è‡ªåˆ†ã¸ã®è„±å‡º
 			vm->SP=sp;
 			vm_get_throw_object(vm, vm->SP);
 			vm_set_last_condition_ok(vm);
 			return VM_OK;
 		} else {
-			//Â¾¤Ø¤ÎÃ¦½Ğ
+			//ä»–ã¸ã®è„±å‡º
 			return VM_ERROR;
 		}
 	} else {
-		// Àµ¾ï¤Ë½ªÎ»¤·¤¿
+		// æ­£å¸¸ã«çµ‚äº†ã—ãŸ
 		vm->SP=sp;
 		*vm->SP=obj;
 		vm_pop_tag(vm);
@@ -865,12 +865,12 @@ VM_RET OPERATION_CALL op_catch(tPCELL function, tPVM vm)
 VM_RET OPERATION_CALL op_throw(tPVM vm)
 {
 	if (vm_search_tag(vm, vm->SP-1)) {
-		// Ã¦½ĞÀèÈ¯¸«
+		// è„±å‡ºå…ˆç™ºè¦‹
 		vm_set_throw_object(vm, vm->SP);
 		vm_set_last_condition(vm, vm->SP-1);
 		return VM_ERROR;
 	} else {
-		// Ã¦½ĞÀè¤ò¸«¼º¤Ã¤Æ¤¤¤ë
+		// è„±å‡ºå…ˆã‚’è¦‹å¤±ã£ã¦ã„ã‚‹
 		return signal_condition(vm, TISL_ERROR_CONTROL_ERROR);
 	}
 }
@@ -894,7 +894,7 @@ LOOP:
 		if (function_call_(vm, OBJECT_GET_CELL(&obj), &obj)) {
 			vm_get_last_condition(vm, &obj);
 			if (OBJECT_IS_CONS(&obj)&&(cons_get_cdr_cons(OBJECT_GET_CELL(&obj))==taglist)) {
-				// ¼«Ê¬¤Ø¤ÎÃ¦½Ğ¤é¤·¤¤
+				// è‡ªåˆ†ã¸ã®è„±å‡ºã‚‰ã—ã„
 				tPCELL pp;
 				tOBJECT tag, tmp;
 				cons_get_car(OBJECT_GET_CELL(&obj), &tag);
@@ -912,7 +912,7 @@ LOOP:
 				}
 				return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 			} else {
-				// ²¿¤«ÊÌ¤ÎÈó¶É½êÃ¦½Ğ
+				// ä½•ã‹åˆ¥ã®éå±€æ‰€è„±å‡º
 				return VM_ERROR;
 			}
 		}
@@ -943,10 +943,10 @@ VM_RET OPERATION_CALL op_unwind_protect(tPCELL clean_up, tPCELL body, tPVM vm)
 	vm_get_last_condition(vm, &condition);
 	vm->SP=sp;
 	if (function_call_(vm, clean_up, &dummy)) {
-		// clean-up Ãæ¤ËÃ¦½Ğ¤¬È¯À¸¤·¤¿¡©
+		// clean-up ä¸­ã«è„±å‡ºãŒç™ºç”Ÿã—ãŸï¼Ÿ
 		return VM_ERROR;
 	} else {
-		// clean-up ½ªÎ»
+		// clean-up çµ‚äº†
 		vm->SP=sp+1;
 		*vm->SP=obj;
 		if (ret==VM_OK) {
@@ -1136,7 +1136,7 @@ VM_RET convert_to_string(tPVM vm)
 			tPCELL string;
 			vm_output_stream_clear(vm);
 			if (format_object(vm, vm->private_stream, vm->SP)) return VM_ERROR;
-			// Äê¿ôÊ¸»úÎó¤òÀ¸À®¤·¤Æ¤¤¤ë! ÊÑ¿ôÊ¸»úÎó¤Î¤Û¤¦¤¬ÎÉ¤¤¡©/*!!!*/
+			// å®šæ•°æ–‡å­—åˆ—ã‚’ç”Ÿæˆã—ã¦ã„ã‚‹! å¤‰æ•°æ–‡å­—åˆ—ã®ã»ã†ãŒè‰¯ã„ï¼Ÿ/*!!!*/
 			if (vm_output_stream_to_string(vm, &string)) return VM_ERROR;
 			OBJECT_SET_STRING(vm->SP, string);
 			return VM_OK;
@@ -1421,16 +1421,16 @@ VM_RET OPERATION_CALL op_ignore_errors(tPCELL function, tPVM vm)
 	tINT sp=vm->SP-vm->stack;
 	vm_push_ignore_errors_handler(vm);
 	if (function_call_(vm, function, &obj)) {
-		// ²¿¤«Îã³°¤¬È¯À¸¤·¤¿¡©
+		// ä½•ã‹ä¾‹å¤–ãŒç™ºç”Ÿã—ãŸï¼Ÿ
 		vm_pop_handler(vm);
 		if (vm_last_condition_is_ignore_errors(vm)) {
-			// Îã³°¤¬È¯À¸¤·¤¿
-			// Ìµ»ë¤·¤Ænil¤òÊÖ¤¹
+			// ä¾‹å¤–ãŒç™ºç”Ÿã—ãŸ
+			// ç„¡è¦–ã—ã¦nilã‚’è¿”ã™
 			vm->SP=vm->stack+sp+1;
 			OBJECT_SET_NIL(vm->SP);
 			vm_set_last_condition_ok(vm);
 		} else {
-			// ¤Ù¤Ä¤Î½èÍı Èó¶É½êÃ¦½Ğ¤«¡©
+			// ã¹ã¤ã®å‡¦ç† éå±€æ‰€è„±å‡ºã‹ï¼Ÿ
 			return VM_ERROR;
 		}
 	} else {
@@ -1446,7 +1446,7 @@ VM_RET OPERATION_CALL op_with_handler(tPCELL function, tPVM vm)
 	if (!OBJECT_IS_FUNCTION(vm->SP)&&
 		!OBJECT_IS_LOCAL_FUNCTION(vm->SP)&&
 		!OBJECT_IS_GENERIC_FUNCTION(vm->SP)&&
-		!OBJECT_IS_LINKED_FUNCTION(vm->SP)) {// ´Ø¿ô¤¬Áı¤¨¤¿¤é½ñ¤­Ä¾¤¹/*!!!*/
+		!OBJECT_IS_LINKED_FUNCTION(vm->SP)) {// é–¢æ•°ãŒå¢—ãˆãŸã‚‰æ›¸ãç›´ã™/*!!!*/
 		tOBJECT tmp=*vm->SP;
 		return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_FUNCTION, &tmp);
 	}
@@ -1499,7 +1499,7 @@ VM_RET OPERATION_CALL op_quasiquote(tPVM vm)
 VM_RET OPERATION_CALL op_quasiquote2(tPVM vm)
 {
 	if (OBJECT_IS_UNQUOTE_SPLICING(vm->SP-1)) {
-		// carÉô¤¬unquote-splicing ¤À¤Ã¤¿¾ì¹ç
+		// caréƒ¨ãŒunquote-splicing ã ã£ãŸå ´åˆ
 		tOBJECT form;
 		unquote_splicing_get_form(OBJECT_GET_CELL(vm->SP-1), &form);
 		if (OBJECT_IS_NIL(&form)) {
@@ -1533,7 +1533,7 @@ VM_RET OPERATION_CALL op_quasiquote2(tPVM vm)
 	} else {
 		tPCELL p;
 		if (OBJECT_IS_UNQUOTE_SPLICING(vm->SP)) {
-			// cdrÉô¤¬unquote-splicing ¤Î¾ì¹ç
+			// cdréƒ¨ãŒunquote-splicing ã®å ´åˆ
 			tOBJECT form, tmp;
 			unquote_splicing_get_form(OBJECT_GET_CELL(vm->SP), &form);
 			tmp=*(vm->SP-1);
@@ -1641,7 +1641,7 @@ VM_RET OPERATION_CALL op_next_method_p_primary(tINT dummy, tINT offset, tPVM vm)
 
 VM_RET OPERATION_CALL op_functionp(tPVM vm)
 {
-	/*!!!*/// ¸å¤ÇÁı¤¨¤ë¤Î¤ÇÃí°Õ
+	/*!!!*/// å¾Œã§å¢—ãˆã‚‹ã®ã§æ³¨æ„
 	switch (OBJECT_GET_TYPE(vm->SP)) {
 	case OBJECT_PRIMITIVE_OPERATOR:
 	case OBJECT_FUNCTION:
@@ -1659,7 +1659,7 @@ VM_RET OPERATION_CALL op_apply(tINT anum, tPVM vm)
 {
 	tINT anum_;
 	if (anum<2) return signal_condition(vm, TISL_ERROR_ARITY_ERROR);
-	// ºÇ¸å¤Î¥ê¥¹¥È¤ò¥¹¥¿¥Ã¥¯¾å¤ËÅ¸³«¤¹¤ë
+	// æœ€å¾Œã®ãƒªã‚¹ãƒˆã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã«å±•é–‹ã™ã‚‹
 	{
 		tPCELL p;
 		tOBJECT arg, rest;
@@ -1819,7 +1819,7 @@ VM_RET OPERATION_CALL op_property(tINT anum, tPVM vm)
 			tOBJECT tmp=*(vm->SP-1);
 			return signal_domain_error(vm, TISL_ERROR_DOMAIN_ERROR, CLASS_SYMBOL, &tmp);
 		}
-		// ¥Ñ¥Ã¥±¡¼¥¸½¤¾ş»Ò¤Ïµö¤µ¤Ê¤¤¤³¤È¤Ë¤¹¤ë
+		// ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ä¿®é£¾å­ã¯è¨±ã•ãªã„ã“ã¨ã«ã™ã‚‹
 		symbol=OBJECT_IS_NIL(vm->SP-2) ? SYMBOL_NIL : OBJECT_GET_CELL(vm->SP-2);
 		property_name=OBJECT_IS_NIL(vm->SP-1) ? SYMBOL_NIL : OBJECT_GET_CELL(vm->SP-1);
 		if (!symbol_is_simple(symbol)) return signal_condition(vm, TISL_ERROR_PACKAGE_QUALIFIER);
@@ -1828,11 +1828,11 @@ VM_RET OPERATION_CALL op_property(tINT anum, tPVM vm)
 		if (!symbol_get_string(symbol, 0, &name)) return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 		if (package_add_bind(vm, vm_get_current_function_package(vm), name, &bind)) return VM_ERROR;
 		if (bind_get_property(bind, property_name, &obj)) {
-			// Â°À­ÃÍ¤¬Â¸ºß¤·¤¿
+			// å±æ€§å€¤ãŒå­˜åœ¨ã—ãŸ
 			vm->SP-=2;
 			*vm->SP=obj;
 		} else {
-			// Â°À­ÃÍ¤¬Â¸ºß¤·¤Ê¤«¤Ã¤¿¾ì¹ç
+			// å±æ€§å€¤ãŒå­˜åœ¨ã—ãªã‹ã£ãŸå ´åˆ
 			vm->SP-=2;
 			*vm->SP=*(vm->SP+2);
 		}
@@ -2257,7 +2257,7 @@ VM_RET OPERATION_CALL op_addition(tINT anum, tPVM vm)
 		{
 		case OBJECT_INTEGER:
 			sum=OBJECT_GET_INTEGER(vm->SP--);
-			i=2;// ºÇ¸å¤Î±é»»¤ÈºÇ½é¤Î°ú¿ô¤Î¼èÆÀ¤Î¤¿¤á
+			i=2;// æœ€å¾Œã®æ¼”ç®—ã¨æœ€åˆã®å¼•æ•°ã®å–å¾—ã®ãŸã‚
 			while (OBJECT_IS_INTEGER(vm->SP)&&(i<anum)) {
 				i++;
 				d=OBJECT_GET_INTEGER(vm->SP--);
@@ -2384,7 +2384,7 @@ VM_RET OPERATION_CALL op_multiplication(tINT anum, tPVM vm)
 		{
 		case OBJECT_INTEGER:
 			pai=OBJECT_GET_INTEGER(vm->SP--);
-			i=2;// ºÇ¸å¤Î±é»»¤ÈºÇ½é¤Î°ú¿ô¤Î¼èÆÀ¤Î¤¿¤á
+			i=2;// æœ€å¾Œã®æ¼”ç®—ã¨æœ€åˆã®å¼•æ•°ã®å–å¾—ã®ãŸã‚
 			while (OBJECT_IS_INTEGER(vm->SP)&&(i<anum)) {
 				i++;
 				d=OBJECT_GET_INTEGER(vm->SP--);
@@ -2496,7 +2496,7 @@ VM_RET OPERATION_CALL op_substraction(tINT anum, tPVM vm)
 		// (- number)
 		switch (OBJECT_GET_TYPE(vm->SP)) {
 		case OBJECT_INTEGER:
-			vm->SP->data.i=-vm->SP->data.i;// ¥ª¡¼¥Ğ¥Õ¥í¡¼¤¹¤ë¡©
+			vm->SP->data.i=-vm->SP->data.i;// ã‚ªãƒ¼ãƒãƒ•ãƒ­ãƒ¼ã™ã‚‹ï¼Ÿ
 			return VM_OK;
 		case OBJECT_FLOAT:
 			vm->SP->data.f=-vm->SP->data.f;

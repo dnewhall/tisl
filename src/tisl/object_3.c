@@ -190,14 +190,14 @@ VM_RET gfunction_add_method(tPVM vm, tPCELL gfunction, tPCELL method)
 	tPCELL list;
 	OBJECT_SET_METHOD(&obj, method);
 	if (vm_push(vm, &obj)) return VM_ERROR;
-	// °ú¿ô¤Î¹çÆ±¤Î¸¡ºº
+	// å¼•æ•°ã®åˆåŒã®æ¤œæŸ»
 	if ((GFUNCTION_GET_PARAMETER_NUMBER(gfunction)!=method_get_parameter_number(method))||
 		(GFUNCTION_GET_REST(gfunction)&&!method_is_rest(method))||
 		(!GFUNCTION_GET_REST(gfunction)&&method_is_rest(method))) {
 		vm_pop(vm);
 		return signal_condition(vm, TISL_ERROR_NOT_CONGRUENT_LAMBDA_LIST);
 	}
-	// ¤½¤ì¤¾¤ì¤Î½¤¾ş»Ò¤ÎÃæ¤Ç¹çÃ×¤Î¸¡ºº
+	// ãã‚Œãã‚Œã®ä¿®é£¾å­ã®ä¸­ã§åˆè‡´ã®æ¤œæŸ»
 	switch (method_get_qualifier(method)) {
 	case METHOD_AROUND:		list=GFUNCTION_GET_AROUND_METHOD_LIST(gfunction); break;
 	case METHOD_BEFORE:		list=GFUNCTION_GET_BEFORE_METHOD_LIST(gfunction); break;
@@ -207,8 +207,8 @@ VM_RET gfunction_add_method(tPVM vm, tPCELL gfunction, tPCELL method)
 	}
 	if (list) {
 		if (gfunction_check_agreement(vm, list, method)) {
-			// °ìÃ×¤¹¤ë¥á¥½¥Ã¥É¤¬Â¸ºß¤·¤¿ ÄÉ²Ã¤Ï¹Ô¤ï¤Ê¤¤
-			// ¸Å¤¤¥á¥½¥Ã¥É¤Î´Ø¿ôÉôÊ¬¤òÆş¤ìÂØ¤¨¤ë¡¥
+			// ä¸€è‡´ã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ãŒå­˜åœ¨ã—ãŸ è¿½åŠ ã¯è¡Œã‚ãªã„
+			// å¤ã„ãƒ¡ã‚½ãƒƒãƒ‰ã®é–¢æ•°éƒ¨åˆ†ã‚’å…¥ã‚Œæ›¿ãˆã‚‹ï¼
 			vm_pop(vm);
 			return VM_OK;
 		}
@@ -262,32 +262,32 @@ VM_RET gfunction_call(tPVM vm, tPCELL gfunction, tPOBJECT value)
 static VM_RET gfunction_call_standard(tPVM vm, tPCELL gfunction, tPOBJECT ret)
 {
 	tPCELL emethod;
-	// ¼Â¸ú¥á¥½¥Ã¥É¤Î¼èÆÀ
+	// å®ŸåŠ¹ãƒ¡ã‚½ãƒƒãƒ‰ã®å–å¾—
 	if (gfunction_get_effective_method(vm, gfunction, &emethod)) return VM_ERROR;
-	// Å¬ÍÑ²ÄÇ½¤Ê¼ç¥á¥½¥Ã¥É¤¬Â¸ºß¤·¤Ê¤«¤Ã¤¿
+	// é©ç”¨å¯èƒ½ãªä¸»ãƒ¡ã‚½ãƒƒãƒ‰ãŒå­˜åœ¨ã—ãªã‹ã£ãŸ
 	if (!emethod_get_primary_method_list(emethod)) return signal_condition(vm, TISL_ERROR_NO_APPLICABLE_METHOD);
-	// around¥á¥½¥Ã¥É¤ÎÂ¸ºß¤·¤Ê¤¤¾ì¹ç
+	// aroundãƒ¡ã‚½ãƒƒãƒ‰ã®å­˜åœ¨ã—ãªã„å ´åˆ
 	if (!emethod_get_around_method_list(emethod)) return emethod_call_no_around(vm, emethod, ret);
-	// ºÇ¤âÍ¥ÀèÅÙ¤Î¹â¤¤around ¥á¥½¥Ã¥É¤«¤é¸Æ½Ğ¤¹
+	// æœ€ã‚‚å„ªå…ˆåº¦ã®é«˜ã„around ãƒ¡ã‚½ãƒƒãƒ‰ã‹ã‚‰å‘¼å‡ºã™
 	return emethod_call_around(vm, emethod, ret);
 }
 
 static VM_RET gfunction_call_nil(tPVM vm, tPCELL gfunction, tPOBJECT ret)
 {
 	tPCELL emethod;
-	// ¼Â¸ú¥á¥½¥Ã¥É¤Î¼èÆÀ
+	// å®ŸåŠ¹ãƒ¡ã‚½ãƒƒãƒ‰ã®å–å¾—
 	if (gfunction_get_effective_method(vm, gfunction, &emethod)) return VM_ERROR;
-	// Å¬ÍÑ²ÄÇ½¤Ê¥á¥½¥Ã¥É¤¬Â¸ºß¤·¤Ê¤¤
+	// é©ç”¨å¯èƒ½ãªãƒ¡ã‚½ãƒƒãƒ‰ãŒå­˜åœ¨ã—ãªã„
 	if (emethod_get_primary_method_list(emethod)) return signal_condition(vm, TISL_ERROR_NO_APPLICABLE_METHOD);
-	// ¼ç¥á¥½¥Ã¥É¤ò¸Æ½Ğ¤¹
+	// ä¸»ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼å‡ºã™
 	return emethod_call_primary(vm, emethod, ret);
 }
 
 static VM_RET gfunction_get_effective_method(tPVM vm, tPCELL gfunction, tPCELL *emethod)
 {
-	// ´û¤ËÅĞÏ¿¤µ¤ì¤Æ¤¤¤ë¤â¤Î¤«¤é¸¡º÷
+	// æ—¢ã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‚‚ã®ã‹ã‚‰æ¤œç´¢
 	if (gfunction_search_emethod(vm, gfunction, emethod)) return VM_OK;
-	// ¿·µ¬¤ËºîÀ®¤¹¤ë
+	// æ–°è¦ã«ä½œæˆã™ã‚‹
 	return effective_method_create_(vm, gfunction, emethod);
 }
 
@@ -369,11 +369,11 @@ static VM_RET gfunction_create_accessor(tPVM vm, tPCELL name, tPCELL slot_name, 
 {
 	tPCELL gfunction, method;
 	tOBJECT tmp;
-	// Êñ³ç´Ø¿ô¤Î¼èÆÀ¤Ş¤¿¤ÏÀ¸À®
+	// åŒ…æ‹¬é–¢æ•°ã®å–å¾—ã¾ãŸã¯ç”Ÿæˆ
 	if (gfunction_accessor_get_gfunction(vm, name, kind, &gfunction)) return VM_ERROR;
-	// ¥á¥½¥Ã¥É¤ÎºîÀ®
+	// ãƒ¡ã‚½ãƒƒãƒ‰ã®ä½œæˆ
 	if (method_create_system(vm, slot_name, sclass, kind, &method)) return VM_ERROR;
-	// ¥á¥½¥Ã¥É¤ÎÅĞÏ¿
+	// ãƒ¡ã‚½ãƒƒãƒ‰ã®ç™»éŒ²
 	cell_to_object(method, &tmp);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
 	if (gfunction_add_method(vm, gfunction, method)) { vm_pop(vm); return VM_ERROR; }
@@ -391,8 +391,8 @@ static VM_RET gfunction_accessor_get_gfunction(tPVM vm, tPCELL name, const tINT 
 	if (package_add_bind(vm, vm_get_current_package(vm), string, &bind)) return VM_ERROR;
 	bind_get_function(bind, &tmp);
 	if (OBJECT_IS_GENERIC_FUNCTION(&tmp)) {
-		// ´û¤ËÊñ³ç´Ø¿ô¤Ë¤è¤Ã¤ÆÂ«Çû¤µ¤ì¤Æ¤¤¤ë¾ì¹ç
-		// °ú¿ô¤Î·Á¤Î¸¡ºº¤ò¤¹¤ë
+		// æ—¢ã«åŒ…æ‹¬é–¢æ•°ã«ã‚ˆã£ã¦æŸç¸›ã•ã‚Œã¦ã„ã‚‹å ´åˆ
+		// å¼•æ•°ã®å½¢ã®æ¤œæŸ»ã‚’ã™ã‚‹
 		*gfunction=OBJECT_GET_CELL(&tmp);
 		if (gfunction_is_rest(*gfunction)) return signal_condition(vm, TISL_ERROR_NOT_CONGRUENT_LAMBDA_LIST);
 		n=gfunction_get_parameter_number(*gfunction);
@@ -409,7 +409,7 @@ static VM_RET gfunction_accessor_get_gfunction(tPVM vm, tPCELL name, const tINT 
 		}
 	} else {
 		tPCELL lambda_list;
-		// Êñ³ç´Ø¿ô¤òºîÀ®¤·¡¤Â«Çû¤òÀßÄê¤¹¤ë. 
+		// åŒ…æ‹¬é–¢æ•°ã‚’ä½œæˆã—ï¼ŒæŸç¸›ã‚’è¨­å®šã™ã‚‹. 
 		switch (kind) {
 		case SYSTEM_METHOD_READER:
 		case SYSTEM_METHOD_BOUNDP:// (instance)
@@ -655,7 +655,7 @@ VM_RET method_mark(tPVM vm, tPCELL cell)
 		if (cell_mark(vm, METHOD_GET_FUNCTION(cell))) return VM_ERROR;
 		if (gc_push(vm, METHOD_GET_BODY(cell))) return VM_ERROR;
 	}
-	// parameter specializer¤Î¥Ş¡¼¥­¥ó¥°¤Ï¤¤¤é¤Ê¤¤¡©
+	// parameter specializerã®ãƒãƒ¼ã‚­ãƒ³ã‚°ã¯ã„ã‚‰ãªã„ï¼Ÿ
 	return VM_OK;
 }
 
@@ -694,7 +694,7 @@ tBOOL method_agreement_on_parameter_specializer(tPVM vm, tPCELL old_method, tPCE
 	for (i=0; i<n; i++) {
 		if (METHOD_GET_SPECIALIZER(old_method)[i]!=METHOD_GET_SPECIALIZER(new_method)[i]) return tFALSE;
 	}
-	//¹çÃ×¤·¤¿¡©
+	//åˆè‡´ã—ãŸï¼Ÿ
 	if (METHOD_GET_NEXT(new_method))
 		METHOD_SET_NEXT(old_method);
 	else
@@ -710,7 +710,7 @@ tBOOL method_agreement_on_parameter_specializer(tPVM vm, tPCELL old_method, tPCE
 		METHOD_SET_ACCESS_SLOT_NAME(old_method, METHOD_GET_ACCESS_SLOT_NAME(new_method));
 		METHOD_SET_ACCESS_CLASS(old_method, METHOD_GET_ACCESS_CLASS(new_method));
 	} else {
-		// ´Ø¿ôÉôÊ¬¤òÆş¤ìÂØ¤¨
+		// é–¢æ•°éƒ¨åˆ†ã‚’å…¥ã‚Œæ›¿ãˆ
 		METHOD_RESET_SYSTEM(old_method);
 		METHOD_SET_FUNCTION(old_method, METHOD_GET_FUNCTION(new_method));
 		METHOD_SET_BODY(old_method, METHOD_GET_BODY(new_method));
@@ -818,10 +818,10 @@ VM_RET effective_method_create_(tPVM vm, tPCELL gfunction, tPCELL* cell)
 
 	OBJECT_SET_EFFECTIVE_METHOD(&tmp, *cell);
 	if (vm_push_temp(vm, &tmp)) return VM_ERROR;
-	// °ú¿ô¥¯¥é¥¹ÁÈ¤ß¹ç¤ï¤»¤Î½é´ü²½
+	// å¼•æ•°ã‚¯ãƒ©ã‚¹çµ„ã¿åˆã‚ã›ã®åˆæœŸåŒ–
 	emethod_initialize_parameter_profiler(*cell, vm);
-	// Êñ³ç´Ø¿ô¤ËÅĞÏ¿¤µ¤ì¤Æ¤¤¤ë¥á¥½¥Ã¥É¤ÎÃæ¤Ç
-	// Å¬ÍÑ²ÄÇ½¤Ê¥á¥½¥Ã¥É¤òÍ¥ÀèÅÙ½ç¤Ë¤Ê¤é¤Ù¤¿¥ê¥¹¥È¤òºîÀ®¤¹¤ë
+	// åŒ…æ‹¬é–¢æ•°ã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ã®ä¸­ã§
+	// é©ç”¨å¯èƒ½ãªãƒ¡ã‚½ãƒƒãƒ‰ã‚’å„ªå…ˆåº¦é †ã«ãªã‚‰ã¹ãŸãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹
 	if (emethod_initialize_method_list(*cell, vm, gfunction)) { vm_pop(vm); return VM_ERROR; }
 	vm_pop_temp(vm);
 	return VM_OK;
@@ -860,7 +860,7 @@ static VM_RET emethod_initialize_method_list(tPCELL emethod, tPVM vm, tPCELL gfu
 		EMETHOD_SET_AFTER_METHOD_LIST(emethod, list);
 
 	}
-	// Êñ³ç´Ø¿ô¤ËÅĞÏ¿
+	// åŒ…æ‹¬é–¢æ•°ã«ç™»éŒ²
 	return gfunction_add_emethod(vm, gfunction, emethod);
 }
 
@@ -872,14 +872,14 @@ static VM_RET emethod_initialize_method_list_f(tPVM vm, tPCELL emethod, tPCELL g
 	for (; glist; glist=cons_get_cdr_cons(glist)) {
 		cons_get_car(glist, &tmp);
 		method=OBJECT_GET_CELL(&tmp);
-		// ¤³¤Î¼Â¸ú¥á¥½¥Ã¥É¤Ë¥á¥½¥Ã¥É¤¬Å¬ÍÑ²ÄÇ½¤«Èİ¤«¤òÈ½Äê
+		// ã“ã®å®ŸåŠ¹ãƒ¡ã‚½ãƒƒãƒ‰ã«ãƒ¡ã‚½ãƒƒãƒ‰ãŒé©ç”¨å¯èƒ½ã‹å¦ã‹ã‚’åˆ¤å®š
 		if (emethod_method_is_applicable(vm, emethod, method)) {
 			if (!*elist) {
 				if (cons_create_(vm, elist, &nil, &nil)) return VM_ERROR;
 				OBJECT_SET_CONS(&tmp, *elist);
 				if (vm_push(vm, &tmp)) return VM_ERROR;
 			}
-			// Å¬ÍÑ²ÄÇ½¤Ê¥á¥½¥Ã¥É¤ò¥ê¥¹¥È¤ËÄÉ²Ã
+			// é©ç”¨å¯èƒ½ãªãƒ¡ã‚½ãƒƒãƒ‰ã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ 
 			if (emethod_add_method_f(vm, emethod, method, *elist)) { vm_pop(vm); return VM_ERROR; }
 		}
 	}
@@ -895,14 +895,14 @@ static VM_RET emethod_initialize_method_list_r(tPVM vm, tPCELL emethod, tPCELL g
 	for (; glist; glist=cons_get_cdr_cons(glist)) {
 		cons_get_car(glist, &tmp);
 		method=OBJECT_GET_CELL(&tmp);
-		// ¤³¤Î¼Â¸ú¥á¥½¥Ã¥É¤Ë¥á¥½¥Ã¥É¤¬Å¬ÍÑ²ÄÇ½¤«Èİ¤«¤òÈ½Äê
+		// ã“ã®å®ŸåŠ¹ãƒ¡ã‚½ãƒƒãƒ‰ã«ãƒ¡ã‚½ãƒƒãƒ‰ãŒé©ç”¨å¯èƒ½ã‹å¦ã‹ã‚’åˆ¤å®š
 		if (emethod_method_is_applicable(vm, emethod, method)) {
 			if (!*elist) {
 				if (cons_create_(vm, elist, &nil, &nil)) return VM_ERROR;
 				OBJECT_SET_CONS(&tmp, *elist);
 				if (vm_push(vm, &tmp)) return VM_ERROR;
 			}
-			// Å¬ÍÑ²ÄÇ½¤Ê¥á¥½¥Ã¥É¤ò¥ê¥¹¥È¤ËÄÉ²Ã
+			// é©ç”¨å¯èƒ½ãªãƒ¡ã‚½ãƒƒãƒ‰ã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ 
 			if (emethod_add_method_r(vm, emethod, method, *elist)) { vm_pop(vm); return VM_ERROR; }
 		}
 	}
@@ -910,13 +910,13 @@ static VM_RET emethod_initialize_method_list_r(tPVM vm, tPCELL emethod, tPCELL g
 	return VM_OK;
 }
 
-// Í¥ÀèÅÙ¤Î¹â¤¤½ç¤Ë¥á¥½¥Ã¥É¤ò¥ê¥¹¥È¤ËÄÉ²Ã¤¹¤ë
+// å„ªå…ˆåº¦ã®é«˜ã„é †ã«ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ ã™ã‚‹
 static VM_RET emethod_add_method_f(tPVM vm, tPCELL emethod, tPCELL method, tPCELL elist)
 {
 	tOBJECT tmp;
 	cons_get_car(elist, &tmp);
 	if (OBJECT_IS_NIL(&tmp)) {
-		// °ì¤ÄÌÜ¤Î¥á¥½¥Ã¥É
+		// ä¸€ã¤ç›®ã®ãƒ¡ã‚½ãƒƒãƒ‰
 		cell_to_object(method, &tmp);
 		cons_set_car(elist, &tmp);
 	} else {
@@ -924,19 +924,19 @@ static VM_RET emethod_add_method_f(tPVM vm, tPCELL emethod, tPCELL method, tPCEL
 		tOBJECT next;
 		for (p=elist, last=0; p; last=p, p=cons_get_cdr_cons(p)) {
 			cons_get_car(p, &tmp);
-			// emethod¤Î°ú¿ô¤Î¥¯¥é¥¹¤Î¥¯¥é¥¹Í¥ÀèÅÙ¥ê¥¹¥È¤Ë¤ª¤¤¤Æ
-			// method¤¬¥ê¥¹¥È¤Î¥á¥½¥Ã¥É¤è¤ê¤âÍ¥ÀèÅÙ¤¬¹â¤±¤ì¤ĞtTRUE¤òÊÖ¤¹
+			// emethodã®å¼•æ•°ã®ã‚¯ãƒ©ã‚¹ã®ã‚¯ãƒ©ã‚¹å„ªå…ˆåº¦ãƒªã‚¹ãƒˆã«ãŠã„ã¦
+			// methodãŒãƒªã‚¹ãƒˆã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚ˆã‚Šã‚‚å„ªå…ˆåº¦ãŒé«˜ã‘ã‚Œã°tTRUEã‚’è¿”ã™
 			if (emethod_compare_method(vm, emethod, method, OBJECT_GET_CELL(&tmp))) break;
 		}
 		if (last) {
-			// last¤Î¸å¤í¤Ëmethod¤òÄÉ²Ã
+			// lastã®å¾Œã‚ã«methodã‚’è¿½åŠ 
 			cons_get_cdr(last, &next);
 			cell_to_object(method, &tmp);
 			if (cons_create_(vm, &pp, &tmp, &next)) return VM_ERROR;
 			OBJECT_SET_CONS(&tmp, pp);
 			cons_set_cdr(last, &tmp);
 		} else {
-			// ÀèÆ¬¤ËÄÉ²Ã
+			// å…ˆé ­ã«è¿½åŠ 
 			cons_get_car(elist, &tmp);
 			cons_get_cdr(elist, &next);
 			if (cons_create_(vm, &pp, &tmp, &next)) return VM_ERROR;
@@ -949,13 +949,13 @@ static VM_RET emethod_add_method_f(tPVM vm, tPCELL emethod, tPCELL method, tPCEL
 	return VM_OK;
 }
 
-// Í¥ÀèÅÙ¤ÎÄã¤¤½ç¤Ë¥ê¥¹¥È¤ËÄÉ²Ã¤¹¤ë
+// å„ªå…ˆåº¦ã®ä½ã„é †ã«ãƒªã‚¹ãƒˆã«è¿½åŠ ã™ã‚‹
 static VM_RET emethod_add_method_r(tPVM vm, tPCELL emethod, tPCELL method, tPCELL elist)
 {
 	tOBJECT tmp;
 	cons_get_car(elist, &tmp);
 	if (OBJECT_IS_NIL(&tmp)) {
-		// °ì¤ÄÌÜ¤Î¥á¥½¥Ã¥É
+		// ä¸€ã¤ç›®ã®ãƒ¡ã‚½ãƒƒãƒ‰
 		cell_to_object(method, &tmp);
 		cons_set_car(elist, &tmp);
 	} else {
@@ -963,18 +963,18 @@ static VM_RET emethod_add_method_r(tPVM vm, tPCELL emethod, tPCELL method, tPCEL
 		tOBJECT next;
 		for (p=elist, last=0; p; last=p, p=cons_get_cdr_cons(p)) {
 			cons_get_car(p, &tmp);
-			// f¤È½çÈÖ¤¬µÕ!!!
+			// fã¨é †ç•ªãŒé€†!!!
 			if (emethod_compare_method(vm, emethod, OBJECT_GET_CELL(&tmp), method)) break;
 		}
 		if (last) {
-			// last¤Î¸å¤í¤Ëmethod¤òÄÉ²Ã
+			// lastã®å¾Œã‚ã«methodã‚’è¿½åŠ 
 			cons_get_cdr(last, &next);
 			cell_to_object(method, &tmp);
 			if (cons_create_(vm, &pp, &tmp, &next)) return VM_ERROR;
 			OBJECT_SET_CONS(&tmp, pp);
 			cons_set_cdr(last, &tmp);
 		} else {
-			// ÀèÆ¬¤ËÄÉ²Ã
+			// å…ˆé ­ã«è¿½åŠ 
 			cons_get_car(elist, &tmp);
 			cons_get_cdr(elist, &next);
 			if (cons_create_(vm, &pp, &tmp, &next)) return VM_ERROR;
@@ -1032,8 +1032,8 @@ tPCELL emethod_get_after_method_list(tPCELL emethod)
 	return EMETHOD_GET_AFTER_METHOD_LIST(emethod);
 }
 
-// °ú¿ô¤¬¥¹¥¿¥Ã¥¯¾å¤ËÃÖ¤«¤ì¤Æ¤¤¤ë¾ì¹ç
-// ¥á¥½¥Ã¥É¸Æ½Ğ¤·¸ì¤Î¥¹¥¿¥Ã¥¯¾å¤Î°ú¿ô¤Î½èÍı¤Ï¹Ô¤ï¤Ê¤¤¡¥
+// å¼•æ•°ãŒã‚¹ã‚¿ãƒƒã‚¯ä¸Šã«ç½®ã‹ã‚Œã¦ã„ã‚‹å ´åˆ
+// ãƒ¡ã‚½ãƒƒãƒ‰å‘¼å‡ºã—èªã®ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã®å¼•æ•°ã®å‡¦ç†ã¯è¡Œã‚ãªã„ï¼
 static VM_RET emethod_call_method_list(tPVM vm, tPCELL emethod, tPCELL list, tPOBJECT ret)
 {
 	tINT n;
@@ -1046,8 +1046,8 @@ static VM_RET emethod_call_method_list(tPVM vm, tPCELL emethod, tPCELL list, tPO
 	if (method_is_next(method)) {
 		tPCELL env, amethod;
 		tINT i;
-		// ¼¡¤Î¥á¥½¥Ã¥É¤òÍÑ°Õ¤¹¤ëÉ¬Í×¤¬¤¢¤ë
-		// °ú¿ô¤Î½é´ü²½ÍÑ¤Î¤¿¤á¼Â°ú¿ô¤ò´Ä¶­¤ËÊİÂ¸¤·¤Æ¤ª¤¯
+		// æ¬¡ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ç”¨æ„ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+		// å¼•æ•°ã®åˆæœŸåŒ–ç”¨ã®ãŸã‚å®Ÿå¼•æ•°ã‚’ç’°å¢ƒã«ä¿å­˜ã—ã¦ãŠã
 		if (environment_create_(vm, n, 0, &env)) return VM_ERROR;
 		for (i=0; i<n; i++) {
 			if (environment_set_value(vm, env, i, vm->SP-n+1+i)) return VM_ERROR;
@@ -1057,9 +1057,9 @@ static VM_RET emethod_call_method_list(tPVM vm, tPCELL emethod, tPCELL list, tPO
 		if (vm_push(vm, &tmp)) return VM_ERROR;
 
 		if (method_is_stack(method)) {
-			// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¾å¤Ç°·¤¨¤ë¾ì¹ç
+			// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§æ‰±ãˆã‚‹å ´åˆ
 			tPCELL env2, env3;
-			// ´Ä¶­¤ÎÀßÄê
+			// ç’°å¢ƒã®è¨­å®š
 			if (environment_create_(vm, 1, 0, &env3)) { vm_pop(vm); return VM_ERROR; }
 			OBJECT_SET_ENVIRONMENT(&tmp, env3);
 			if (vm_push_temp(vm, &tmp)) { vm_pop(vm); return VM_ERROR; }
@@ -1071,13 +1071,13 @@ static VM_RET emethod_call_method_list(tPVM vm, tPCELL emethod, tPCELL list, tPO
 			OBJECT_SET_ENVIRONMENT(&tmp, env2);
 			if (environment_set_value(vm, env3, 0, &tmp)) { vm_pop_temp(vm); vm_pop(vm); return VM_ERROR; }
 			vm_pop(vm);
-			// ¥á¥½¥Ã¥É¤Î¼Â¹Ô
+			// ãƒ¡ã‚½ãƒƒãƒ‰ã®å®Ÿè¡Œ
 			if (method_call(vm, method, env3, ret)) { vm_pop_temp(vm); return VM_ERROR; }
 			vm_pop_temp(vm);
 		} else {
-			// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¾å¤Ç°·¤¨¤Ê¤¤¾ì¹ç
+			// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§æ‰±ãˆãªã„å ´åˆ
 			tPCELL env2, env3;
-			// ´Ä¶­¤ÎÀßÄê
+			// ç’°å¢ƒã®è¨­å®š
 			if (environment_create_(vm, 1+n, 0, &env3)) { vm_pop(vm); return VM_ERROR; }
 			OBJECT_SET_ENVIRONMENT(&tmp, env3);
 			if (vm_push_temp(vm, &tmp)) { vm_pop(vm); return VM_ERROR; }
@@ -1092,25 +1092,25 @@ static VM_RET emethod_call_method_list(tPVM vm, tPCELL emethod, tPCELL list, tPO
 			for (i=0; i<n; i++) {
 				if (environment_set_value(vm, env3, i+1, vm->SP-n+1+i)) return VM_ERROR;
 			}
-			// ¥á¥½¥Ã¥É¤Î¼Â¹Ô
+			// ãƒ¡ã‚½ãƒƒãƒ‰ã®å®Ÿè¡Œ
 			if (method_call(vm, method, env3, ret)) { vm_pop_temp(vm); return VM_ERROR; }
 			vm_pop_temp(vm);
 		}
 	} else {
-		// ¼¡¤Î¥á¥½¥Ã¥É¤òÍÑ°Õ¤¹¤ëÉ¬Í×¤Ï¤Ê¤¤¡¥
+		// æ¬¡ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ç”¨æ„ã™ã‚‹å¿…è¦ã¯ãªã„ï¼
 		if (method_is_stack(method)) {
-			// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¾å¤Ç°·¤¨¤ë¾ì¹ç
+			// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§æ‰±ãˆã‚‹å ´åˆ
 			if (method_call(vm, method, 0, ret)) return VM_ERROR;
 		} else {
-			// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¾å¤Ç°·¤¨¤Ê¤¤¾ì¹ç
+			// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§æ‰±ãˆãªã„å ´åˆ
 			tPCELL env;
 			tINT i;
-			// ´Ä¶­¤ÎºîÀ®
+			// ç’°å¢ƒã®ä½œæˆ
 			if (environment_create_(vm, n, 0, &env)) return VM_ERROR;
 			for (i=0; i<n; i++) {
 				if (environment_set_value(vm, env, i, vm->SP-n+1+i)) return VM_ERROR;
 			}
-			// ¥á¥½¥Ã¥É¤Î¼Â¹Ô
+			// ãƒ¡ã‚½ãƒƒãƒ‰ã®å®Ÿè¡Œ
 			OBJECT_SET_ENVIRONMENT(&tmp, env);
 			if (vm_push_temp(vm, &tmp)) return VM_ERROR;
 			if (method_call(vm, method, env, ret)) { vm_pop_temp(vm); return VM_ERROR; }
@@ -1131,8 +1131,8 @@ static VM_RET emethod_call_before_after_method(tPVM vm, tPCELL emethod, tPCELL l
 		method=OBJECT_GET_CELL(&tmp);
 		n=METHOD_GET_PARAMETER(method);
 		if (method_is_stack(method)) {
-			// °ú¿ô¤¬¥¹¥¿¥Ã¥¯¾å¤Ç°·¤¨¤ë¾ì¹ç
-			// °ú¿ô¤Î¥³¥Ô¡¼
+			// å¼•æ•°ãŒã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§æ‰±ãˆã‚‹å ´åˆ
+			// å¼•æ•°ã®ã‚³ãƒ”ãƒ¼
 			for (i=n-1; i>=0; i--) {
 				tmp=vm->stack[sp-i];
 				if (vm_push(vm, &tmp)) return VM_ERROR;
@@ -1140,7 +1140,7 @@ static VM_RET emethod_call_before_after_method(tPVM vm, tPCELL emethod, tPCELL l
 			if (method_call(vm, method, 0, &tmp)) return VM_ERROR;
 			vm->SP=vm->stack+sp;
 		} else {
-			// °ú¿ô¤¬¥¹¥¿¥Ã¥¯¤Ç°·¤¨¤Ê¤¤¾ì¹ç
+			// å¼•æ•°ãŒã‚¹ã‚¿ãƒƒã‚¯ã§æ‰±ãˆãªã„å ´åˆ
 			tPCELL env;
 			if (environment_create_(vm, n, 0, &env)) return VM_ERROR;
 			for (i=n-1; i>=0; i--) {
@@ -1155,28 +1155,28 @@ static VM_RET emethod_call_before_after_method(tPVM vm, tPCELL emethod, tPCELL l
 	return VM_OK;
 }
 
-// ºÇ¤âÍ¥ÀèÅÙ¤Î¹â¤¤around¥á¥½¥Ã¥É¤ò¸Æ¤Ó½Ğ¤¹
+// æœ€ã‚‚å„ªå…ˆåº¦ã®é«˜ã„aroundãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã™
 VM_RET emethod_call_around(tPVM vm, tPCELL emethod, tPOBJECT value)
 {
 	return emethod_call_method_list(vm, emethod, EMETHOD_GET_AROUND_METHOD_LIST(emethod), value);
 }
 
-// around¥á¥½¥Ã¥É¤¬Â¸ºß¤·¤Ê¤«¤Ã¤¿
-// before primary after¤Î¥á¥½¥Ã¥É¤Î¸Æ¤Ó½Ğ¤·
+// aroundãƒ¡ã‚½ãƒƒãƒ‰ãŒå­˜åœ¨ã—ãªã‹ã£ãŸ
+// before primary afterã®ãƒ¡ã‚½ãƒƒãƒ‰ã®å‘¼ã³å‡ºã—
 VM_RET emethod_call_no_around(tPVM vm, tPCELL emethod, tPOBJECT value)
 {
 	tOBJECT dummy;
-	// before¥á¥½¥Ã¥É¤Î¸Æ¤Ó½Ğ¤·
+	// beforeãƒ¡ã‚½ãƒƒãƒ‰ã®å‘¼ã³å‡ºã—
 	if (EMETHOD_GET_BEFORE_METHOD_LIST(emethod)&&
 		emethod_call_before_after_method(vm, emethod, EMETHOD_GET_BEFORE_METHOD_LIST(emethod), &dummy)) return VM_ERROR;
-	// ¼ç¥á¥½¥Ã¥É¤Î¸Æ¤Ó½Ğ¤·
+	// ä¸»ãƒ¡ã‚½ãƒƒãƒ‰ã®å‘¼ã³å‡ºã—
 	if (EMETHOD_GET_PRIMARY_METHOD_LIST(emethod)) {
 		if (emethod_call_method_list(vm, emethod, EMETHOD_GET_PRIMARY_METHOD_LIST(emethod), value)) return VM_ERROR;
 	} else {
 		return signal_condition(vm, TISL_ERROR_NO_APPLICABLE_METHOD);
 	}
 	if (vm_push_temp(vm, value)) return VM_ERROR;
-	// after¥á¥½¥Ã¥É¤Î¸Æ¤Ó½Ğ¤·
+	// afterãƒ¡ã‚½ãƒƒãƒ‰ã®å‘¼ã³å‡ºã—
 	if (EMETHOD_GET_AFTER_METHOD_LIST(emethod)&&
 		emethod_call_before_after_method(vm, emethod, EMETHOD_GET_AFTER_METHOD_LIST(emethod), &dummy)) { vm_pop_temp(vm); return VM_ERROR; }
 	vm_pop_temp(vm);
@@ -1198,13 +1198,13 @@ void emethod_set_next(tPCELL emethod, tPCELL next)
 	EMETHOD_SET_NEXT(emethod, next);
 }
 
-// ¼Â¸ú¥á¥½¥Ã¥É¤¬¸½ºß¤Î°ú¿ô¤ËÂĞ¤·¤ÆÅ¬ÍÑ²ÄÇ½¤«Èİ¤«¤òÄ´¤Ù¤ë
+// å®ŸåŠ¹ãƒ¡ã‚½ãƒƒãƒ‰ãŒç¾åœ¨ã®å¼•æ•°ã«å¯¾ã—ã¦é©ç”¨å¯èƒ½ã‹å¦ã‹ã‚’èª¿ã¹ã‚‹
 tBOOL emethod_is_applicable(tPCELL emethod, tPVM vm)
 {
 	tINT i, n;
 	n=EMETHOD_GET_PARAMETER(emethod);
-	// ¼Â¸ú¥á¥½¥Ã¥É¤Î°ú¿ôÆÃ¼ì²½»ØÄê»Ò¤È
-	// ¥¹¥¿¥Ã¥¯¾å¤Î°ú¿ô¤Î¥¯¥é¥¹¤¬°ìÃ×¤·¤¿¾ì¹ç¤Î¤ßºÆÍøÍÑ²ÄÇ½
+	// å®ŸåŠ¹ãƒ¡ã‚½ãƒƒãƒ‰ã®å¼•æ•°ç‰¹æ®ŠåŒ–æŒ‡å®šå­ã¨
+	// ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã®å¼•æ•°ã®ã‚¯ãƒ©ã‚¹ãŒä¸€è‡´ã—ãŸå ´åˆã®ã¿å†åˆ©ç”¨å¯èƒ½
 	for (i=0; i<n; i++) {
 		tOBJECT clss;
 		object_get_class(vm->SP-n+1+i, &clss);
@@ -1215,8 +1215,8 @@ tBOOL emethod_is_applicable(tPCELL emethod, tPVM vm)
 
 static tBOOL emethod_method_is_applicable(tPVM vm, tPCELL emethod, tPCELL method)
 {
-	// method¤ÎÆÃ¼ì²½»ØÄê»Ò¤Î¥¯¥é¥¹¤¬
-	// emethod¤Î°ú¿ô¤Î¥¯¥é¥¹¤Î¾å°Ì¥¯¥é¥¹¤Ş¤¿¤ÏÆ±¤¸¥¯¥é¥¹¤Ê¤é¤ĞÅ¬ÍÑ²ÄÇ½
+	// methodã®ç‰¹æ®ŠåŒ–æŒ‡å®šå­ã®ã‚¯ãƒ©ã‚¹ãŒ
+	// emethodã®å¼•æ•°ã®ã‚¯ãƒ©ã‚¹ã®ä¸Šä½ã‚¯ãƒ©ã‚¹ã¾ãŸã¯åŒã˜ã‚¯ãƒ©ã‚¹ãªã‚‰ã°é©ç”¨å¯èƒ½
 	tINT i, n;
 	tOBJECT eclss, clss;
 	tPCELL bind, bind_list;
@@ -1248,10 +1248,10 @@ static tINT gfunction_get_emethod_key_(tPCELL gfunction, tPCELL emethod)
 
 static tBOOL emethod_compare_method(tPVM vm, tPCELL emethod, tPCELL method1, tPCELL method2)
 {
-	// emethod¤Î¥¯¥é¥¹Í¥ÀèÅÙ¤ÎÃæ¤Ç
-	// method1¤ÎÍ¥ÀèÅÙ¤È
-	// method2¤ÎÍ¥ÀèÅÙ¤òÈæ³Ó¤¹¤ë
-	// method1¤ÎË¡¤¬Í¥ÀèÅÙ¤¬¹â¤±¤ì¤ĞtTRUE¤òÊÖ¤¹
+	// emethodã®ã‚¯ãƒ©ã‚¹å„ªå…ˆåº¦ã®ä¸­ã§
+	// method1ã®å„ªå…ˆåº¦ã¨
+	// method2ã®å„ªå…ˆåº¦ã‚’æ¯”è¼ƒã™ã‚‹
+	// method1ã®æ³•ãŒå„ªå…ˆåº¦ãŒé«˜ã‘ã‚Œã°tTRUEã‚’è¿”ã™
 	tINT p1, p2, i, n;
 	tPCELL blist, bind;
 	tOBJECT clss1, clss2;
@@ -1269,7 +1269,7 @@ static tBOOL emethod_compare_method(tPVM vm, tPCELL emethod, tPCELL method1, tPC
 		if (p1>p2) return tTRUE;
 		if (p1<p2) return tFALSE;
 	}
-	// ¹çÃ×¤¹¤ë¥á¥½¥Ã¥É¤Ï¤Ê¤¤¤Ï¤º¡¥
+	// åˆè‡´ã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰ã¯ãªã„ã¯ãšï¼
 	return tFALSE;
 }
 
@@ -1320,7 +1320,7 @@ VM_RET amethod_call_primary(tPVM vm, tPCELL amethod, tPCELL list)
 	tOBJECT tmp;
 	cons_get_cdr(list, &tmp);
 	if (OBJECT_IS_NIL(&tmp)) {
-		// ¼¡¤Î¥á¥½¥Ã¥É¤ÏÂ¸ºß¤·¤Ê¤¤
+		// æ¬¡ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯å­˜åœ¨ã—ãªã„
 		return signal_condition(vm, TISL_ERROR_NO_APPLICABLE_METHOD);
 	} else {
 		return amethod_call_method_list(vm, amethod, cons_get_cdr_cons(list));
@@ -1332,7 +1332,7 @@ VM_RET amethod_call_around(tPVM vm, tPCELL amethod, tPCELL list)
 	tOBJECT tmp;
 	cons_get_cdr(list, &tmp);
 	if (OBJECT_IS_NIL(&tmp)) {
-		// ¼¡¤Î around method ¤ÏÂ¸ºß¤·¤Ê¤¤
+		// æ¬¡ã® around method ã¯å­˜åœ¨ã—ãªã„
 		tPCELL emethod=AMETHOD_GET_EMETHOD(amethod);
 		// before
 		if (emethod_get_before_method_list(emethod)&&
@@ -1362,12 +1362,12 @@ static VM_RET amethod_call_method_list(tPVM vm, tPCELL amethod, tPCELL list)
 	method=OBJECT_GET_CELL(&tmp);
 	n=method_get_parameter_number(method);
 	if (method_is_next(method)) {
-		// ¼¡¤Î¥á¥½¥Ã¥É¤òÍÑ°Õ¤¹¤ëÉ¬Í×¤¬¤¢¤ë
+		// æ¬¡ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ç”¨æ„ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 		tINT i;
 		tPCELL env2, env3;
 		if (method_is_stack(method)) {
-			// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¾å¤Ç°·¤¨¤ë¾ì¹ç
-			// ´Ä¶­¤ÎºîÀ®
+			// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§æ‰±ãˆã‚‹å ´åˆ
+			// ç’°å¢ƒã®ä½œæˆ
 			if (environment_create_(vm, 1, 0, &env3)) return VM_ERROR;
 			OBJECT_SET_ENVIRONMENT(&tmp, env3);
 			if (vm_push_temp(vm, &tmp)) return VM_ERROR;
@@ -1378,14 +1378,14 @@ static VM_RET amethod_call_method_list(tPVM vm, tPCELL amethod, tPCELL list)
 			if (environment_set_value(vm, env2, 1, &tmp)) { vm_pop_temp(vm); return VM_ERROR; }
 			OBJECT_SET_ENVIRONMENT(&tmp, env2);
 			if (environment_set_value(vm, env3, 0, &tmp)) { vm_pop_temp(vm); return VM_ERROR; }
-			// °ú¿ô¤ÎÅ¸³«
+			// å¼•æ•°ã®å±•é–‹
 			for (i=0; i<n; i++) {
 				if (environment_get_value(vm, env, i, &tmp)) { vm_pop_temp(vm); return VM_ERROR; }
 				if (vm_push(vm, &tmp)) { vm_pop_temp(vm); return VM_ERROR; }
 			}
 		} else {
-			// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¾å¤Ç°·¤¨¤Ê¤¤¾ì¹ç
-			// ´Ä¶­¤ÎºîÀ®
+			// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§æ‰±ãˆãªã„å ´åˆ
+			// ç’°å¢ƒã®ä½œæˆ
 			if (environment_create_(vm, n+1, 0, &env3)) return VM_ERROR;
 			OBJECT_SET_ENVIRONMENT(&tmp, env3);
 			if (vm_push_temp(vm, &tmp)) return VM_ERROR;
@@ -1396,7 +1396,7 @@ static VM_RET amethod_call_method_list(tPVM vm, tPCELL amethod, tPCELL list)
 			if (environment_set_value(vm, env2, 1, &tmp)) { vm_pop_temp(vm); return VM_ERROR; }
 			OBJECT_SET_ENVIRONMENT(&tmp, env2);
 			if (environment_set_value(vm, env3, 0, &tmp)) { vm_pop_temp(vm); return VM_ERROR; }
-			// °ú¿ô
+			// å¼•æ•°
 			for (i=0; i<n; i++) {
 				if (environment_get_value(vm, env, i, &tmp)) { vm_pop_temp(vm); return VM_ERROR; }
 				if (environment_set_value(vm, env3, i+1, &tmp)) { vm_pop_temp(vm); return VM_ERROR; }
@@ -1408,21 +1408,21 @@ static VM_RET amethod_call_method_list(tPVM vm, tPCELL amethod, tPCELL list)
 		*vm->SP=tmp;
 	} else {
 		tINT i;
-		// ¼¡¤Î¥á¥½¥Ã¥É¤òÍÑ°Õ¤¹¤ëÉ¬Í×¤Ê¤¤
+		// æ¬¡ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ç”¨æ„ã™ã‚‹å¿…è¦ãªã„
 		if (method_is_stack(method)) {
-			// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¾å¤Ç°·¤¨¤ë
+			// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§æ‰±ãˆã‚‹
 			for (i=0; i<n; i++) {
 				if (environment_get_value(vm, env, i, &tmp)) return VM_ERROR;
 				if (vm_push(vm, &tmp)) return VM_ERROR;
 			}
-			// ¥á¥½¥Ã¥É¤Î¼Â¹Ô
+			// ãƒ¡ã‚½ãƒƒãƒ‰ã®å®Ÿè¡Œ
 			if (method_call(vm, method, 0, &tmp)) return VM_ERROR;
 			vm->SP=vm->stack+sp+1;
 			*vm->SP=tmp;
 		} else {
-			// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¾å¤Ç°·¤¨¤Ê¤¤
+			// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§æ‰±ãˆãªã„
 			tPCELL e;
-			// ´Ä¶­¤ÎºîÀ®
+			// ç’°å¢ƒã®ä½œæˆ
 			if (environment_create_(vm, n, 0, &e)) return VM_ERROR;
 			for (i=0; i<n; i++) {
 				if (environment_get_value(vm, env, i, &tmp)) return VM_ERROR;
@@ -1430,7 +1430,7 @@ static VM_RET amethod_call_method_list(tPVM vm, tPCELL amethod, tPCELL list)
 			}
 			OBJECT_SET_ENVIRONMENT(&tmp, e);
 			if (vm_push_temp(vm, &tmp)) return VM_ERROR;
-			// ¥á¥½¥Ã¥É¤Î¼Â¹Ô
+			// ãƒ¡ã‚½ãƒƒãƒ‰ã®å®Ÿè¡Œ
 			if (method_call(vm, method, e, &tmp)) { vm_pop_temp(vm); return VM_ERROR; }
 			vm_pop_temp(vm);
 			if (vm_push(vm, &tmp)) return VM_ERROR;
@@ -1454,7 +1454,7 @@ static VM_RET amethod_call_before_after_method_list(tPVM vm, tPCELL amethod, tPC
 		method=OBJECT_GET_CELL(&tmp);
 		n=METHOD_GET_PARAMETER(method);
 		if (method_is_stack(method)) {
-			// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¾å¤Ç°·¤¨¤ë¾ì¹ç
+			// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§æ‰±ãˆã‚‹å ´åˆ
 			for (i=0; i<n; i++) {
 				if (environment_get_value(vm, env, i, &tmp)) return VM_ERROR;
 				if (vm_push(vm, &tmp)) return VM_ERROR;
@@ -1462,7 +1462,7 @@ static VM_RET amethod_call_before_after_method_list(tPVM vm, tPCELL amethod, tPC
 			if (method_call(vm, method, 0, &tmp)) return VM_ERROR;
 			vm->SP=vm->stack+sp;
 		} else {
-			// °ú¿ô¤ò¥¹¥¿¥Ã¥¯¾å¤Ç°µ¤«¤Ê¤¤¾ì¹ç
+			// å¼•æ•°ã‚’ã‚¹ã‚¿ãƒƒã‚¯ä¸Šã§åœ§ã‹ãªã„å ´åˆ
 			tPCELL e;
 			if (environment_create_(vm, n, 0, &e)) return VM_ERROR;
 			for (i=0; i<n; i++) {
@@ -1517,7 +1517,7 @@ VM_RET linked_function_create_(tPVM vm, const tINT pnum, const tBOOL rest, tPCEL
 	tPCELL lib;
 	tOBJECT tmp;
 	void* p;
-	// DLL¤Î¥í¡¼¥É
+	// DLLã®ãƒ­ãƒ¼ãƒ‰
 	if (linked_library_create_(vm, dll_name, &lib)) return VM_ERROR;
 	cell_to_object(lib, &tmp);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
@@ -1602,7 +1602,7 @@ union FARG_ {
 	void*		p;
 };
 
-//¤Ê¤ó¤«ÌµÂÌ ¥¢¥»¥ó¥Ö¥é¤Ç½ñ¤¯¡© ...¤ÇÎÉ¤¤¡©
+//ãªã‚“ã‹ç„¡é§„ ã‚¢ã‚»ãƒ³ãƒ–ãƒ©ã§æ›¸ãï¼Ÿ ...ã§è‰¯ã„ï¼Ÿ
 typedef TISL_OBJECT (*LF_FF)(TNI*, ...);
 typedef TISL_OBJECT (*LF_00)(TNI*);
 typedef TISL_OBJECT (*LF_01)(TNI*, FARG);
@@ -1747,11 +1747,11 @@ const LF_CALL_N_V lf_call_n_v_table[]={
 VM_RET linked_function_call(tPVM vm, tPCELL function, tPOBJECT ret)
 {
 	tPCELL value;
-	// ¶É½ê»²¾È¤Îµ­Ï¿
+	// å±€æ‰€å‚ç…§ã®è¨˜éŒ²
 	if (vm_push_local_ref(vm)) return VM_ERROR;
-	// Îã³°¥Ï¥ó¥É¥é¤ÎÀßÄê
+	// ä¾‹å¤–ãƒãƒ³ãƒ‰ãƒ©ã®è¨­å®š
 	if (vm_push_foreign_function_handler(vm)) { vm_pop_local_ref(vm); return VM_ERROR; }
-	// ¸Æ¤Ó½Ğ¤·
+	// å‘¼ã³å‡ºã—
 	if (LINKED_FUNCTION_GET_VOIDP(function)) {
 		(*lf_call_n_v_table[LINKED_FUNCTION_GET_PARAMETER(function)])(vm, function);
 		value=0;
@@ -1760,7 +1760,7 @@ VM_RET linked_function_call(tPVM vm, tPCELL function, tPOBJECT ret)
 		value=(*lf_call_n_table[LINKED_FUNCTION_GET_PARAMETER(function)])(vm, function);
 		vm_set_current_package(vm, old_package);
 	}
-	// ¸å½èÍı
+	// å¾Œå‡¦ç†
 	vm_pop_handler(vm);
 	vm_pop_local_ref(vm);
 	if (vm_last_condition_is_ok(vm)) {
@@ -2614,7 +2614,7 @@ tUINT linked_library_get_size(tPCELL ll)
 
 VM_RET linked_library_mark(tPVM vm, tPCELL cell)
 {
-	// string¤Ø¤Î¥Ş¡¼¥­¥ó¥°
+	// stringã¸ã®ãƒãƒ¼ã‚­ãƒ³ã‚°
 	if (cell_mark(vm, LINKED_LIBRARY_GET_NAME(cell))) return VM_ERROR;
 	return VM_OK;
 }
@@ -2711,8 +2711,8 @@ void tisl_object_set_next(tPCELL tobj, tPCELL next)
 /////////////////////////////////////////////////
 // CELL_FOREIGN_CLASS
 
-// Ì¾Á°
-// ¾å°Ì¥¯¥é¥¹(°ì¤Ä) NULL¤Î¤È¤­¤Ï<foreign-object>
+// åå‰
+// ä¸Šä½ã‚¯ãƒ©ã‚¹(ä¸€ã¤) NULLã®ã¨ãã¯<foreign-object>
 
 #define FOREIGN_CLASS_GET_NAME(fclass)			(((fclass)+1)->cell)
 #define FOREIGN_CLASS_SET_NAME(fclass, name)	(((fclass)+1)->cell=(name))

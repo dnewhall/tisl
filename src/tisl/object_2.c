@@ -177,7 +177,7 @@ VM_RET condition_mark(tPVM vm, tPCELL cell)
 	return gc_push(vm, &obj);
 }
 
-// Ì¾Á°ÉÕ¤­Îã³°¤Î¥¹¥í¥Ã¥È¥¢¥¯¥»¥¹
+// åå‰ä»˜ãä¾‹å¤–ã®ã‚¹ãƒ­ãƒƒãƒˆã‚¢ã‚¯ã‚»ã‚¹
 
 // arithmetic-error
 void arithmetic_error_get_operation(tPCELL condition, tPOBJECT obj)
@@ -273,7 +273,7 @@ void undefined_entity_set_namespace(tPCELL condition, const int namespace_id)
 	case NAMESPACE_DYNAMIC:		OBJECT_SET_SYMBOL(&obj, global_symbol[sDYNAMIC_VARIABLE]);	break;
 	case NAMESPACE_CLASS:		OBJECT_SET_SYMBOL(&obj, global_symbol[sCLASS]);				break;
 	case NAMESPACE_PACKAGE:		OBJECT_SET_SYMBOL(&obj, global_symbol[sPACKAGE]);			break;
-	default:OBJECT_SET_UNBOUND(&obj);//¥¨¥é¡¼¡©
+	default:OBJECT_SET_UNBOUND(&obj);//ã‚¨ãƒ©ãƒ¼ï¼Ÿ
 	}
 	CONDITION_SET_SLOT2(condition, &obj);
 }
@@ -394,7 +394,7 @@ tPCELL package_get_use_package(tPVM vm, tPCELL package, const tINT precedence)
 }
 
 VM_RET package_write(tPVM vm, tPCELL stream, tPOBJECT obj)
-{//¥¨¥é¡¼¤«¡©
+{//ã‚¨ãƒ©ãƒ¼ã‹ï¼Ÿ
 	return write_string(vm, stream, "#i(<package>)");
 }
 
@@ -617,7 +617,7 @@ tPCELL bind_get_name(tPCELL bind)
 }
 
 VM_RET bind_write(tPVM vm, tPCELL stream, tPOBJECT obj)
-{/*!!!*///Îã³°¡©
+{/*!!!*///ä¾‹å¤–ï¼Ÿ
 	return write_string(vm, stream, "#tisl(bind)");
 }
 
@@ -722,7 +722,7 @@ tBOOL bind_package_is_public(tPCELL bind)
 	return BIND_GET_PACKAGE_PUBLIC(bind) ? tTRUE : tFALSE;
 }
 
-// Â°À­¥ê¥¹¥È
+// å±æ€§ãƒªã‚¹ãƒˆ
 
 static tINT bind_get_property_key(tPCELL property_name)
 {
@@ -730,7 +730,7 @@ static tINT bind_get_property_key(tPCELL property_name)
 	return (key<0) ? -key : key;
 }
 
-// propety_name ¤Ï CELL_SYMBOL
+// propety_name ã¯ CELL_SYMBOL
 tBOOL bind_get_property(tPCELL bind, tPCELL property_name, tPOBJECT obj)
 {
 	tINT key;
@@ -765,7 +765,7 @@ VM_RET bind_set_property(tPVM vm, tPCELL bind, tPCELL property_name, tPOBJECT ob
 			return VM_OK;
 		}
 	}
-	// ¿·µ¬¤ËºîÀ®
+	// æ–°è¦ã«ä½œæˆ
 	if (BIND_GET_PROPERTY_TABLE(bind)[key]) {
 		OBJECT_SET_CONS(&tmp, BIND_GET_PROPERTY_TABLE(bind)[key]);
 	} else {
@@ -851,7 +851,7 @@ tUINT bind_list_get_size(tPCELL bind_list)
 tPCELL bind_list_get_bind(tPCELL bind_list, const tINT namespace_id, tPCELL current)
 {
 	if (namespace_id==NAMESPACE_DYNAMIC) {
-		tOBJECT obj;// °ìÈÖÍ¥ÀèÅÙ¤Î¹â¤¤¤â¤Î¤òÍøÍÑ¤¹¤ë¡¥
+		tOBJECT obj;// ä¸€ç•ªå„ªå…ˆåº¦ã®é«˜ã„ã‚‚ã®ã‚’åˆ©ç”¨ã™ã‚‹ï¼
 		cons_get_car(BIND_LIST_GET_LIST(bind_list), &obj);
 		return OBJECT_GET_CELL(&obj);
 	} else {
@@ -890,7 +890,7 @@ tBOOL bind_list_bind_is_head(tPCELL blist, tPCELL bind)
 
 
 VM_RET bind_list_write(tPVM vm, tPCELL stream, tPOBJECT obj)
-{/*!!!*///Îã³°¡©
+{/*!!!*///ä¾‹å¤–ï¼Ÿ
 	return write_string(vm, stream, "#tisl(bind-list)");
 }
 
@@ -908,7 +908,7 @@ VM_RET bind_list_mark(tPVM vm, tPCELL cell)
 }
 
 /////////////////////////////////////////////////
-// package bind bind-list´Ø·¸
+// package bind bind-listé–¢ä¿‚
 
 static tINT package_get_bind_table_key(tPCELL name);
 static tINT package_get_bind_list_table_key(tPCELL identifier);
@@ -941,12 +941,12 @@ tPCELL package_get_bind_list(tPCELL package, tPCELL name)
 VM_RET package_add_bind(tPVM vm, tPCELL package, tPCELL name, tPCELL* bind)
 {
 	tINT key;
-	// ´û¤ËÂ¸ºß¤¹¤ë¤â¤Î¤«¤é¸¡º÷
+	// æ—¢ã«å­˜åœ¨ã™ã‚‹ã‚‚ã®ã‹ã‚‰æ¤œç´¢
 	*bind=package_get_bind(package, name);
 	if (*bind) return VM_OK;
-	// ¿·µ¬¤ËºîÀ®¤¹¤ë
+	// æ–°è¦ã«ä½œæˆã™ã‚‹
 	if (bind_create(vm, name, package, bind)) return VM_ERROR;
-	// ÅĞÏ¿
+	// ç™»éŒ²
 	key=package_get_bind_table_key(name);
 	BIND_SET_NEXT(*bind, PACKAGE_GET_BIND_TABLE(package)[key]);
 	PACKAGE_GET_BIND_TABLE(package)[key]=*bind;
@@ -956,12 +956,12 @@ VM_RET package_add_bind(tPVM vm, tPCELL package, tPCELL name, tPCELL* bind)
 VM_RET package_add_bind_list(tPVM vm, tPCELL package, tPCELL name, tPCELL* blist)
 {
 	tINT key;
-	// ´û¤Ë¤¢¤ë¤â¤Î¤«¤é¸¡º÷
+	// æ—¢ã«ã‚ã‚‹ã‚‚ã®ã‹ã‚‰æ¤œç´¢
 	*blist=package_get_bind_list(package, name);
 	if (*blist) return VM_OK;
-	// ¿·µ¬¤ËºîÀ®
+	// æ–°è¦ã«ä½œæˆ
 	if (make_bind_list(vm, package, name, blist)) return VM_ERROR;
-	// ÅĞÏ¿
+	// ç™»éŒ²
 	key=package_get_bind_list_table_key(name);
 	BIND_LIST_SET_NEXT(*blist, PACKAGE_GET_BIND_LIST_TABLE(package)[key]);
 	PACKAGE_GET_BIND_LIST_TABLE(package)[key]=*blist;
@@ -971,10 +971,10 @@ VM_RET package_add_bind_list(tPVM vm, tPCELL package, tPCELL name, tPCELL* blist
 VM_RET search_bind(tPVM vm, tPCELL current_package, tPCELL identifier, const tINT namespace_id, tPCELL* bind)
 {
 	tPCELL blist;
-	// blist¤¬´û¤ËºîÀ®¤µ¤ì¤Æ¤¤¤ë¤Ğ¤½¤ì¤òÍøÍÑ¤¹¤ë
+	// blistãŒæ—¢ã«ä½œæˆã•ã‚Œã¦ã„ã‚‹ã°ãã‚Œã‚’åˆ©ç”¨ã™ã‚‹
 	blist=package_get_bind_list(current_package, identifier);
 	if (!blist) {
-		// Â¸ºß¤·¤Ê¤±¤ì¤ĞºîÀ®¤·¤Æ¤ª¤¯
+		// å­˜åœ¨ã—ãªã‘ã‚Œã°ä½œæˆã—ã¦ãŠã
 		if (package_add_bind_list(vm, current_package, identifier, &blist)) return VM_ERROR;
 	}
 	*bind=bind_list_get_bind(blist, namespace_id, current_package);
@@ -982,13 +982,13 @@ VM_RET search_bind(tPVM vm, tPCELL current_package, tPCELL identifier, const tIN
 }
 
 static tINT package_get_bind_table_key(tPCELL name)
-{/*!!!*/// ¤Æ¤­¤È¡¼ ¸å¤ÇÅı·×¤Ç¤â¤È¤ë¡©
+{/*!!!*/// ã¦ãã¨ãƒ¼ å¾Œã§çµ±è¨ˆã§ã‚‚ã¨ã‚‹ï¼Ÿ
 	tINT key=((tINT)name)/23%PACKAGE_BIND_TABLE_SIZE;
 	return (key<0) ? -key : key;
 }
 
 static tINT package_get_bind_list_table_key(tPCELL identifier)
-{/*!!!*/// ¤Æ¤­¤È¡¼ ¸å¤ÇÅı·×¤Ç¤â¤È¤ë¡©
+{/*!!!*/// ã¦ãã¨ãƒ¼ å¾Œã§çµ±è¨ˆã§ã‚‚ã¨ã‚‹ï¼Ÿ
 	tINT key=((tINT)identifier)/23%PACKAGE_BIND_LIST_TABLE_SIZE;
 	return (key<0) ? -key : key;
 }
@@ -998,7 +998,7 @@ static VM_RET make_bind_list(tPVM vm, tPCELL package, tPCELL identifier, tPCELL*
 	tPCELL list;
 	tOBJECT obj;
 	VM_RET ret;
-	// Í¥ÀèÅÙ½ç¤Î¥ê¥¹¥È¤òºîÀ®¤¹¤ë
+	// å„ªå…ˆåº¦é †ã®ãƒªã‚¹ãƒˆã‚’ä½œæˆã™ã‚‹
 	if (cons_create_(vm, &list, &nil, &nil)) return VM_ERROR;
 	OBJECT_SET_CONS(&obj, list);
 	if (vm_push(vm, &obj)) return VM_ERROR;
@@ -1040,7 +1040,7 @@ static VM_RET make_list_of_bind_list(tPVM vm, tPCELL list, const tPCELL current,
 	if (!symbol_get_string(identifier, i, &name)) return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
 	n=package_get_length_of_name_precedence_list(package);
 	if (i+1==symbol_get_length(identifier)) {
-		// ºÇ¸å¤Îµ­¹æ
+		// æœ€å¾Œã®è¨˜å·
 		for (j=0; j<=n; j++) {
 			use=package_get_use_package(vm, package, j);
 			if (!use) return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
@@ -1049,7 +1049,7 @@ static VM_RET make_list_of_bind_list(tPVM vm, tPCELL list, const tPCELL current,
 			if (tail_list_add_object(vm, list, &obj)) return VM_ERROR;
 		}
 	} else {
-		// ¥Ñ¥Ã¥±¡¼¥¸½¤¾ş»Ò
+		// ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ä¿®é£¾å­
 //		for (j=0; j<=n; j++) {
 //			use=package_get_use_package(vm, package, j);
 //			if (!use) return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
@@ -1197,14 +1197,14 @@ tBOOL macro_get_rest(tPCELL macro)
 #define ENVIRONMENT_SET_LENGTH(env, len)	((env)->ui|=(len))
 #define ENVIRONMENT_GET_ENVIRONMENT(env)	(((env)+1)->cell)
 #define ENVIRONMENT_SET_ENVIRONMENT(env, p)	(((env)+1)->cell=(p))
-// size==1¤Î¤È¤­
+// size==1ã®ã¨ã
 #define ENVIRONMENT_GET_TYPE(env)				(((env)->ui&ENVIRONMENT_TYPE)>>8)
 #define ENVIRONMENT_SET_TYPE(env, type)			((env)->ui&=ENVIRONMENT_TYPE_, (env)->ui|=((type)<<8)&ENVIRONMENT_TYPE)
 #define ENVIRONMENT_GET_DATA(env)				((env)[2])
 #define ENVIRONMENT_SET_DATA(env, data)			((env)[2]=(data))
 #define ENVIRONMENT_GET_OBJECT(env, obj)		(OBJECT_SET_TYPE(obj, ENVIRONMENT_GET_TYPE(env)), (obj)->data=ENVIRONMENT_GET_DATA(env))
 #define ENVIRONMENT_SET_OBJECT(env, obj)		(ENVIRONMENT_SET_TYPE(env, OBJECT_GET_TYPE(obj)), ENVIRONMENT_SET_DATA(env, (obj)->data))
-// size>1¤Î¤È¤­
+// size>1ã®ã¨ã
 #define ENVIRONMENT_GET_SIZE(env)				(((env)+2)->ui)
 #define ENVIRONMENT_SET_SIZE(env, size)			(((env)+2)->ui=(size))
 #define ENVIRONMENT_GET_HEAD(env)				((tPOBJECT)((env)+3))
@@ -1237,10 +1237,10 @@ VM_RET environment_create_(tPVM vm, const tINT n, tPCELL environment, tPCELL* ce
 tUINT environment_get_size(tPCELL env)
 {
 	if (ENVIRONMENT_GET_LENGTH(env)>1) {
-		// Êİ»ı¤·¤Æ¤¤¤ëÃÍ¤Î¿ô¤¬2°Ê¾å
+		// ä¿æŒã—ã¦ã„ã‚‹å€¤ã®æ•°ãŒ2ä»¥ä¸Š
 		return ENVIRONMENT_GET_SIZE(env);
 	} else {
-		// Êİ»ı¤·¤Æ¤¤¤ëÃÍ¤Î¿ô¤Ï1
+		// ä¿æŒã—ã¦ã„ã‚‹å€¤ã®æ•°ã¯1
 		return 3;
 	}
 }
@@ -1255,14 +1255,14 @@ VM_RET environment_get_value(tPVM vm, tPCELL env, const tINT offset, tPOBJECT ob
 	tINT len=ENVIRONMENT_GET_LENGTH(env);
 
 	if (!env) return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
-	if (offset<len) {// ¤³¤Î´Ä¶­¤¬Êİ»ı
-		if (len==1) {// ´Ä¶­¤¬°ì¤Ä¤ÎÃÍ¤òÊİ»ı¤·¤Æ¤¤¤ë¾ì¹ç
+	if (offset<len) {// ã“ã®ç’°å¢ƒãŒä¿æŒ
+		if (len==1) {// ç’°å¢ƒãŒä¸€ã¤ã®å€¤ã‚’ä¿æŒã—ã¦ã„ã‚‹å ´åˆ
 			ENVIRONMENT_GET_OBJECT(env, obj);
-		} else {// ´Ä¶­¤¬Ê£¿ô¤ÎÃÍ¤òÊİ»ı¤·¤Æ¤¤¤ë¾ì¹ç
+		} else {// ç’°å¢ƒãŒè¤‡æ•°ã®å€¤ã‚’ä¿æŒã—ã¦ã„ã‚‹å ´åˆ
 			*obj=ENVIRONMENT_GET_HEAD(env)[offset];
 		}
 		return VM_OK;
-	} else {// ¤³¤³¤è¤êÂç°èÂ¦¤ÇÊİ»ı
+	} else {// ã“ã“ã‚ˆã‚Šå¤§åŸŸå´ã§ä¿æŒ
 		return environment_get_value(vm, ENVIRONMENT_GET_ENVIRONMENT(env), offset-len, obj);
 	}
 }
@@ -1272,14 +1272,14 @@ VM_RET environment_set_value(tPVM vm, tPCELL env, const tINT offset, tPOBJECT ob
 	tINT len=ENVIRONMENT_GET_LENGTH(env);
 
 	if (!env) return signal_condition(vm, TISL_ERROR_SYSTEM_ERROR);
-	if (offset<len) {// ¤³¤Î´Ä¶­¤¬Êİ»ı
-		if (len==1) {// ´Ä¶­¤¬°ì¤Ä¤ÎÃÍ¤òÊİ»ı¤·¤Æ¤¤¤ë¾ì¹ç
+	if (offset<len) {// ã“ã®ç’°å¢ƒãŒä¿æŒ
+		if (len==1) {// ç’°å¢ƒãŒä¸€ã¤ã®å€¤ã‚’ä¿æŒã—ã¦ã„ã‚‹å ´åˆ
 			ENVIRONMENT_SET_OBJECT(env, obj);
-		} else {// ´Ä¶­¤¬Ê£¿ô¤ÎÃÍ¤òÊİ»ı¤·¤Æ¤¤¤ë¾ì¹ç
+		} else {// ç’°å¢ƒãŒè¤‡æ•°ã®å€¤ã‚’ä¿æŒã—ã¦ã„ã‚‹å ´åˆ
 			ENVIRONMENT_GET_HEAD(env)[offset]=*obj;
 		}
 		return VM_OK;
-	} else {// ¤³¤³¤è¤êÂç°èÂ¦¤Î´Ä¶­¤ÇÊİ»ı
+	} else {// ã“ã“ã‚ˆã‚Šå¤§åŸŸå´ã®ç’°å¢ƒã§ä¿æŒ
 		return environment_set_value(vm, ENVIRONMENT_GET_ENVIRONMENT(env), offset-len, obj);
 	}
 }
@@ -1292,8 +1292,8 @@ VM_RET environment_write(tPVM vm, tPCELL stream, tPOBJECT obj)
 	n=ENVIRONMENT_GET_LENGTH(env);
 	for (i=0; i<n; i++) {
 		tOBJECT obj;
-		// É½¼¨¤Î½çÈÖ¤³¤ì¤Ç¤¤¤¤¤Î¤«¤Ê¡©
-		// ¸å¤Ç¥Á¥§¥Ã¥¯
+		// è¡¨ç¤ºã®é †ç•ªã“ã‚Œã§ã„ã„ã®ã‹ãªï¼Ÿ
+		// å¾Œã§ãƒã‚§ãƒƒã‚¯
 		if (environment_get_value(vm, env, i, &obj)) return VM_ERROR;
 		if (write_object(vm, stream, &obj)) return VM_ERROR;
 		if ((i!=n-1)&&write_char(vm, stream, ' ')) return VM_ERROR;
@@ -1399,15 +1399,15 @@ VM_RET standard_class_create_(tPVM vm, tPCELL class_name, tPCELL sc_name_list, t
 	tINT n;
 	tUINT size;
 	tOBJECT tmp;
-	// ¥Ç¡¼¥¿½é´ü²½ÍÑ¤Î¥ê¥¹¥È¤ÎºîÀ®
-	//¡¡¾å°Ì¥¯¥é¥¹¤Î¥ê¥¹¥È
+	// ãƒ‡ãƒ¼ã‚¿åˆæœŸåŒ–ç”¨ã®ãƒªã‚¹ãƒˆã®ä½œæˆ
+	//ã€€ä¸Šä½ã‚¯ãƒ©ã‚¹ã®ãƒªã‚¹ãƒˆ
 	if (sclass_make_super_class_list(vm, sc_name_list, &sclist)) return VM_ERROR;
 	if (sclist)
 		OBJECT_SET_CONS(&tmp, sclist);
 	else
 		OBJECT_SET_NIL(&tmp);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
-	// slot-spec¤Î¿ô¤Î·×»»
+	// slot-specã®æ•°ã®è¨ˆç®—
 	n=0;
 	if (sclass_count_slot_spec(vm, slot_spec_list, &n)) { vm_pop(vm); return VM_ERROR; }
 
@@ -1426,7 +1426,7 @@ VM_RET standard_class_create_(tPVM vm, tPCELL class_name, tPCELL sc_name_list, t
 	vm_pop(vm);
 	cell_to_object(*cell, &tmp);
 	if (vm_push(vm, &tmp)) return VM_ERROR;
-	// slot-spec¤ÎÀßÄê
+	// slot-specã®è¨­å®š
 	if (sclass_initialize_slot_spec(vm, *cell, slot_spec_list)) return VM_ERROR;
 
 	vm_pop(vm);
@@ -1463,14 +1463,14 @@ static VM_RET sclass_count_slot_spec(tPVM vm, tPCELL slot_spec_list, tINT* n)
 {
 	tOBJECT tmp;
 	tPCELL p;
-	// slot-name ¤Î¤ß¤Î¤â¤Î¤ÏÌµ»ë¤¹¤ë
+	// slot-name ã®ã¿ã®ã‚‚ã®ã¯ç„¡è¦–ã™ã‚‹
 	for (p=slot_spec_list; p; p=cons_get_cdr_cons(p)) {
 		cons_get_car(p, &tmp);
 		// (slot-name slot-opt*)
 		if (OBJECT_IS_CONS(&tmp)) {
 			tPCELL pp=OBJECT_GET_CELL(&tmp);
 			cons_get_cdr(pp, &tmp);
-			// slot-name¤Î¤Û¤«¤Ë²¿¤«¤¢¤ë¾ì¹ç
+			// slot-nameã®ã»ã‹ã«ä½•ã‹ã‚ã‚‹å ´åˆ
 			if (!OBJECT_IS_NIL(&tmp)) ++*n;
 		}
 	}
@@ -1641,12 +1641,12 @@ VM_RET sclass_initialize_instance(tPVM vm, tPCELL sclass, tPCELL instance, tPCEL
 {
 	tINT i, n;
 	tPCELL p;
-	// ¼«Ê¬¤ÇÄêµÁ¤·¤Æ¤¤¤ë¥¹¥í¥Ã¥È¤Î½é´ü²½
+	// è‡ªåˆ†ã§å®šç¾©ã—ã¦ã„ã‚‹ã‚¹ãƒ­ãƒƒãƒˆã®åˆæœŸåŒ–
 	n=STANDARD_CLASS_GET_SLOT_NUMBER(sclass);
 	for (i=0; i<n; i++) {
 		if (slot_initialize_instance(vm, STANDARD_CLASS_GET_SLOT(sclass)[i], instance, list)) return VM_ERROR;
 	}
-	// ¾å°Ì¥¯¥é¥¹¤«¤é·Ñ¾µ¤·¤¿¥¹¥í¥Ã¥È¤Î½é´ü²½
+	// ä¸Šä½ã‚¯ãƒ©ã‚¹ã‹ã‚‰ç¶™æ‰¿ã—ãŸã‚¹ãƒ­ãƒƒãƒˆã®åˆæœŸåŒ–
 	for (p=STANDARD_CLASS_GET_SUPER_CLASS_LIST(sclass); p; p=cons_get_cdr_cons(p)) {
 		tPCELL bind, c;
 		tOBJECT tmp;
@@ -1753,9 +1753,9 @@ VM_RET slot_set_initform(tPVM vm, tPCELL slot, tPOBJECT form)
 
 VM_RET slot_initialize_instance(tPVM vm, tPCELL slot, tPCELL instance, tPCELL list)
 {
-	// ¥¹¥í¥Ã¥È¤¬´û¤ËÃÍ¤ò»ı¤Ã¤Æ¤¤¤ë¾ì¹ç¤Ï¡¤¤½¤ÎÃÍ¤ÏÊÑ¹¹¤·¤Ê¤¤
+	// ã‚¹ãƒ­ãƒƒãƒˆãŒæ—¢ã«å€¤ã‚’æŒã£ã¦ã„ã‚‹å ´åˆã¯ï¼Œãã®å€¤ã¯å¤‰æ›´ã—ãªã„
 	if (instance_has_slot(instance, SLOT_GET_NAME(slot))) return VM_OK;
-	// ¥¹¥í¥Ã¥È¤ËÂĞ¤¹¤ë½é´ü²½°ú¿ô¤È½é´üÃÍ¤ÎÁÈ¤¬¤¢¤ë¾ì¹ç¤Ï¤½¤ÎÃÍ¤Ç½é´ü²½¤¹¤ë
+	// ã‚¹ãƒ­ãƒƒãƒˆã«å¯¾ã™ã‚‹åˆæœŸåŒ–å¼•æ•°ã¨åˆæœŸå€¤ã®çµ„ãŒã‚ã‚‹å ´åˆã¯ãã®å€¤ã§åˆæœŸåŒ–ã™ã‚‹
 	if (SLOT_GET_INITARG(slot)) {
 		tPCELL p, pp, initarg;
 		tOBJECT tmp;
@@ -1772,14 +1772,14 @@ VM_RET slot_initialize_instance(tPVM vm, tPCELL slot, tPCELL instance, tPCELL li
 			}
 		}
 	}
-	// ¥¹¥í¥Ã¥È¤¬¾ÊÎ¬»ş½é´üÃÍ·Á¼°¤ò¤â¤Ã¤Æ¤¤¤ë¾ì¹ç¤Ï¡¤¤½¤ÎÉ¾²Á·ë²Ì
+	// ã‚¹ãƒ­ãƒƒãƒˆãŒçœç•¥æ™‚åˆæœŸå€¤å½¢å¼ã‚’ã‚‚ã£ã¦ã„ã‚‹å ´åˆã¯ï¼Œãã®è©•ä¾¡çµæœ
 	if (SLOT_GET_INITFORM(slot)) {
 		tOBJECT value;
 		if (function_call(vm, SLOT_GET_INITFORM(slot), 0, &value)) return VM_ERROR;
 		if (instance_add_slot(vm, instance, SLOT_GET_NAME(slot), &value)) return VM_ERROR;
 		return VM_OK;
 	}
-	// ¥¹¥í¥Ã¥È¤Ï½é´ü²½¤µ¤ì¤Ê¤¤
+	// ã‚¹ãƒ­ãƒƒãƒˆã¯åˆæœŸåŒ–ã•ã‚Œãªã„
 	return VM_OK;
 }
 
@@ -1791,7 +1791,7 @@ VM_RET slot_initialize_instance(tPVM vm, tPCELL slot, tPCELL instance, tPCELL li
 #define INSTANCE_GET_SLOT_LIST(instance)		(((instance)+2)->cell)
 #define INSTANCE_SET_SLOT_LIST(instance, list)	(((instance)+2)->cell=(list))
 
-// ¸úÎ¨¤ï¤ë¤¹¤®¡¡¸å¤Ç¥Ï¥Ã¥·¥å¥Æ¡¼¥Ö¥ë¤Ë¤Ç¤â¤¹¤ë¤³¤È/*!!!*/
+// åŠ¹ç‡ã‚ã‚‹ã™ãã€€å¾Œã§ãƒãƒƒã‚·ãƒ¥ãƒ†ãƒ¼ãƒ–ãƒ«ã«ã§ã‚‚ã™ã‚‹ã“ã¨/*!!!*/
 
 VM_RET instance_create_(tPVM vm, tPCELL sclass, tPCELL* cell)
 {

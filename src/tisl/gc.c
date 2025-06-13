@@ -75,7 +75,7 @@ extern void string_buffer_free(tPBUFFER buffer);
 
 ///////////////////////////////////////
 
-// garbage collector¤ÎÀ¸À®¤È½é´ü²½
+// garbage collectorã®ç”Ÿæˆã¨åˆæœŸåŒ–
 tBOOL gc_create(tPVM vm, tPGC* gc, tUINT heap_size)
 {
 	*gc=malloc(sizeof(tGC));
@@ -112,7 +112,7 @@ static void gc_refresh(tPVM vm)
 	gc->last_hive->last=gc->last_hive->cells;
 }
 
-// garbage collector¤Î»ÈÍÑ¤·¤Æ¤¤¤ë¥á¥â¥ê¤Î³«Êü
+// garbage collectorã®ä½¿ç”¨ã—ã¦ã„ã‚‹ãƒ¡ãƒ¢ãƒªã®é–‹æ”¾
 void free_gc(tPGC gc)
 {
 	if (gc) {
@@ -275,7 +275,7 @@ static tPCELL gc_get_next_cell(tPHIVE hive, tPCELL cell)
 {
 	cell+=cell_get_size(cell);
 	if (cell-hive->cells==hive->size) {
-		// ½ª¤ï¤ê¤Þ¤Ç¤­¤¿
+		// çµ‚ã‚ã‚Šã¾ã§ããŸ
 		return 0;
 	} else {
 		return cell;
@@ -298,17 +298,17 @@ tUINT allocate_cell(tPVM vm, tUINT size, tPCELL *cell)
 	s=size-r;
 	s/=sizeof(tCELL);
 	if (r) s+=CELL_UNIT;
-	// ³äÅö¤Æ
+	// å‰²å½“ã¦
 	if (allocate_cell_(vm, s, cell)) { gc->garbage_size+=s; return s; }
-	// GC¤ò¤·¤Æ¤ß¤ë
+	// GCã‚’ã—ã¦ã¿ã‚‹
 	if (gc->garbage_size>1000) {
 		if (!garbage_collection(vm, s)) return 0;
 		gc->garbage_size=0;
 		gc_refresh(vm);
-		// ³äÅö¤Æ
+		// å‰²å½“ã¦
 		if (allocate_cell_(vm, s, cell)) { gc->garbage_size+=s; return s; }
 	}
-	// HEAP¤Î³ÈÄ¥
+	// HEAPã®æ‹¡å¼µ
 	if (!add_hive(vm_get_gc(vm), s)) return 0;
 	if (allocate_cell_(vm, s, cell)) { gc->garbage_size+=s; return s; }
 	return 0;
@@ -335,11 +335,11 @@ static tUINT allocate_cell_free_list(tPVM vm, tUINT size, tPCELL* cell)
 
 	for (p=gc_get_free_list(gc), last=0; p; last=p, p=free_get_next(p)) {
 		tUINT s=free_get_size(p);
-		// size¤ÎÈæ³Ó
+		// sizeã®æ¯”è¼ƒ
 		if (s>=size) {
 			if (s==size) {
-				// ¥µ¥¤¥º¤¬Åù¤·¤¤ ¤½¤Î¤Þ¤Þ¥á¥â¥ê³äÅö¤Æ¤Ë»ÈÍÑ¤¹¤ë
-				// ¥Õ¥ê¡¼¥ê¥¹¥È¤«¤é¼è½ü¤¯
+				// ã‚µã‚¤ã‚ºãŒç­‰ã—ã„ ãã®ã¾ã¾ãƒ¡ãƒ¢ãƒªå‰²å½“ã¦ã«ä½¿ç”¨ã™ã‚‹
+				// ãƒ•ãƒªãƒ¼ãƒªã‚¹ãƒˆã‹ã‚‰å–é™¤ã
 				if (last) {
 					free_set_next(last, free_get_next(p));
 				} else {
@@ -347,20 +347,20 @@ static tUINT allocate_cell_free_list(tPVM vm, tUINT size, tPCELL* cell)
 				}
 				gc->free_list_number--;
 			} else {
-				// ¥Õ¥ê¡¼¥ê¥¹¥È¤ÎÊý¤¬¥µ¥¤¥º¤¬Âç¤­¤¤
-				// ¾®¤µ¤¯Ê¬³ä¤·¤Æ³äÅö¤Æ¤ò¹Ô¤¦
+				// ãƒ•ãƒªãƒ¼ãƒªã‚¹ãƒˆã®æ–¹ãŒã‚µã‚¤ã‚ºãŒå¤§ãã„
+				// å°ã•ãåˆ†å‰²ã—ã¦å‰²å½“ã¦ã‚’è¡Œã†
 				tPCELL free;
 				free=p+size;
 				free_initialize(free, s-size, free_get_next(p));
 				gc_mark_cell(gc, free);
-				// ¥Õ¥ê¡¼¥ê¥¹¥È¤ËÅÐÏ¿
+				// ãƒ•ãƒªãƒ¼ãƒªã‚¹ãƒˆã«ç™»éŒ²
 				if (last) {
 					free_set_next(last, free);
 				} else {
 					gc_set_free_list(gc, free);
 				}
 			}
-			// ³äÅö¤Æ
+			// å‰²å½“ã¦
 			CELL_HEAD_CLEAR(p);
 			gc_mark_cell(gc, p);
 			gc->free_list_size-=size;
@@ -380,13 +380,13 @@ static tUINT allocate_cell_sweep(tPVM vm, tUINT size, tPCELL* cell)
 		for (p=hive->last; p; p=gc_get_next_cell(hive, p), hive->last=p) {
 			tUINT s=cell_get_size(p);
 			if (cell_is_garbage(gc, p)) {
-				// ¤´¤ß¥ª¥Ö¥¸¥§¥¯¥ÈÈ¯¸«
-				// ¤´¤ß¥ª¥Ö¥¸¥§¥¯¥È¤Î¸å½èÍý
+				// ã”ã¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç™ºè¦‹
+				// ã”ã¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¾Œå‡¦ç†
 				if (cell_destroy(vm, p)) return 0;/*!!!*/
-				// ¥µ¥¤¥º¤ÎÈæ³Ó
+				// ã‚µã‚¤ã‚ºã®æ¯”è¼ƒ
 				if (s==size) {
-					// Âç¤­¤µ¤¬Åù¤·¤¤
-					// hive¥Ý¥¤¥ó¥¿¤Î°ÜÆ°
+					// å¤§ãã•ãŒç­‰ã—ã„
+					// hiveãƒã‚¤ãƒ³ã‚¿ã®ç§»å‹•
 					hive->last=gc_get_next_cell(hive, p);
 					*cell=p;
 					CELL_HEAD_CLEAR(p);
@@ -394,11 +394,11 @@ static tUINT allocate_cell_sweep(tPVM vm, tUINT size, tPCELL* cell)
 					return size;
 				} else if (s>size) {
 					tPCELL free;
-					// ¤´¤ß¤ÎÊý¤¬Âç¤­¤¤
+					// ã”ã¿ã®æ–¹ãŒå¤§ãã„
 					free=p+size;
 					free_initialize(free, s-size, 0);
 					gc_unmark_cell(gc, free);
-					// hive¤Î¥Ý¥¤¥ó¥¿¤Î°ÜÆ°
+					// hiveã®ãƒã‚¤ãƒ³ã‚¿ã®ç§»å‹•
 					hive->last=free;
 					// 
 					*cell=p;
@@ -406,13 +406,13 @@ static tUINT allocate_cell_sweep(tPVM vm, tUINT size, tPCELL* cell)
 					gc_mark_cell(gc, p);
 					return size;
 				} else {
-					// ¤´¤ß¤ÎÊý¤¬¾®¤µ¤¤
-					// ¤´¤ß¤ò¥Õ¥ê¡¼¥ê¥¹¥È¤Ø
+					// ã”ã¿ã®æ–¹ãŒå°ã•ã„
+					// ã”ã¿ã‚’ãƒ•ãƒªãƒ¼ãƒªã‚¹ãƒˆã¸
 					gc_add_free_list(gc, p, s);
 				}
 			}
 		}
-		// ¼¡¤Îhive¤Ø
+		// æ¬¡ã®hiveã¸
 		hive=hive->next;
 		if (hive) {
 			hive->last=hive->cells;
@@ -457,7 +457,7 @@ tBOOL garbage_collection(tPVM vm, tUINT size)
 
 tBOOL vm_mark(tPVM vm, const tINT sp)
 {
-	// É¾²Á¥¹¥¿¥Ã¥¯
+	// è©•ä¾¡ã‚¹ã‚¿ãƒƒã‚¯
 	{
 		tINT i;
 		for (i=1; i<=sp; i++) {
@@ -467,32 +467,32 @@ tBOOL vm_mark(tPVM vm, const tINT sp)
 	}
 	//
 	if (cell_mark(vm, vm->temp_stack)) return tFALSE;
-	// ´Ø¿ô
+	// é–¢æ•°
 	if (cell_mark(vm, vm_get_function(vm))) return tFALSE;
-	// ´Ä¶­
+	// ç’°å¢ƒ
 	if (cell_mark(vm, vm_get_environment(vm))) return tFALSE;
-	// Îã³°¥Ï¥ó¥É¥é¥ê¥¹¥È
+	// ä¾‹å¤–ãƒãƒ³ãƒ‰ãƒ©ãƒªã‚¹ãƒˆ
 	if (cell_mark(vm, vm->handler_list)) return tFALSE;
-	// ¥¿¥°¥ê¥¹¥È
+	// ã‚¿ã‚°ãƒªã‚¹ãƒˆ
 	if (cell_mark(vm, vm->tag_list)) return tFALSE;
 	if (object_mark(vm, &vm->last_condition)) return tFALSE;
 	if (object_mark(vm, &vm->throw_object)) return tFALSE;
-	// É¸½à¥¹¥È¥ê¡¼¥à
+	// æ¨™æº–ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 	if (cell_mark(vm, vm->standard_input)) return tFALSE;
 	if (cell_mark(vm, vm->standard_output)) return tFALSE;
 	if (cell_mark(vm, vm->error_output)) return tFALSE;
-	// ÆâÉô¥¹¥È¥ê¡¼¥à
+	// å†…éƒ¨ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 	if (cell_mark(vm, vm->private_stream)) return tFALSE;
 	if (cell_mark(vm, vm->private_input_stream)) return tFALSE;
-	// ÊÑ´¹´ï
+	// å¤‰æ›å™¨
 	if (translator_mark(vm)) return tFALSE;
-	// ¶É½ê»²¾È
+	// å±€æ‰€å‚ç…§
 	if (cell_mark(vm, vm->local_ref_head)) return tFALSE;
-	// Âç°è»²¾È
+	// å¤§åŸŸå‚ç…§
 	if (cell_mark(vm, vm->global_ref_head)) return tFALSE;
 	//
 	if (cell_mark(vm, vm->gc->free_list)) return tFALSE;
-	// GC¥¹¥¿¥Ã¥¯(É¾²Á¥¹¥¿¥Ã¥¯¤òÍøÍÑ))¤Ø¤Î¥Þ¡¼¥­¥ó¥°
+	// GCã‚¹ã‚¿ãƒƒã‚¯(è©•ä¾¡ã‚¹ã‚¿ãƒƒã‚¯ã‚’åˆ©ç”¨))ã¸ã®ãƒžãƒ¼ã‚­ãƒ³ã‚°
 	while (vm->SP-vm->stack>sp) {
 		vm->SP--;
 //		if (OBJECT_IS_CELL(vm->SP+1)) {
@@ -511,14 +511,14 @@ tBOOL vm_sweep(tPVM vm, const tINT sp)
 		for (p=hive->last; p; p=gc_get_next_cell(hive, p)) {
 			tUINT s=cell_get_size(p);
 			if (cell_is_garbage(gc, p)) {
-				// ¤´¤ß¥ª¥Ö¥¸¥§¥¯¥ÈÈ¯¸«
-				// ¤´¤ß¥ª¥Ö¥¸¥§¥¯¥È¤Î¸å½èÍý
+				// ã”ã¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç™ºè¦‹
+				// ã”ã¿ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¾Œå‡¦ç†
 				if (cell_destroy(vm, p)) return tFALSE;/*!!!*/
-				// ¥µ¥¤¥º¤ÎÈæ³Ó
+				// ã‚µã‚¤ã‚ºã®æ¯”è¼ƒ
 				gc_add_free_list(gc, p, s);
 			}
 		}
-		// ¼¡¤Îhive¤Ø
+		// æ¬¡ã®hiveã¸
 		hive=hive->next;
 		if (hive) {
 			hive->last=hive->cells;
@@ -529,7 +529,7 @@ tBOOL vm_sweep(tPVM vm, const tINT sp)
 }
 
 VM_RET gc_push(tPVM vm, tPOBJECT obj)
-{	// CELL¤ò»ÈÍÑ¤·¤Æ¤¤¤Æ
+{	// CELLã‚’ä½¿ç”¨ã—ã¦ã„ã¦
 	if (OBJECT_IS_CELL(obj)) {
 		return cell_mark(vm, OBJECT_GET_CELL(obj));
 	} else {
@@ -547,7 +547,7 @@ extern void string_buffer_set_next(tPBUFFER b, tPBUFFER next);
 VM_RET allocate_string_buffer(tPVM vm, tPBUFFER* buffer)
 {
 	tPGC gc=vm_get_gc(vm);
-	// ¤´¤ß¤Ë¤Ê¤Ã¤Æ¤¤¤ë¥Ð¥Ã¥Õ¥¡¤¬¤¢¤ë¤È¤­¤Ï¤½¤ì¤òÍøÍÑ¤¹¤ë
+	// ã”ã¿ã«ãªã£ã¦ã„ã‚‹ãƒãƒƒãƒ•ã‚¡ãŒã‚ã‚‹ã¨ãã¯ãã‚Œã‚’åˆ©ç”¨ã™ã‚‹
 	if (gc->buffer_head) {
 		*buffer=gc->buffer_head;
 		gc->buffer_head=string_buffer_get_next(*buffer);

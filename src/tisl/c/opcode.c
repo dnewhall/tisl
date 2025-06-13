@@ -418,7 +418,7 @@ VM_RET c_dynamic_let(tPVM vm, tPCELL function, tINT* pc)
 		bind_get_dynamic(bind, vm->SP-n);
 		bind_set_dynamic(bind, &obj);
 	}
-	/*bodyÉô¤Î¼Â¹Ô*/
+	/*bodyéƒ¨ã®å®Ÿè¡Œ*/
 	body=FETCH(function, pc).cell;
 	sp=vm->SP-vm->stack;
 	ret=function_call_(vm, body, &obj);
@@ -500,7 +500,7 @@ VM_RET c_case_using(tPVM vm, tPCELL function, tINT* pc)
 					vm->SP++;
 					*vm->SP=tmp;
 					if (po_funcall(vm, 3)) return VM_ERROR;
-					// nil°Ê³°¤òÊÖ¤·¤¿¤é½ªÎ»
+					// nilä»¥å¤–ã‚’è¿”ã—ãŸã‚‰çµ‚äº†
 					if (!OBJECT_IS_NIL(vm->SP)) { ff=tTRUE; vm->SP--; break; }
 					vm->SP--;
 			}

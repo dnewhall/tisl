@@ -77,8 +77,8 @@ static VM_RET list_to_symbol(tPVM vm, tPOBJECT list, tPOBJECT symbol, const tBOO
 ///////////////////////////////////////
 
 // VM_RET read_char(tPVM vm, tPCELL stream, tPCHAR c)
-// vm¾å¤Ç¡¤streamÆþÎÏ¥¹¥È¥ê¡¼¥à¤«¤é1Ê¸»úÆÉ¹þ¤ß¤ò¹Ô¤¦¡¥
-// Îã³°¤¬È¯À¸¤·¤¿¾ì¹ç¤Ï¡¤VM_ERROR¤òÊÖ¤¹¡¥
+// vmä¸Šã§ï¼Œstreamå…¥åŠ›ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‹ã‚‰1æ–‡å­—èª­è¾¼ã¿ã‚’è¡Œã†ï¼Ž
+// ä¾‹å¤–ãŒç™ºç”Ÿã—ãŸå ´åˆã¯ï¼ŒVM_ERRORã‚’è¿”ã™ï¼Ž
 VM_RET read_char(tPVM vm, tPCELL stream, tPCHAR c)
 {
 	VM_RET ret;
@@ -99,8 +99,8 @@ VM_RET read_char(tPVM vm, tPCELL stream, tPCHAR c)
 }
 
 // VM_RET preview_char(tPVM vm, tPCELL stream, tPCHAR c)
-// vm¾å¤Ç¡¤streamÆþÎÏ¥¹¥È¥ê¡¼¥à¤«¤é1Ê¸»úÀèÆÉ¤ß¤ò¹Ô¤¦¡¥
-// Îã³°¤¬È¯À¸¤·¤¿¾ì¹ç¤Ï¡¤VM_ERROR¤òÊÖ¤¹¡¥
+// vmä¸Šã§ï¼Œstreamå…¥åŠ›ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‹ã‚‰1æ–‡å­—å…ˆèª­ã¿ã‚’è¡Œã†ï¼Ž
+// ä¾‹å¤–ãŒç™ºç”Ÿã—ãŸå ´åˆã¯ï¼ŒVM_ERRORã‚’è¿”ã™ï¼Ž
 VM_RET preview_char(tPVM vm, tPCELL stream, tPCHAR c)
 {
 	VM_RET ret;
@@ -121,9 +121,9 @@ VM_RET preview_char(tPVM vm, tPCELL stream, tPCHAR c)
 }
 
 // VM_RET read_form(tPVM vm, tPCELL stream, tPOBJECT obj)
-// vm¾å¤Ç streamÆþÎÏ¥¹¥È¥ê¡¼¥à¤«¤éÆÉ¹þ¤ß¤ò¹Ô¤¤¡¤
-// ISLISP¥ª¥Ö¥¸¥§¥¯¥È¤òºîÀ®¤·¡¤obj¤ËÊÖ¤¹¡¥
-// Îã³°Åù¤¬È¯À¸¤·¤¿¾ì¹ç¡¤VM_ERROR¤òÊÖ¤¹¡¥
+// vmä¸Šã§ streamå…¥åŠ›ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‹ã‚‰èª­è¾¼ã¿ã‚’è¡Œã„ï¼Œ
+// ISLISPã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã—ï¼Œobjã«è¿”ã™ï¼Ž
+// ä¾‹å¤–ç­‰ãŒç™ºç”Ÿã—ãŸå ´åˆï¼ŒVM_ERRORã‚’è¿”ã™ï¼Ž
 VM_RET read_form(tPVM vm, tPCELL stream, tPOBJECT obj)
 {
 	VM_RET ret;
@@ -165,8 +165,8 @@ VM_RET read_line(tPVM vm, tPCELL stream, tPCELL* string)
 
 ///////////////////////////////////////
 
-// °ìÊ¸»úÆÉ¤ß¹þ¤ß
-// ÆâÉô¤Ç»ÈÍÑ¤¹¤ë¤¿¤á ¸¡ºº¹àÌÜ¤¬¾¯¤Ê¤¤
+// ä¸€æ–‡å­—èª­ã¿è¾¼ã¿
+// å†…éƒ¨ã§ä½¿ç”¨ã™ã‚‹ãŸã‚ æ¤œæŸ»é …ç›®ãŒå°‘ãªã„
 static VM_RET read_char_(tPVM vm, tPCELL stream, tPCHAR c)
 {
 	if (CELL_IS_STRING_STREAM(stream)) {
@@ -176,8 +176,8 @@ static VM_RET read_char_(tPVM vm, tPCELL stream, tPCHAR c)
 	}
 }
 
-// °ìÊ¸»úÀèÆÉ¤ß
-// ÆâÉô¤Ç»ÈÍÑ¤¹¤ë¤¿¤á ¸¡ºº¹àÌÜ¤¬¾¯¤Ê¤¤
+// ä¸€æ–‡å­—å…ˆèª­ã¿
+// å†…éƒ¨ã§ä½¿ç”¨ã™ã‚‹ãŸã‚ æ¤œæŸ»é …ç›®ãŒå°‘ãªã„
 static VM_RET preview_char_(tPVM vm, tPCELL stream, tPCHAR c)
 {
 	if (CELL_IS_STRING_STREAM(stream)) {
@@ -187,9 +187,9 @@ static VM_RET preview_char_(tPVM vm, tPCELL stream, tPCHAR c)
 	}
 }
 
-// ¶õÇòÊ¸»ú¤È1¹Ô¥³¥á¥ó¥È¤ÎÆÉ¤ßÈô¤Ð¤·
+// ç©ºç™½æ–‡å­—ã¨1è¡Œã‚³ãƒ¡ãƒ³ãƒˆã®èª­ã¿é£›ã°ã—
 // VM_RET eat_white(tPVM vm, tPCELL stream)
-// vm¾å¤Çstream¤«¤é¶õÇòÊ¸»ú¤òÆÉ¤ßÈô¤Ð¤¹
+// vmä¸Šã§streamã‹ã‚‰ç©ºç™½æ–‡å­—ã‚’èª­ã¿é£›ã°ã™
 VM_RET eat_white(tPVM vm, tPCELL stream)
 {
 	tCHAR c;
@@ -207,9 +207,9 @@ VM_RET eat_white(tPVM vm, tPCELL stream)
 	}
 }
 
-// #| |# ¤Ç°Ï¤Þ¤ì¤¿¥³¥á¥ó¥È¤ÎÆÉ¤ßÈô¤Ð¤·
+// #| |# ã§å›²ã¾ã‚ŒãŸã‚³ãƒ¡ãƒ³ãƒˆã®èª­ã¿é£›ã°ã—
 // VM_RET eat_comment(isPVM vm, tPCELL stream)
-// vm¾å¤Çstream¤«¤é¥³¥á¥ó¥È¤òÆÉ¤ßÈô¤Ð¤¹
+// vmä¸Šã§streamã‹ã‚‰ã‚³ãƒ¡ãƒ³ãƒˆã‚’èª­ã¿é£›ã°ã™
 static VM_RET eat_comment(tPVM vm, tPCELL stream)
 {
 	tCHAR c;
@@ -226,10 +226,10 @@ static VM_RET eat_comment(tPVM vm, tPCELL stream)
 	}
 }
 
-// 2¥Ð¥¤¥ÈÊ¸»ú¤ÎÆÉ¤ßÈô¤Ð¤·
+// 2ãƒã‚¤ãƒˆæ–‡å­—ã®èª­ã¿é£›ã°ã—
 // VM_RET eat_wchar(tPVM vm, tPCELL stream, const tCHAR c)
-// vm¾å¤Çstream¤«¤é2¥Ð¥¤¥ÈÊ¸»ú¤òÆÉ¤ßÈô¤Ð¤¹
-// c¤¬2¥Ð¥¤¥ÈÊ¸»ú¤Î1¥Ð¥¤¥ÈÌÜ¤Ç¤¢¤Ã¤¿¾ì¹ç¤Ë¤â¤¦°ìÊ¸»úÆÉ¤ßÈô¤Ð¤¹¡¥
+// vmä¸Šã§streamã‹ã‚‰2ãƒã‚¤ãƒˆæ–‡å­—ã‚’èª­ã¿é£›ã°ã™
+// cãŒ2ãƒã‚¤ãƒˆæ–‡å­—ã®1ãƒã‚¤ãƒˆç›®ã§ã‚ã£ãŸå ´åˆã«ã‚‚ã†ä¸€æ–‡å­—èª­ã¿é£›ã°ã™ï¼Ž
 static VM_RET eat_wchar(tPVM vm, tPCELL stream, tCHAR c)
 {
 	if (is_DBCS_lead_byte(vm, c)) {
@@ -238,9 +238,9 @@ static VM_RET eat_wchar(tPVM vm, tPCELL stream, tCHAR c)
 	return VM_OK;
 }
 
-// 1¹ÔÆÉ¤ßÈô¤Ð¤·
+// 1è¡Œèª­ã¿é£›ã°ã—
 // tBOOL eat_line(tPVM vm, tPCELL stream)
-// vm¾å¤Çstream¤«¤é²þ¹ÔÊ¸»ú¤Þ¤ÇÆÉ¤ßÈô¤Ð¤¹
+// vmä¸Šã§streamã‹ã‚‰æ”¹è¡Œæ–‡å­—ã¾ã§èª­ã¿é£›ã°ã™
 static VM_RET eat_line(tPVM vm, tPCELL stream)
 {
 	tCHAR c;
@@ -272,7 +272,7 @@ static tBOOL is_symbol(tPVM vm, const tCHAR c)
 
 static tBOOL is_delimiter(const tCHAR c)
 {
-	/* ( ) ' , ` ¶èÀÚ¤êÊ¸»ú */
+	/* ( ) ' , ` åŒºåˆ‡ã‚Šæ–‡å­— */
 	return (isspace(c)||(c=='(')||(c==')')||(c=='\'')||(c==',')||
 		(c=='`')||(c=='\0')||(c==';')||(c==(tCHAR)EOF)) ? tTRUE : tFALSE;
 }
@@ -289,16 +289,16 @@ static void set_comment(tPOBJECT obj)
 
 ///////////////////////////////////////
 
-// É¾²Á·Á¼°¤ÎÆÉ¹þ¤ß (¥ê¥¹¥È´Þ¤à)
+// è©•ä¾¡å½¢å¼ã®èª­è¾¼ã¿ (ãƒªã‚¹ãƒˆå«ã‚€)
 static VM_RET read_evaluation_form(tPVM vm, tPCELL stream, tPOBJECT obj)
 {
 	tCHAR c;
 	while (1) {
-		// Í¾·×¤Ê¶õÇòÊ¸»ú¤ÎÆÉ¤ß¹þ¤ß
+		// ä½™è¨ˆãªç©ºç™½æ–‡å­—ã®èª­ã¿è¾¼ã¿
 		if (eat_white(vm, stream)) return VM_ERROR;
 		if (read_char_(vm, stream, &c)) return VM_ERROR;
 		switch (c) {
-		case '(':// ¥³¥ó¥¹
+		case '(':// ã‚³ãƒ³ã‚¹
 			return read_cons(vm, stream, obj);
 		case ')':
 			return signal_parse_error(vm, TISL_ERROR_RIGHT_ARC, stream);
@@ -311,11 +311,11 @@ static VM_RET read_evaluation_form(tPVM vm, tPCELL stream, tPOBJECT obj)
 			} else {
 				return signal_stream_error(vm, TISL_ERROR_END_OF_STREAM, stream);
 			}
-		default:// ¥ê¥¹¥È°Ê³°¤ÎISLISP¥ª¥Ö¥¸¥§¥¯¥È
+		default:// ãƒªã‚¹ãƒˆä»¥å¤–ã®ISLISPã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 			if (read_object(vm, stream, c, obj)==VM_OK) return VM_OK;
-			// ¼ºÇÔ¡¡¥³¥á¥ó¥È¤«Â¾¤ÎÎã³°
+			// å¤±æ•—ã€€ã‚³ãƒ¡ãƒ³ãƒˆã‹ä»–ã®ä¾‹å¤–
 			if (!is_comment(obj)) return VM_ERROR;
-			// ¥³¥á¥ó¥È¤Î¾ì¹çÆÉ¤ß¹þ¤ß¤Ê¤ª¤¹
+			// ã‚³ãƒ¡ãƒ³ãƒˆã®å ´åˆèª­ã¿è¾¼ã¿ãªãŠã™
 		}
 	}
 }
@@ -347,46 +347,46 @@ static VM_RET read_cons(tPVM vm, tPCELL stream, tPOBJECT ret)
 	tCHAR c;
 	tOBJECT car;
 COMMENT_LOOP:
-	// carÉô¤ÎÆÉ¹þ¤ß
+	// caréƒ¨ã®èª­è¾¼ã¿
 	if (eat_white(vm, stream)) return VM_ERROR;
 	if (read_char_(vm, stream, &c)) return VM_ERROR;
 	switch (c) {
-	case ')':// () ¶õ³ç¸Ì
+	case ')':// () ç©ºæ‹¬å¼§
 		OBJECT_SET_NIL(ret);
 		return VM_OK;
-	case '(':// carÉô¤¬cons
+	case '(':// caréƒ¨ãŒcons
 		if (read_cons(vm, stream, &car)) return VM_ERROR;
 		break;
-	default:// carÉô¤Ï¥³¥ó¥¹°Ê³°¤Î¥ª¥Ö¥¸¥§¥¯¥È
+	default:// caréƒ¨ã¯ã‚³ãƒ³ã‚¹ä»¥å¤–ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 		if (read_object(vm, stream, c, &car)) {
-			// ¥³¥á¥ó¥È¤Î¾ì¹ç¤ÏÆÉ¹þ¤ßÄ¾¤·
+			// ã‚³ãƒ¡ãƒ³ãƒˆã®å ´åˆã¯èª­è¾¼ã¿ç›´ã—
 			if (is_comment(&car)) goto COMMENT_LOOP;
-			// ²¿¤«Îã³°¤¬È¯À¸¤·¤Æ¤¤¤ë
+			// ä½•ã‹ä¾‹å¤–ãŒç™ºç”Ÿã—ã¦ã„ã‚‹
 			return VM_ERROR;
 		}
 	}
-	// cdrÉô¤ÎÆÉ¹þ¤ß
+	// cdréƒ¨ã®èª­è¾¼ã¿
 	return read_cdr(vm, stream, &car, ret);
 }
 
-// ¥³¥ó¥¹¤ÎÆÉ¹þ¤ß(cdrbu)
+// ã‚³ãƒ³ã‚¹ã®èª­è¾¼ã¿(cdrbu)
 static VM_RET read_cdr(tPVM vm, tPCELL stream, tPOBJECT car, tPOBJECT ret)
 {
 	tOBJECT cdr;
 	tPCELL cons;
-	// carÉô¤òÊÝÂ¸
+	// caréƒ¨ã‚’ä¿å­˜
 	if (vm_push(vm, car)) return VM_ERROR;
-	// cdrÉô¤ÎÆÉ¹þ¤ß
+	// cdréƒ¨ã®èª­è¾¼ã¿
 	if (read_cdr_object(vm, stream, &cdr)) { vm_pop(vm); return VM_ERROR; }
 	vm_pop(vm);
-	// ¥³¥ó¥¹¤ÎºîÀ®
+	// ã‚³ãƒ³ã‚¹ã®ä½œæˆ
 	if (cons_create(vm, &cons, car, &cdr)) return VM_ERROR;
 	CELL_SET_IMMUTABLE(cons);
 	OBJECT_SET_CONS(ret, cons);
 	return VM_OK;
 }
 
-// cdrÉô¤Î¥ª¥Ö¥¸¥§¥¯¥È¤ÎÆÉ¹þ¤ß
+// cdréƒ¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®èª­è¾¼ã¿
 static VM_RET read_cdr_object(tPVM vm, tPCELL stream, tPOBJECT ret)
 {
 	tCHAR c;
@@ -395,18 +395,18 @@ COMMENT_LOOP:
 	if (eat_white(vm, stream)) return VM_ERROR;
 	if (read_char_(vm, stream, &c)) return VM_ERROR;
 	switch (c) {
-	case '.':// ¥É¥Ã¥È¥ê¥¹¥È
+	case '.':// ãƒ‰ãƒƒãƒˆãƒªã‚¹ãƒˆ
 		if (preview_char_(vm, stream, &c)) return VM_ERROR;
 		if (!is_delimiter(c)) 
 			return signal_parse_error(vm, TISL_ERROR_NOT_DELIMITER_AROUND_DOT, stream);
 		return read_dot_list(vm, stream, ret);
-	case ')':// nil¤Ç½ª¤ï¤ë¥ê¥¹¥È
+	case ')':// nilã§çµ‚ã‚ã‚‹ãƒªã‚¹ãƒˆ
 		OBJECT_SET_NIL(ret);
 		return VM_OK;
-	case '(':// cdrÉô¤Ï¥³¥ó¥¹¤Ç¤½¤ÎcarÉô¤Ï¥ê¥¹¥È
+	case '(':// cdréƒ¨ã¯ã‚³ãƒ³ã‚¹ã§ãã®caréƒ¨ã¯ãƒªã‚¹ãƒˆ
 		if (read_cons(vm, stream, &car)) return VM_ERROR;
 		break;
-	default:// ¼¡¤Î¥³¥ó¥¹¤ÎcarÉô
+	default:// æ¬¡ã®ã‚³ãƒ³ã‚¹ã®caréƒ¨
 		if (read_object(vm, stream, c, &car)) {
 			if (is_comment(&car)) {
 				goto COMMENT_LOOP;
@@ -418,7 +418,7 @@ COMMENT_LOOP:
 	return read_cdr(vm, stream, &car, ret);
 }
 
-// ¥É¥Ã¥È¥ê¥¹¥È¤ÎÆÉ¹þ¤ß
+// ãƒ‰ãƒƒãƒˆãƒªã‚¹ãƒˆã®èª­è¾¼ã¿
 static VM_RET read_dot_list(tPVM vm, tPCELL stream, tPOBJECT ret)
 {
 	tCHAR c;
@@ -426,13 +426,13 @@ static VM_RET read_dot_list(tPVM vm, tPCELL stream, tPOBJECT ret)
 	if (read_evaluation_form(vm, stream, ret)) return VM_ERROR;
 	if (eat_white(vm, stream)) return VM_ERROR;
 	if (read_char_(vm, stream, &c)) return VM_ERROR;
-	// ³ç¸Ì¤¬ÊÄ¤¸¤ë¤Þ¤ÇÆÉ¤ß¿Ê¤à
+	// æ‹¬å¼§ãŒé–‰ã˜ã‚‹ã¾ã§èª­ã¿é€²ã‚€
 	while (c!=')') {
 		if (c=='#') {
 			if (read_char_(vm, stream, &c)) return VM_ERROR;
-			// ¥É¥Ã¥È¤Î¸å¤í¤ËÊ£¿ô¤Î¥ª¥Ö¥¸¥§¥¯¥È
+			// ãƒ‰ãƒƒãƒˆã®å¾Œã‚ã«è¤‡æ•°ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 			if (c!='|') return signal_parse_error(vm, TISL_ERROR_OBJECTS_BEHIND_DOT, stream);
-			// ¥³¥á¥ó¥È¤ÎÆÉ¹þ¤ß
+			// ã‚³ãƒ¡ãƒ³ãƒˆã®èª­è¾¼ã¿
 			if (eat_white(vm, stream)) return VM_ERROR;
 		} else {
 			return signal_parse_error(vm, TISL_ERROR_OBJECTS_BEHIND_DOT, stream);
@@ -443,7 +443,7 @@ static VM_RET read_dot_list(tPVM vm, tPCELL stream, tPOBJECT ret)
 	return VM_OK;
 }
 
-// É¾²Á·Á¼°¤ÎÆÉ¹þ¤ß
+// è©•ä¾¡å½¢å¼ã®èª­è¾¼ã¿
 static VM_RET read_object(tPVM vm, tPCELL stream, tCHAR c, tPOBJECT ret)
 {
 	tINT n=0;
@@ -457,19 +457,19 @@ static VM_RET read_object(tPVM vm, tPCELL stream, tCHAR c, tPOBJECT ret)
 		case '(':
 			return read_vector(vm, stream, ret);
 		case 'B':
-		case 'b':// 2¿Ê¿ô
+		case 'b':// 2é€²æ•°
 			return read_binary(vm, stream, ret);
 		case 'O':
-		case 'o':// 8¿Ê¿ô
+		case 'o':// 8é€²æ•°
 			return read_octal(vm, stream, ret);
 		case 'X':
-		case 'x':// 16¿Ê¿ô
+		case 'x':// 16é€²æ•°
 			return read_hexadecimal(vm, stream, ret);
-		case '|':// ¥³¥á¥ó¥È
+		case '|':// ã‚³ãƒ¡ãƒ³ãƒˆ
 			if (eat_comment(vm, stream)) return VM_ERROR;
 			set_comment(ret);
 			return VM_ERROR;
-		case '\\':// Ê¸»ú
+		case '\\':// æ–‡å­—
 			return read_character(vm, stream, ret);
 		case '!':// line comment
 			if (eat_line(vm, stream)) return VM_ERROR;
@@ -502,17 +502,17 @@ static VM_RET read_object(tPVM vm, tPCELL stream, tCHAR c, tPOBJECT ret)
 	case '|':// |symbol|
 		return read_symbol_bar(vm, stream, ret);
 	case '&':// &rest
-	case ':':// keyword´°Á´¸ÂÄêÌ¾
+	case ':':// keywordå®Œå…¨é™å®šå
 		return read_symbol_complete(vm, stream, ret);
 	}
-	// 10¿Ê¿ô»ú
+	// 10é€²æ•°å­—
 	if (isdigit(c)) return read_number(vm, stream, c, tTRUE, ret);
-	// ¥·¥ó¥Ü¥ë
+	// ã‚·ãƒ³ãƒœãƒ«
 	if (is_symbol_head(vm, c)) return read_symbol(vm, stream, c, ret);
-	// +, - ¤Þ¤¿¤Ï Éä¹æÉÕ10¿Ê¿ô»ú
+	// +, - ã¾ãŸã¯ ç¬¦å·ä»˜10é€²æ•°å­—
 	if (c=='+') return read_plus(vm, stream, ret);
 	if (c=='-') return read_minus(vm, stream, ret);
-	// Ì¤ÃÎ¤ÎÊ¸»ú
+	// æœªçŸ¥ã®æ–‡å­—
 	return signal_parse_error(vm, TISL_ERROR_UNKNOWN_CHARACTER, stream);
 }
 
@@ -523,7 +523,7 @@ static VM_RET read_function(tPVM vm, tPCELL stream, tPOBJECT ret)
 {
 	tOBJECT name, obj2, obj3;
 	tPCELL cell1, cell2;
-	// name¤ÎÆÉ¹þ¤ß
+	// nameã®èª­è¾¼ã¿
 	if (read_symbol_all(vm, stream, &name)) return VM_ERROR;
 	if (!OBJECT_IS_SYMBOL(&name)) return signal_parse_error(vm, TISL_ERROR_PARSE_ERROR_FUNCTION, stream);
 	// (name . nil)
@@ -539,7 +539,7 @@ static VM_RET read_function(tPVM vm, tPCELL stream, tPOBJECT ret)
 	return VM_OK;
 }
 
-// ¥Ù¥¯¥¿
+// ãƒ™ã‚¯ã‚¿
 // #(obj1 obj2 ... objn)
 static VM_RET read_vector(tPVM vm, tPCELL stream, tPOBJECT ret)
 {
@@ -560,13 +560,13 @@ static tBOOL read_sign(tPVM vm, tPCELL stream, tINT* sign, tPCHAR c)
 	return VM_OK;
 }
 
-// 2¿Ê¿ôÀ°¿ô
+// 2é€²æ•°æ•´æ•°
 // #B[s]bb...b
 static VM_RET read_binary(tPVM vm, tPCELL stream, tPOBJECT ret)
 {
 	tCHAR c;
 	tINT s=1, b=0;
-	// Éä¹æ¤ÎÆÉ¹þ¤ß
+	// ç¬¦å·ã®èª­è¾¼ã¿
 	if (read_sign(vm, stream, &s, &c)) return VM_ERROR;
 	// bb...b
 	while ((c=='0')||(c=='1')) {
@@ -582,13 +582,13 @@ RET:
 	return VM_OK;
 }
 
-// 8¿ÊÀ°¿ô
+// 8é€²æ•´æ•°
 // #O[s]oo...o
 static VM_RET read_octal(tPVM vm, tPCELL stream, tPOBJECT ret)
 {
 	tCHAR c;
 	tINT s=1, o=0;
-	// Éä¹æ¤ÎÆÉ¹þ¤ß
+	// ç¬¦å·ã®èª­è¾¼ã¿
 	if (read_sign(vm, stream, &s, &c)) return VM_ERROR;
 	// oo...o
 	while ((c>='0')&&(c<='7')) {
@@ -604,13 +604,13 @@ RET:
 	return VM_OK;
 }
 
-// 16¿ÊÀ°¿ô
+// 16é€²æ•´æ•°
 // #X[s]xx...x
 static VM_RET read_hexadecimal(tPVM vm, tPCELL stream, tPOBJECT ret)
 {
 	tCHAR c;
 	tINT s=1, x=0;
-	// Éä¹æ¤ÎÆÉ¹þ¤ß
+	// ç¬¦å·ã®èª­è¾¼ã¿
 	if (read_sign(vm, stream, &s, &c)) return VM_ERROR;
 	// xx...x
 	while (isxdigit(c)) {
@@ -631,7 +631,7 @@ RET:
 	return VM_OK;
 }
 
-// ÇÛÎó
+// é…åˆ—
 // #da(...)
 static VM_RET read_array(tPVM vm, tPCELL stream, const tINT d, tPOBJECT ret)
 {
@@ -747,7 +747,7 @@ static VM_RET read_float_(tPVM vm, tPCELL stream, tFLOAT f, const tBOOL sign, tP
 static VM_RET read_number(tPVM vm, tPCELL stream, tCHAR c, const tBOOL sign, tPOBJECT ret)
 {
 	tINT i;
-	// À°¿ô
+	// æ•´æ•°
 	i=c-'0';
 	if (preview_char_(vm, stream, &c)) return VM_ERROR;
 	while (isdigit(c)) {
@@ -756,7 +756,7 @@ static VM_RET read_number(tPVM vm, tPCELL stream, tCHAR c, const tBOOL sign, tPO
 		i+=c-'0';
 		if (read_char_(vm, stream, &c)) return VM_ERROR;
 		if (check_eos(stream)) {
-			// 10¿ÊÀ°¿ô
+			// 10é€²æ•´æ•°
 			if (!sign) i=-1;
 			OBJECT_SET_INTEGER(ret, i);
 			return VM_OK;
@@ -764,12 +764,12 @@ static VM_RET read_number(tPVM vm, tPCELL stream, tCHAR c, const tBOOL sign, tPO
 		if (preview_char_(vm, stream, &c)) return VM_ERROR;
 	}
 	if (is_delimiter(c)) {
-		// 10¿ÊÀ°¿ô
+		// 10é€²æ•´æ•°
 		if (!sign) i=-i;
 		OBJECT_SET_INTEGER(ret, i);
 		return VM_OK;
 	} else if ((i==1)&&((c=='+')||(c=='-'))) {
-		// 1+, 1-¤Î²ÄÇ½À­
+		// 1+, 1-ã®å¯èƒ½æ€§
 		tCHAR cc;
 		if (read_char_(vm, stream, &cc)) return VM_ERROR;
 		if (!check_eos(stream)) {
@@ -783,7 +783,7 @@ static VM_RET read_number(tPVM vm, tPCELL stream, tCHAR c, const tBOOL sign, tPO
 		}
 		return VM_OK;
 	}
-	// ÉÔÆ°¾®¿ôÅÀ¿ô
+	// ä¸å‹•å°æ•°ç‚¹æ•°
 	return read_float_(vm, stream, (tFLOAT)i, sign, ret);
 }
 
@@ -824,12 +824,12 @@ static VM_RET read_float_(tPVM vm, tPCELL stream, tFLOAT f, const tBOOL sign, tP
 			if (check_eos(stream)) c='\0';
 			else if (preview_char_(vm, stream, &c)) return VM_ERROR;
 		}
-		// e==0 ¾®¿ôÅÀ¿ô°Ê²¼¤Ëµ­½Ò¤¬¤Ê¤¤¤â¤Î¤Ïµö¤µ¤ì¤Ê¤¤
+		// e==0 å°æ•°ç‚¹æ•°ä»¥ä¸‹ã«è¨˜è¿°ãŒãªã„ã‚‚ã®ã¯è¨±ã•ã‚Œãªã„
 		if (!e) return signal_parse_error(vm, TISL_ERROR_PARSE_ERROR_FLOAT, stream);
 		if (is_delimiter(c)) goto RET;
 	}
 	if ((c!='E')&&(c!='e')) return signal_parse_error(vm, TISL_ERROR_PARSE_ERROR_FLOAT, stream);
-	{// »Ø¿ôÉôÊ¬¤ÎÆÉ¹þ¤ß
+	{// æŒ‡æ•°éƒ¨åˆ†ã®èª­è¾¼ã¿
 		tINT ee=0, s=1;
 		if (read_char_(vm, stream, &c)) return VM_ERROR;
 		if (preview_char_(vm, stream, &c)) return VM_ERROR;
@@ -895,18 +895,18 @@ static VM_RET read_character(tPVM vm, tPCELL stream, tPOBJECT ret)
 	return VM_OK;
 }
 
-// + ¤Þ¤¿¤Ï Éä¹æÉÕ10¿Ê¿ô»ú
+// + ã¾ãŸã¯ ç¬¦å·ä»˜10é€²æ•°å­—
 static VM_RET read_plus(tPVM vm, tPCELL stream, tPOBJECT ret)
 {
 	tCHAR c;
 	if (check_eos(stream)) c='\0';
 	else if (preview_char_(vm, stream, &c)) return VM_ERROR;
 	if (is_delimiter(c)) {
-		// µ­¹æ +
+		// è¨˜å· +
 		OBJECT_SET_SYMBOL(ret, SYMBOL_PLUS);
 		return VM_OK;
 	} else if (isdigit(c)) {
-		// Éä¹æÉÕ¿ô»ú
+		// ç¬¦å·ä»˜æ•°å­—
 		if (read_char_(vm, stream, &c)) return VM_ERROR;
 		return read_number(vm, stream, c, tTRUE, ret);
 	} else if (c==':') {
@@ -943,11 +943,11 @@ static VM_RET read_minus(tPVM vm, tPCELL stream, tPOBJECT ret)
 	if (check_eos(stream)) c='\0';
 	else if (preview_char_(vm, stream, &c)) return VM_ERROR;
 	if (is_delimiter(c)) {
-		//µ­¹æ -
+		//è¨˜å· -
 		OBJECT_SET_SYMBOL(ret, SYMBOL_MINUS);
 		return VM_OK;
 	} else if (isdigit(c)) {
-		// Éä¹æÉÕ¿ô»ú
+		// ç¬¦å·ä»˜æ•°å­—
 		if (read_char_(vm, stream, &c)) return VM_ERROR;
 		return read_number(vm, stream, c, tFALSE, ret);
 	} else if (c==':') {
@@ -981,7 +981,7 @@ static VM_RET read_minus_(tPVM vm, tPCELL stream, tPCELL* string)
 static VM_RET read_symbol_all(tPVM vm, tPCELL stream, tPOBJECT ret)
 {
 	tCHAR c;
-	// ÀèÆ¬¤ÎÊ¸»ú¤Ç¾ì¹ç¤ï¤±
+	// å…ˆé ­ã®æ–‡å­—ã§å ´åˆã‚ã‘
 	if (read_char_(vm, stream, &c)) return VM_ERROR;
 	if (c=='|') {
 		return read_symbol_bar(vm, stream, ret);
@@ -1030,7 +1030,7 @@ static VM_RET read_symbol_bar(tPVM vm, tPCELL stream, tPOBJECT ret)
 static VM_RET read_symbol_bar_(tPVM vm, tPCELL stream, tPCELL* string)
 {
 	tCHAR c;
-	// µ­¹æ¤ÎÆÉ¹þ¤ß
+	// è¨˜å·ã®èª­è¾¼ã¿
 	vm_output_stream_clear(vm);
 	if (read_char_(vm, stream, &c)) return VM_ERROR;
 	while (c!='|') {
@@ -1047,7 +1047,7 @@ static VM_RET read_symbol_bar_(tPVM vm, tPCELL stream, tPCELL* string)
 		}
 		if (read_char_(vm, stream, &c)) return VM_ERROR;
 	}
-	// Ê¸»úÎó¤Î¥ê¥¹¥È¤ËÊÑ´¹¤·¤Æ¤ª¤¯
+	// æ–‡å­—åˆ—ã®ãƒªã‚¹ãƒˆã«å¤‰æ›ã—ã¦ãŠã
 	return vm_output_stream_to_string(vm, string);
 }
 
@@ -1115,10 +1115,10 @@ static VM_RET read_next_symbol(tPVM vm, tPCELL stream, tPCELL list)
 	if (c==':') {
 		tPCELL string, p;
 		tOBJECT obj;
-		// °ì¤Ä¤Îµ­¹æ¤òÊ¸»úÎó¤È¤·¤ÆÆÉ¹þ¤à
+		// ä¸€ã¤ã®è¨˜å·ã‚’æ–‡å­—åˆ—ã¨ã—ã¦èª­è¾¼ã‚€
 		if (read_char_(vm, stream, &c)) return VM_ERROR;
 		if (read_symbol_all_(vm, stream, &string)) return VM_ERROR;
-		// Ê¸»úÎó¤ò¥ê¥¹¥È¤ËÄÉ²Ã
+		// æ–‡å­—åˆ—ã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ 
 		OBJECT_SET_STRING(&obj, string);
 		if (cons_create(vm, &p, &obj, &nil)) return VM_ERROR;
 		OBJECT_SET_CONS(&obj, p);
@@ -1164,7 +1164,7 @@ static VM_RET list_to_array(tPVM vm, tPOBJECT list, tPOBJECT array, const tINT d
 {
 	tPCELL p;
 	if (d==1) {
-		// d==1 ¥Ù¥¯¥¿
+		// d==1 ãƒ™ã‚¯ã‚¿
 		return list_to_vector(vm, list, array);
 	} else {
 		if (array_create(vm, d, list, &p)) return VM_ERROR;

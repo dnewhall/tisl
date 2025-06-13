@@ -6,9 +6,9 @@
 #ifndef TISL_GC_H
 #define TISL_GC_H
 
-// garbage collector¤ÎÀ¸À®¤È½é´ü²½
+// garbage collectorã®ç”Ÿæˆã¨åˆæœŸåŒ–
 tBOOL gc_create(tPVM vm, tPGC* gc, tUINT heap_size);
-// garbage collector¤Î»ÈÍÑ¤·¤Æ¤¤¤ë¥á¥â¥ê¤Î³«Êü
+// garbage collectorã®ä½¿ç”¨ã—ã¦ã„ã‚‹ãƒ¡ãƒ¢ãƒªã®é–‹æ”¾
 void free_gc(tPGC gc);
 
 VM_RET gc_push(tPVM vm, tPOBJECT obj);
